@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 
 const heroImages = [
-  "/acepa-hero.jpg",
-  "/acepa-hero-1.jpg",
-  "/acepa-hero-2.jpg",
-  "/acepa-hero-3.jpg",
-  "/acepa-hero-4.jpg",
-  "/acepa-hero-5.jpg",
+  "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1800&q=90",
+  "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1800&q=90",
+  "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1800&q=90",
+  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1800&q=90",
+  "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1800&q=90",
+  "https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=1800&q=90",
 ];
 
 const roles = [
