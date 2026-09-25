@@ -316,7 +316,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
               alt="Modern city skyline and waterfront"
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-[58%] bg-gradient-to-r from-white via-white/98 via-white/92 via-white/72 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white 0%, from-white 34%, via-white/95 46%, via-white/72 58%, via-white/38 70%, via-white/10 82%, to-transparent 100%" />
           </div>
         </div>
       </section>
