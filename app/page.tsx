@@ -186,7 +186,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
 
             <div className="grid grid-cols-2 gap-3">
               <a
-                href="#investment-projects"
+                href="/discover/projects"
                 className="group/item rounded-xl border border-slate-100 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-purple-100 hover:bg-purple-50"
               >
                 <div className="flex items-center justify-between">
@@ -206,7 +206,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
               </a>
 
               <a
-                href="#investment-products"
+                href="/discover/products"
                 className="group/item rounded-xl border border-slate-100 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-purple-100 hover:bg-purple-50"
               >
                 <div className="flex items-center justify-between">
@@ -230,7 +230,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
           <div className="mt-5 grid grid-cols-2 gap-3">
 
             <a
-              href="#innovation"
+              href="/discover/innovation"
               className="rounded-xl p-4 transition-all hover:bg-purple-50"
             >
               <h4 className="text-sm font-semibold text-slate-950">
@@ -248,7 +248,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
             </a>
 
             <a
-              href="#marketing"
+              href="/discover/marketing"
               className="rounded-xl p-4 transition-all hover:bg-purple-50"
             >
               <h4 className="text-sm font-semibold text-slate-950">
@@ -266,7 +266,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
             </a>
 
             <a
-              href="#collaboration"
+              href="/discover/collaboration"
               className="rounded-xl p-4 transition-all hover:bg-purple-50"
             >
               <h4 className="text-sm font-semibold text-slate-950">
@@ -284,7 +284,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
             </a>
 
             <a
-              href="#experts"
+              href="/discover/experts"
               className="rounded-xl p-4 transition-all hover:bg-purple-50"
             >
               <h4 className="text-sm font-semibold text-slate-950">
@@ -302,7 +302,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
             </a>
 
             <a
-              href="#careers"
+              href="/discover/careers"
               className="rounded-xl p-4 transition-all hover:bg-purple-50"
             >
               <h4 className="text-sm font-semibold text-slate-950">
@@ -327,7 +327,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
             </p>
 
             <a
-              href="#discover"
+              href="/discover"
               className="text-sm font-semibold text-purple-600 transition hover:text-purple-700"
             >
               Explore all →
