@@ -430,7 +430,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
       </section>
 
       {/* OPPORTUNITIES */}
-      <section id="opportunities" className="py-24">
+      <section id="opportunities" className="pt-0 pb-16">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div>
@@ -514,7 +514,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
       </section>
 
       {/* CAREERS */}
-      <section id="careers" className="bg-purple-50 py-24">
+      <section id="careers" className="bg-purple-50 pt-0 pb-16">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-2 lg:px-8">
           <div>
             <p className="text-xs font-bold tracking-[0.2em] text-purple-600">
@@ -564,7 +564,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
       </section>
 
       {/* FINAL CTA */}
-      <section id="about" className="py-24">
+      <section id="about" className="pt-0 pb-16">
         <div className="mx-auto max-w-5xl px-6 text-center lg:px-8">
           <p className="text-xs font-bold tracking-[0.2em] text-purple-600">
             PEOPLE · OPPORTUNITIES · PROGRESS
