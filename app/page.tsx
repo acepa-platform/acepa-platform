@@ -48,20 +48,32 @@ const opportunities = [
   {
     type: "INVESTMENT",
     title: "Solar Energy Expansion",
+    company: "SunGrid Energy Ltd.",
     location: "Lagos, Nigeria",
     amount: "$5,000,000",
+    detail: "Eligible investment opportunity with potential investment returns.",
+    image:
+      "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1200&q=85",
   },
   {
-    type: "PARTNERSHIP",
-    title: "Agro Processing & Distribution",
-    location: "Kano, Nigeria",
-    amount: "$2,000,000",
-  },
-  {
-    type: "FUNDING",
-    title: "Affordable Housing Development",
+    type: "INNOVATION",
+    title: "Smart Retail Innovation Challenge",
+    company: "Nexa Retail Group",
     location: "Abuja, Nigeria",
-    amount: "$3,500,000",
+    amount: "$250,000",
+    detail: "Submit solutions for a real business challenge and earn from eligible innovation arrangements.",
+    image:
+      "https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=1200&q=85",
+  },
+  {
+    type: "MARKETING",
+    title: "Product Launch Campaign",
+    company: "Urbanova Consumer Brands",
+    location: "Port Harcourt, Nigeria",
+    amount: "$75,000",
+    detail: "Promote a company product through an eligible performance-based campaign.",
+    image:
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1200&q=85",
   },
 ];
 
@@ -444,26 +456,56 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
                 key={item.title}
                 className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
               >
-                <div className="h-48 bg-gradient-to-br from-slate-950 via-purple-950 to-purple-500 p-6">
-                  <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-white">
+                <div className="relative h-52 overflow-hidden">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-transparent" />
+                  <span className="absolute left-5 top-5 rounded-full bg-white/95 px-3 py-1 text-xs font-bold tracking-wide text-purple-700">
                     {item.type}
                   </span>
+                  <p className="absolute bottom-4 left-5 right-5 text-lg font-bold text-white">
+                    {item.title}
+                  </p>
                 </div>
 
                 <div className="p-6">
-                  <h3 className="text-xl font-bold">{item.title}</h3>
-                  <p className="mt-2 text-sm text-slate-500">
-                    {item.location}
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900">
+                        {item.company}
+                      </p>
+                      <p className="mt-1 text-sm text-slate-500">
+                        {item.location}
+                      </p>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                      ACEPA
+                    </span>
+                  </div>
+
+                  <p className="mt-5 text-sm leading-6 text-slate-600">
+                    {item.detail}
                   </p>
 
-                  <p className="mt-7 text-2xl font-bold">{item.amount}</p>
-
-                  <a
-                    href="#"
-                    className="mt-6 block rounded-xl bg-purple-50 px-4 py-3 text-center text-sm font-semibold text-purple-700 transition hover:bg-purple-600 hover:text-white"
-                  >
-                    View opportunity →
-                  </a>
+                  <div className="mt-5 flex items-end justify-between gap-4 border-t border-slate-100 pt-5">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        Opportunity value
+                      </p>
+                      <p className="mt-1 text-xl font-bold text-slate-950">
+                        {item.amount}
+                      </p>
+                    </div>
+                    <a
+                      href="#"
+                      className="rounded-xl bg-purple-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-purple-700"
+                    >
+                      Discover →
+                    </a>
+                  </div>
                 </div>
               </article>
             ))}
