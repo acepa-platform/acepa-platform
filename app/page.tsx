@@ -331,216 +331,104 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
   </div>
 </section>
       {/* ECOSYSTEM */}
-<section className="border-y border-slate-200 bg-white py-11">
-  <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <section className="border-y border-slate-200 bg-white py-24">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
 
-    {/* Section heading */}
-    <div className="mx-auto max-w-4xl text-center">
-      <p className="text-xs font-bold tracking-[0.22em] text-purple-600">
-        THE ACEPA ECOSYSTEM
-      </p>
+          <div className="mx-auto max-w-4xl text-center">
+            <p className="text-xs font-bold tracking-[0.22em] text-purple-600">
+              ONE ECOSYSTEM
+            </p>
 
-      <h2 className="mt-4 text-4xl font-bold tracking-[-0.03em] text-slate-950 sm:text-5xl">
-        One Platform.{" "}
-        <span className="bg-gradient-to-r from-violet-500 via-purple-600 to-indigo-700 bg-clip-text text-transparent">
-          Multiple Paths to Progress.
-        </span>
-      </h2>
+            <h2 className="mt-4 text-4xl font-bold tracking-[-0.04em] text-slate-950 sm:text-5xl">
+              One Platform.{" "}
+              <span className="bg-gradient-to-r from-violet-500 via-purple-600 to-indigo-700 bg-clip-text text-transparent">
+                Multiple Paths to Progress.
+              </span>
+            </h2>
 
-      <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-600">
-        ACEPA brings together the people, businesses, capital, ideas,
-        expertise, and opportunities needed to turn potential into progress.
-      </p>
-    </div>
-
-    {/* Ecosystem cards */}
-    <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-
-      {/* Investors */}
-      <div className="group relative min-h-[360px] overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-        <img
-          src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=85"
-          alt="Investors"
-          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/30 to-transparent" />
-
-        <div className="relative flex h-full flex-col justify-between p-8">
-          <div>
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-100 text-2xl text-purple-700 shadow-sm">
-              📊
-            </div>
-
-            <h3 className="mt-6 text-2xl font-bold text-slate-950">
-              Investors
-            </h3>
-
-            <p className="mt-3 max-w-[260px] text-base leading-6 text-slate-750">
-              Discover and support high-potential businesses and projects while earning returns from your investments.
+            <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+              Whether you bring capital, ideas, expertise, business, influence,
+              or strategic relationships, ACEPA gives you a place to participate,
+              create value, and earn from eligible opportunities.
             </p>
           </div>
 
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-purple-100 text-xl font-bold text-purple-700 transition group-hover:bg-purple-600 group-hover:text-white">
-            →
+          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                title: "Investors",
+                image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=85",
+                icon: "📊",
+                text: "Put capital into eligible businesses, projects, and products with opportunities to earn investment returns.",
+              },
+              {
+                title: "Innovators",
+                image: "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85",
+                icon: "💡",
+                text: "Bring ideas and solutions to real opportunities, create value, and earn from eligible innovation arrangements.",
+              },
+              {
+                title: "Companies",
+                image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=85",
+                icon: "🏢",
+                text: "Access capital, talent, ideas, partnerships, customers, and growth opportunities for your business.",
+              },
+              {
+                title: "Marketers",
+                image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=85",
+                icon: "📣",
+                text: "Promote companies and opportunities and earn through eligible marketing, referral, and performance-based arrangements.",
+              },
+              {
+                title: "Experts",
+                image: "https://images.unsplash.com/photo-1551836022-4c4c79ecde51?auto=format&fit=crop&w=1200&q=85",
+                icon: "🎓",
+                text: "Put your professional knowledge and skills to work for businesses and earn from eligible expert engagements.",
+              },
+              {
+                title: "Partners",
+                image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=85",
+                icon: "🤝",
+                text: "Build strategic relationships, collaborate on opportunities, and create shared value and long-term growth.",
+              },
+            ].map((role) => (
+              <article
+                key={role.title}
+                className="group relative min-h-[370px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-2xl"
+              >
+                <img
+                  src={role.image}
+                  alt={role.title}
+                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/10" />
+
+                <div className="relative flex h-full flex-col justify-end p-8 text-white">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/15 text-2xl backdrop-blur-md">
+                    {role.icon}
+                  </div>
+
+                  <h3 className="mt-6 text-2xl font-bold">
+                    {role.title}
+                  </h3>
+
+                  <p className="mt-3 max-w-sm text-sm leading-6 text-slate-200">
+                    {role.text}
+                  </p>
+
+                  <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-purple-200 transition group-hover:text-white">
+                    Explore your path
+                    <span className="transition-transform duration-300 group-hover:translate-x-1">
+                      →
+                    </span>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
-      </div>
-
-      {/* Innovators */}
-      <div className="group relative min-h-[360px] overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-        <img
-          src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85"
-          alt="Innovators"
-          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
-        />
-       <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/30 to-transparent" />
-
-        <div className="relative flex h-full flex-col justify-between p-8">
-          <div>
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-100 text-2xl text-purple-700 shadow-sm">
-              💡
-            </div>
-
-            <h3 className="mt-6 text-2xl font-bold text-slate-950">
-              Innovators
-            </h3>
-
-            <p className="mt-3 max-w-[260px] text-base leading-6 text-slate-750">
-              Turn ideas and solutions into real-world opportunities with the right resources, support, and potential to earn.
-            </p>
-          </div>
-
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-purple-100 text-xl font-bold text-purple-700 transition group-hover:bg-purple-600 group-hover:text-white">
-            →
-          </div>
-        </div>
-      </div>
-
-      {/* Companies */}
-      <div className="group relative min-h-[360px] overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-        <img
-          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=85"
-          alt="Companies"
-          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/30 to-transparent" />
-
-        <div className="relative flex h-full flex-col justify-between p-8">
-          <div>
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-100 text-2xl text-purple-700 shadow-sm">
-              🏢
-            </div>
-
-            <h3 className="mt-6 text-2xl font-bold text-slate-950">
-              Companies
-            </h3>
-
-            <p className="mt-3 max-w-[260px] text-base leading-6 text-slate-750">
-              Build, fund, promote, and grow businesses with access to capital,
-              markets, and strategic support.
-            </p>
-          </div>
-
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-purple-100 text-xl font-bold text-purple-700 transition group-hover:bg-purple-600 group-hover:text-white">
-            →
-          </div>
-        </div>
-      </div>
-
-      {/* Marketers */}
-      <div className="group relative min-h-[360px] overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-        <img
-          src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=85"
-          alt="Marketers"
-          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/30 to-transparent" />
-
-        <div className="relative flex h-full flex-col justify-between p-8">
-          <div>
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-100 text-2xl text-purple-700 shadow-sm">
-              📣
-            </div>
-
-            <h3 className="mt-6 text-2xl font-bold text-slate-950">
-              Marketers
-            </h3>
-
-            <p className="mt-3 max-w-[260px] text-base leading-6 text-slate-750">
-              Promote opportunities and earn performance-based commissions
-              through your network and influence.
-            </p>
-          </div>
-
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-purple-100 text-xl font-bold text-purple-700 transition group-hover:bg-purple-600 group-hover:text-white">
-            →
-          </div>
-        </div>
-      </div>
-
-      {/* Experts */}
-      <div className="group relative min-h-[360px] overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-        <img
-          src="https://images.unsplash.com/photo-1551836022-4c4c79ecde51?auto=format&fit=crop&w=1200&q=85"
-          alt="Experts"
-          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/30 to-transparent" />
-
-        <div className="relative flex h-full flex-col justify-between p-8">
-          <div>
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-100 text-2xl text-purple-700 shadow-sm">
-              🎓
-            </div>
-
-            <h3 className="mt-6 text-2xl font-bold text-slate-950">
-              Experts
-            </h3>
-
-            <p className="mt-3 max-w-[260px] text-base leading-6 text-slate-750">
-              Provide professional knowledge, skills, and services to help businesses and individuals succeed while earning from your expertise.
-            </p>
-          </div>
-
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-purple-100 text-xl font-bold text-purple-700 transition group-hover:bg-purple-600 group-hover:text-white">
-            →
-          </div>
-        </div>
-      </div>
-
-      {/* Partners */}
-      <div className="group relative min-h-[360px] overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-        <img
-          src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=85"
-          alt="Partners"
-          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/30 to-transparent" />
-
-        <div className="relative flex h-full flex-col justify-between p-8">
-          <div>
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-100 text-2xl text-purple-700 shadow-sm">
-              🤝
-            </div>
-
-            <h3 className="mt-6 text-2xl font-bold text-slate-950">
-              Partners
-            </h3>
-
-            <p className="mt-3 max-w-[260px] text-base leading-6 text-slate-750">
-              Build strategic relationships and collaborate on opportunities that create greater value, shared growth, and long-term impact.
-            </p>
-          </div>
-
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-purple-100 text-xl font-bold text-purple-700 transition group-hover:bg-purple-600 group-hover:text-white">
-            →
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* STATS */}
       <section className="bg-slate-950 py-10 text-white">
