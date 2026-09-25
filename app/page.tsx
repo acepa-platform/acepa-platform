@@ -316,8 +316,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
               alt="Modern city skyline and waterfront"
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/75 via-white/35 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/15 to-transparent backdrop-blur-[1.5px]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white 0%, via-white 35%, via-white/85 50%, via-white/25 64%, to-transparent 76%" />
           </div>
         </div>
       </section>
