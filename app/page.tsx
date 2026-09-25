@@ -555,6 +555,38 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
         </div>
       </section>
 
+      {/* STATS */}
+      <section className="bg-slate-950 py-10 text-white">
+        <div className="mx-auto grid max-w-7xl gap-8 px-6 sm:grid-cols-2 lg:grid-cols-5 lg:px-8">
+          <div>
+            <p className="text-3xl font-bold text-purple-400">10K+</p>
+            <p className="mt-1 text-sm text-slate-400">Active users</p>
+          </div>
+
+          <div>
+            <p className="text-3xl font-bold text-purple-400">2.5K+</p>
+            <p className="mt-1 text-sm text-slate-400">Companies</p>
+          </div>
+
+          <div>
+            <p className="text-3xl font-bold text-purple-400">1.2K+</p>
+            <p className="mt-1 text-sm text-slate-400">Opportunities</p>
+          </div>
+
+          <div>
+            <p className="text-3xl font-bold text-purple-400">$500M+</p>
+            <p className="mt-1 text-sm text-slate-400">Capital facilitated</p>
+          </div>
+
+          <div>
+            <p className="text-3xl font-bold text-purple-400">Global</p>
+            <p className="mt-1 text-sm text-slate-400">
+              People, ideas & growth
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* FOOTER */}
       <footer className="bg-slate-950 py-16 text-white">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
