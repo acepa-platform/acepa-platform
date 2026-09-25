@@ -258,78 +258,69 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
       </header>
 
       {/* HERO */}
-    
-```tsx
-```tsx
-<section
-  id="home"
-  className="relative min-h-[680px] overflow-hidden bg-slate-950"
->
-  <img
-    src={heroImages[heroIndex]}
-    alt="Modern city skyline and waterfront"
-    className="absolute inset-0 h-full w-full object-cover object-center"
-  />
+      <section
+        id="home"
+        className="relative min-h-[680px] overflow-hidden bg-white"
+      >
+        <div className="mx-auto grid min-h-[680px] max-w-7xl lg:grid-cols-2">
+          <div className="flex items-center px-6 pt-32 pb-16 lg:px-10 lg:pt-24 lg:pb-20">
+            <div className="max-w-2xl">
+              <div className="inline-flex rounded-full border border-purple-200 bg-purple-50 px-4 py-2 text-xs font-semibold tracking-[0.18em] text-purple-700">
+                INVESTMENT &amp; BUSINESS DEVELOPMENT PLATFORM
+              </div>
 
-  {/* Darker left side, clearer right side */}
-  <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/60 to-slate-950/5" />
+              <h1 className="mt-6 text-4xl font-bold leading-[0.96] tracking-[-0.04em] text-slate-950 sm:text-6xl lg:text-6xl">
+                Connecting People.
+                <br />
+                Creating Opportunities.
+                <br />
+                <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-700 bg-clip-text text-transparent">
+                  Building Progress.
+                </span>
+              </h1>
 
-  {/* Bottom cinematic fade */}
-  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent" />
+              <p className="mt-6 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
+                ACEPA connects investors, innovators, companies, experts, and marketers
+                to turn ideas into businesses, opportunities, and sustainable growth.
+              </p>
 
-  {/* Slight softness on the text side */}
-  <div className="absolute inset-y-0 left-0 w-[52%] backdrop-blur-[2px]" />
+              <div className="mt-8 flex flex-wrap gap-4">
+                <a
+                  href="#opportunities"
+                  className="rounded-xl bg-purple-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-purple-200 transition hover:bg-purple-700"
+                >
+                  Explore opportunities →
+                </a>
 
-  <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-center px-6 pt-36 pb-20 lg:px-8">
-    <div className="max-w-3xl text-white">
+                <a
+                  href="#"
+                  className="rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-slate-900 transition hover:border-purple-300 hover:text-purple-600"
+                >
+                  Join ACEPA
+                </a>
+              </div>
 
-      <div className="mb-2 inline-flex rounded-full border border-purple-300/40 bg-gradient-to-r from-purple-600/50 via-violet-500/40 to-blue-500/30 px-4 py-2 text-xs font-semibold tracking-[0.18em] text-purple-100 backdrop-blur-md">
-        INVESTMENT &amp; BUSINESS DEVELOPMENT PLATFORM
-      </div>
+              <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium text-slate-500">
+                <span>Invest</span>
+                <span>Innovate</span>
+                <span>Collaborate</span>
+                <span>Develop</span>
+                <span>Grow</span>
+              </div>
+            </div>
+          </div>
 
-      <h1 className="max-w-3xl text-4xl font-bold leading-[0.94] tracking-[-0.04em] sm:text-6xl lg:text-6xl">
-        Connecting People.
-        <br />
-        Creating Opportunities.
-        <br />
-        <span className="bg-gradient-to-r from-purple-300 via-violet-400 to-purple-700 bg-clip-text text-transparent">
-          Building Progress.
-        </span>
-      </h1>
-
-      <p className="mt-4 max-w-2xl text-sm leading-8 text-slate-200 sm:text-sm">
-        ACEPA connects investors, innovators, companies, experts, and marketers
-        <br />
-        to turn ideas into businesses, opportunities, and sustainable growth.
-      </p>
-
-      <div className="mt-7 flex flex-wrap gap-4">
-        <a
-          href="#opportunities"
-          className="rounded-xl bg-purple-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-purple-900/40 transition hover:bg-purple-500"
-        >
-          Explore opportunities →
-        </a>
-
-        <a
-          href="#"
-          className="rounded-xl border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/20"
-        >
-          Join ACEPA
-        </a>
-      </div>
-
-      <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm text-white/75">
-        <span>Invest</span>
-        <span>Innovate</span>
-        <span>Collaborate</span>
-        <span>Develop</span>
-        <span>Grow</span>
-      </div>
-
-    </div>
-  </div>
-</section>
+          <div className="relative min-h-[420px] overflow-hidden lg:min-h-[680px]">
+            <img
+              src={heroImages[heroIndex]}
+              alt="Modern city skyline and waterfront"
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-white/15 via-transparent to-slate-950/10" />
+            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white/35 to-transparent lg:w-32" />
+          </div>
+        </div>
+      </section>
       {/* ECOSYSTEM */}
       <section className="border-y border-slate-200 bg-white py-24">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
