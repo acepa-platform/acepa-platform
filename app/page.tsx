@@ -116,18 +116,17 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
     Home
   </a>
 
-{/* Discover Mega Menu */}
+{/* Discover Menu */
 <div
   className="group relative"
   onMouseEnter={() => setIsDiscoverOpen(true)}
   onMouseLeave={() => setIsDiscoverOpen(false)}
 >
-  <button
-    type="button"
-    className="flex cursor-pointer items-center gap-1 text-sm font-medium text-slate-900 transition hover:text-purple-600"
+  <a
+    href="/discover"
+    className="flex items-center gap-1 text-sm font-medium text-slate-900 transition hover:text-purple-600"
   >
     Discover
-
     <svg
       className={`h-4 w-4 transition-transform duration-200 ${
         isDiscoverOpen ? "rotate-180" : ""
@@ -137,203 +136,50 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
       stroke="currentColor"
       strokeWidth="2"
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="m6 9 6 6 6-6"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="m6 9 6 6 6-6" />
     </svg>
-  </button>
+  </a>
 
   {isDiscoverOpen && (
-    <div className="absolute left-1/2 top-full z-[100] w-[860px] -translate-x-1/2 pt-4">
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
-
-        <div className="border-b border-purple-100 bg-gradient-to-r from-purple-50 via-white to-slate-50 px-7 py-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-purple-600">
-            Discover ACEPA
-          </p>
-
-          <h3 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">
-            Explore opportunities. Create value. Earn.
-          </h3>
-
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-            Discover ways to invest, solve problems, provide services,
-            collaborate, build your career, and earn through opportunities
-            on ACEPA.
-          </p>
+    <div className="absolute left-1/2 top-full z-[100] w-[520px] -translate-x-1/2 pt-3">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/10">
+        <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-purple-600">
+              Discover ACEPA
+            </p>
+            <p className="mt-1 text-sm font-semibold text-slate-950">
+              Explore opportunities across the ecosystem.
+            </p>
+          </div>
+          <a href="/discover" className="text-xs font-semibold text-purple-600 hover:text-purple-700">
+            View all →
+          </a>
         </div>
 
-        <div className="p-6">
-
-          <div className="rounded-xl border border-slate-100 bg-slate-50 p-5">
-            <div className="mb-4 flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-purple-600 shadow-sm">
-                ◈
-              </span>
-
-              <div>
-                <h4 className="text-sm font-semibold text-slate-950">
-                  Investment
-                </h4>
-
-                <p className="mt-0.5 text-xs text-slate-500">
-                  Participate with capital and pursue potential returns.
-                </p>
+        <div className="grid grid-cols-2 gap-1 p-2">
+          {[
+            ["Projects", "/discover/projects", "Investment opportunities in real projects."],
+            ["Products", "/discover/products", "Products seeking funding or participation."],
+            ["Innovation", "/discover/innovation", "Ideas, challenges and solutions."],
+            ["Marketing", "/discover/marketing", "Marketing and promotional opportunities."],
+            ["Business", "/discover/business", "Businesses, ventures and growth opportunities."],
+            ["Collaboration", "/discover/collaboration", "Partnerships, skills and shared projects."],
+            ["Experts", "/discover/experts", "Professional expertise and services."],
+            ["Careers & Jobs", "/discover/careers", "Jobs and career opportunities."],
+          ].map(([title, href, description]) => (
+            <a
+              key={href}
+              href={href}
+              className="rounded-xl px-4 py-3 transition hover:bg-purple-50"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-sm font-semibold text-slate-950 hover:text-purple-600">{title}</span>
+                <span className="text-xs text-slate-400">→</span>
               </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <a
-                href="/discover/projects"
-                className="group/item rounded-xl border border-slate-100 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-purple-100 hover:bg-purple-50"
-              >
-                <div className="flex items-center justify-between">
-                  <h5 className="text-sm font-semibold text-slate-950 group-hover/item:text-purple-600">
-                    Projects
-                  </h5>
-
-                  <span className="text-slate-400 group-hover/item:translate-x-1 group-hover/item:text-purple-600">
-                    →
-                  </span>
-                </div>
-
-                <p className="mt-2 text-xs leading-5 text-slate-500">
-                  Discover projects seeking investment and opportunities to
-                  participate and potentially earn returns.
-                </p>
-              </a>
-
-              <a
-                href="/discover/products"
-                className="group/item rounded-xl border border-slate-100 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-purple-100 hover:bg-purple-50"
-              >
-                <div className="flex items-center justify-between">
-                  <h5 className="text-sm font-semibold text-slate-950 group-hover/item:text-purple-600">
-                    Products
-                  </h5>
-
-                  <span className="text-slate-400 group-hover/item:translate-x-1 group-hover/item:text-purple-600">
-                    →
-                  </span>
-                </div>
-
-                <p className="mt-2 text-xs leading-5 text-slate-500">
-                  Discover products seeking funding and participation with
-                  potential earning opportunities.
-                </p>
-              </a>
-            </div>
-          </div>
-
-          <div className="mt-5 grid grid-cols-2 gap-3">
-
-            <a
-              href="/discover/innovation"
-              className="rounded-xl p-4 transition-all hover:bg-purple-50"
-            >
-              <h4 className="text-sm font-semibold text-slate-950">
-                Innovation
-              </h4>
-
-              <p className="mt-2 text-xs leading-5 text-slate-500">
-                Solve real company challenges and earn rewards when your ideas
-                or solutions are selected.
-              </p>
-
-              <span className="mt-3 block text-xs font-semibold text-purple-600">
-                Explore →
-              </span>
+              <p className="mt-1 text-[11px] leading-5 text-slate-500">{description}</p>
             </a>
-
-            <a
-              href="/discover/marketing"
-              className="rounded-xl p-4 transition-all hover:bg-purple-50"
-            >
-              <h4 className="text-sm font-semibold text-slate-950">
-                Marketing
-              </h4>
-
-              <p className="mt-2 text-xs leading-5 text-slate-500">
-                Help companies reach the right audiences and earn from
-                marketing opportunities.
-              </p>
-
-              <span className="mt-3 block text-xs font-semibold text-purple-600">
-                Explore →
-              </span>
-            </a>
-
-            <a
-              href="/discover/collaboration"
-              className="rounded-xl p-4 transition-all hover:bg-purple-50"
-            >
-              <h4 className="text-sm font-semibold text-slate-950">
-                Collaboration
-              </h4>
-
-              <p className="mt-2 text-xs leading-5 text-slate-500">
-                Find companies and people to work with, create value, and
-                discover earning opportunities.
-              </p>
-
-              <span className="mt-3 block text-xs font-semibold text-purple-600">
-                Explore →
-              </span>
-            </a>
-
-            <a
-              href="/discover/experts"
-              className="rounded-xl p-4 transition-all hover:bg-purple-50"
-            >
-              <h4 className="text-sm font-semibold text-slate-950">
-                Experts
-              </h4>
-
-              <p className="mt-2 text-xs leading-5 text-slate-500">
-                Offer your professional expertise to businesses and earn from
-                opportunities that need your skills.
-              </p>
-
-              <span className="mt-3 block text-xs font-semibold text-purple-600">
-                Explore →
-              </span>
-            </a>
-
-            <a
-              href="/discover/careers"
-              className="rounded-xl p-4 transition-all hover:bg-purple-50"
-            >
-              <h4 className="text-sm font-semibold text-slate-950">
-                Careers &amp; Jobs
-              </h4>
-
-              <p className="mt-2 text-xs leading-5 text-slate-500">
-                Discover employment and career opportunities from companies
-                looking for talented people.
-              </p>
-
-              <span className="mt-3 block text-xs font-semibold text-purple-600">
-                Explore →
-              </span>
-            </a>
-
-          </div>
-
-          <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-5">
-            <p className="text-xs text-slate-400">
-              Discover opportunities available across the ACEPA ecosystem.
-            </p>
-
-            <a
-              href="/discover"
-              className="text-sm font-semibold text-purple-600 transition hover:text-purple-700"
-            >
-              Explore all →
-            </a>
-          </div>
-
+          ))}
         </div>
       </div>
     </div>
