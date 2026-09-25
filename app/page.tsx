@@ -149,7 +149,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
               Discover ACEPA
             </p>
             <p className="mt-1 text-sm font-semibold text-slate-950">
-              Explore opportunities across the ecosystem.
+              Explore opportunities and ways to earn across the ecosystem.
             </p>
           </div>
           <a href="/discover" className="text-xs font-semibold text-purple-600 hover:text-purple-700">
@@ -159,14 +159,14 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
 
         <div className="grid grid-cols-2 gap-1 p-2">
           {[
-            ["Projects", "/discover/projects", "Investment opportunities in real projects."],
-            ["Products", "/discover/products", "Products seeking funding or participation."],
-            ["Innovation", "/discover/innovation", "Ideas, challenges and solutions."],
-            ["Marketing", "/discover/marketing", "Marketing and promotional opportunities."],
-            ["Business", "/discover/business", "Businesses, ventures and growth opportunities."],
-            ["Collaboration", "/discover/collaboration", "Partnerships, skills and shared projects."],
-            ["Experts", "/discover/experts", "Professional expertise and services."],
-            ["Careers & Jobs", "/discover/careers", "Jobs and career opportunities."],
+            ["Projects", "/discover/projects", "Invest in real projects and participate in opportunities designed to generate returns."],
+            ["Products", "/discover/products", "Back products seeking funding or participation and earn where the opportunity provides returns."],
+            ["Innovation", "/discover/innovation", "Bring ideas and solutions to real challenges and discover opportunities to earn from your contribution."],
+            ["Marketing", "/discover/marketing", "Promote companies and opportunities and earn through eligible marketing and referral opportunities."],
+            ["Business", "/discover/business", "Participate in businesses, ventures and commercial opportunities that can create revenue and income."],
+            ["Collaboration", "/discover/collaboration", "Bring skills, resources or partnerships to opportunities where participants can create and earn value."],
+            ["Experts", "/discover/experts", "Put your expertise to work for businesses and earn from eligible professional opportunities."],
+            ["Careers & Jobs", "/discover/careers", "Find paid jobs and career opportunities with companies across the ACEPA ecosystem."],
           ].map(([title, href, description]) => (
             <a
               key={href}
