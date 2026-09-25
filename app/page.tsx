@@ -268,7 +268,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white 0%, from-white 16%, via-white/98 24%, via-white/86 32%, via-white/58 42%, via-white/28 54%, via-white/8 68%, to-transparent 82%" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white 0%, from-white 10%, via-white/97 18%, via-white/78 28%, via-white/48 38%, via-white/20 50%, via-white/5 62%, to-transparent 74%" />
 
         <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-center px-6 pt-32 pb-16 lg:px-10 lg:pt-24 lg:pb-20">
           <div className="max-w-2xl">
