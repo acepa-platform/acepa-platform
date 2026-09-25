@@ -6,47 +6,47 @@ const categories = [
   {
     title: "Investment",
     label: "CAPITAL",
-    description: "Explore opportunities where capital can participate in projects and products seeking investment.",
+    description: "Invest capital in eligible projects and products where participation may generate returns, distributions, or other investment earnings.",
     items: [
-      ["Projects", "Investment opportunities connected to real projects and businesses.", "/discover/projects"],
-      ["Products", "Products and commercial opportunities seeking funding or participation.", "/discover/products"],
+      ["Projects", "Invest in eligible real projects and businesses with the potential to earn investment returns.", "/discover/projects"],
+      ["Products", "Support products seeking funding or participation and earn where the opportunity provides eligible returns or revenue.", "/discover/products"],
     ],
   },
   {
     title: "Innovation",
     label: "IDEAS",
-    description: "Help solve real problems, contribute ideas, and participate in innovation opportunities.",
-    items: [["Explore Innovation", "Discover challenges, ideas, and innovation opportunities.", "/discover/innovation"]],
+    description: "Contribute ideas and solutions to real problems and discover eligible opportunities to earn from your innovation and contribution.",
+    items: [["Explore Innovation", "Discover challenges and ideas where your contribution can create value and eligible earnings.", "/discover/innovation"]],
   },
   {
     title: "Marketing",
     label: "GROWTH",
-    description: "Help companies and opportunities reach the right audiences through marketing opportunities.",
-    items: [["Explore Marketing", "Discover marketing and promotional opportunities.", "/discover/marketing"]],
+    description: "Promote companies and opportunities and earn through eligible marketing, referral, and performance-based opportunities.",
+    items: [["Explore Marketing", "Discover marketing opportunities where eligible participants can earn commissions or performance-based income.", "/discover/marketing"]],
   },
   {
     title: "Business",
     label: "VENTURES",
-    description: "Find businesses, ventures, services, and commercial growth opportunities.",
-    items: [["Explore Business", "Discover businesses and commercial opportunities.", "/discover/business"]],
+    description: "Participate in businesses, ventures, and commercial opportunities that can create revenue, income, or other eligible earnings.",
+    items: [["Explore Business", "Discover businesses and commercial opportunities that can create revenue or income.", "/discover/business"]],
   },
   {
     title: "Collaboration",
     label: "PARTNERSHIPS",
-    description: "Connect around projects, skills, services, partnerships, and shared opportunities.",
-    items: [["Explore Collaboration", "Find opportunities to work with companies and other participants.", "/discover/collaboration"]],
+    description: "Bring skills, resources, or partnerships to opportunities where participants can create value and earn from eligible arrangements.",
+    items: [["Explore Collaboration", "Find opportunities to work with companies and participants and earn from eligible collaborations.", "/discover/collaboration"]],
   },
   {
     title: "Experts",
     label: "EXPERTISE",
-    description: "Put your professional knowledge and experience to work where it is needed.",
-    items: [["Explore Experts", "Discover expert and professional opportunities.", "/discover/experts"]],
+    description: "Put your professional knowledge and experience to work for businesses and earn from eligible expert services and engagements.",
+    items: [["Explore Experts", "Discover professional opportunities where you can earn from eligible expertise and services.", "/discover/experts"]],
   },
   {
     title: "Careers & Jobs",
     label: "CAREERS",
-    description: "Find employment and career opportunities from companies on ACEPA.",
-    items: [["Explore Careers", "Discover open jobs and career opportunities.", "/discover/careers"]],
+    description: "Find paid jobs and career opportunities from companies across the ACEPA ecosystem.",
+    items: [["Explore Careers", "Discover paid jobs and career opportunities.", "/discover/careers"]],
   },
 ];
 
@@ -61,9 +61,6 @@ export default function DiscoverPage() {
             <img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-14 w-auto object-contain brightness-0" />
           </Link>
           <div className="flex items-center gap-3">
-            <Link href="/" className="hidden text-sm font-medium text-slate-600 transition hover:text-purple-600 sm:block">
-              Home
-            </Link>
             <Link href="/" className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-purple-600">
               Back to home
             </Link>
@@ -81,7 +78,7 @@ export default function DiscoverPage() {
               Find where you can <span className="bg-gradient-to-r from-purple-300 to-violet-500 bg-clip-text text-transparent">create value.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-              Explore opportunities to invest, innovate, market, build, collaborate, contribute your expertise, or grow your career through ACEPA.
+              Discover real opportunities where you can invest capital, contribute ideas and expertise, promote businesses, build partnerships, find paid work, and create opportunities to earn income, returns, commissions, or other eligible rewards.
             </p>
           </div>
 
@@ -150,7 +147,7 @@ export default function DiscoverPage() {
           <div className="max-w-2xl">
             <p className="text-xs font-bold tracking-[0.2em] text-purple-300">PEOPLE · OPPORTUNITIES · PROGRESS</p>
             <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Your next opportunity can start here.</h2>
-            <p className="mt-3 text-sm leading-6 text-slate-300">Whether you bring capital, an idea, expertise, a business, or a skill, ACEPA is built to connect the right people with the right opportunities.</p>
+            <p className="mt-3 text-sm leading-6 text-slate-300">Whether you bring capital, an idea, expertise, a business, or a skill, ACEPA connects you with opportunities where you can create value and pursue eligible income, returns, commissions, or other earnings.</p>
           </div>
           <Link href="/" className="shrink-0 rounded-xl bg-purple-600 px-6 py-3.5 text-center text-sm font-semibold text-white transition hover:bg-purple-500">
             Explore ACEPA →
