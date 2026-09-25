@@ -116,7 +116,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
     Home
   </a>
 
-{/* Discover Menu */
+{/* Discover Menu */}
 <div
   className="group relative"
   onMouseEnter={() => setIsDiscoverOpen(true)}
