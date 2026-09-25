@@ -316,13 +316,13 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
               alt="Modern city skyline and waterfront"
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-white/15 via-transparent to-slate-950/10" />
-            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white/35 to-transparent lg:w-32" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/75 via-white/35 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/15 to-transparent backdrop-blur-[1.5px]" />
           </div>
         </div>
       </section>
       {/* ECOSYSTEM */}
-      <section className="border-y border-slate-200 bg-white py-24">
+      <section className="border-y border-slate-200 bg-white py-16">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
 
           <div className="mx-auto max-w-4xl text-center">
