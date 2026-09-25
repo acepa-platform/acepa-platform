@@ -262,61 +262,58 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
         id="home"
         className="relative min-h-[680px] overflow-hidden bg-white"
       >
-        <div className="mx-auto grid min-h-[680px] max-w-7xl lg:grid-cols-2">
-          <div className="flex items-center px-6 pt-32 pb-16 lg:px-10 lg:pt-24 lg:pb-20">
-            <div className="max-w-2xl">
-              <div className="inline-flex rounded-full border border-purple-200 bg-purple-50 px-4 py-2 text-xs font-semibold tracking-[0.18em] text-purple-700">
-                INVESTMENT &amp; BUSINESS DEVELOPMENT PLATFORM
-              </div>
+        <img
+          src={heroImages[heroIndex]}
+          alt="Modern city skyline and waterfront"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
 
-              <h1 className="mt-6 text-4xl font-bold leading-[0.96] tracking-[-0.04em] text-slate-950 sm:text-6xl lg:text-6xl">
-                Connecting People.
-                <br />
-                Creating Opportunities.
-                <br />
-                <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-700 bg-clip-text text-transparent">
-                  Building Progress.
-                </span>
-              </h1>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white 0%, from-white 16%, via-white/98 24%, via-white/86 32%, via-white/58 42%, via-white/28 54%, via-white/8 68%, to-transparent 82%" />
 
-              <p className="mt-6 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
-                ACEPA connects investors, innovators, companies, experts, and marketers
-                to turn ideas into businesses, opportunities, and sustainable growth.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-4">
-                <a
-                  href="#opportunities"
-                  className="rounded-xl bg-purple-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-purple-200 transition hover:bg-purple-700"
-                >
-                  Explore opportunities →
-                </a>
-
-                <a
-                  href="#"
-                  className="rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-slate-900 transition hover:border-purple-300 hover:text-purple-600"
-                >
-                  Join ACEPA
-                </a>
-              </div>
-
-              <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium text-slate-500">
-                <span>Invest</span>
-                <span>Innovate</span>
-                <span>Collaborate</span>
-                <span>Develop</span>
-                <span>Grow</span>
-              </div>
+        <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-center px-6 pt-32 pb-16 lg:px-10 lg:pt-24 lg:pb-20">
+          <div className="max-w-2xl">
+            <div className="inline-flex rounded-full border border-purple-200 bg-purple-50 px-4 py-2 text-xs font-semibold tracking-[0.18em] text-purple-700">
+              INVESTMENT &amp; BUSINESS DEVELOPMENT PLATFORM
             </div>
-          </div>
 
-          <div className="relative min-h-[420px] overflow-hidden lg:min-h-[680px]">
-            <img
-              src={heroImages[heroIndex]}
-              alt="Modern city skyline and waterfront"
-              className="absolute inset-0 h-full w-full object-cover object-center"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white 0%, from-white 34%, via-white/95 46%, via-white/72 58%, via-white/38 70%, via-white/10 82%, to-transparent 100%" />
+            <h1 className="mt-6 text-4xl font-bold leading-[0.96] tracking-[-0.04em] text-slate-950 sm:text-6xl lg:text-6xl">
+              Connecting People.
+              <br />
+              Creating Opportunities.
+              <br />
+              <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-700 bg-clip-text text-transparent">
+                Building Progress.
+              </span>
+            </h1>
+
+            <p className="mt-6 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
+              ACEPA connects investors, innovators, companies, experts, and marketers
+              to turn ideas into businesses, opportunities, and sustainable growth.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-4">
+              <a
+                href="#opportunities"
+                className="rounded-xl bg-purple-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-purple-200 transition hover:bg-purple-700"
+              >
+                Explore opportunities →
+              </a>
+
+              <a
+                href="#"
+                className="rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-slate-900 transition hover:border-purple-300 hover:text-purple-600"
+              >
+                Join ACEPA
+              </a>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium text-slate-500">
+              <span>Invest</span>
+              <span>Innovate</span>
+              <span>Collaborate</span>
+              <span>Develop</span>
+              <span>Grow</span>
+            </div>
           </div>
         </div>
       </section>
