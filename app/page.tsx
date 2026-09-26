@@ -233,17 +233,54 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="bg-slate-950 py-16 text-white">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-            <div><div className="text-3xl font-black tracking-[-0.08em]">ACEPA</div><p className="mt-5 max-w-sm text-sm leading-6 text-slate-400">A global investment and business development platform connecting people, capital, ideas, businesses, and opportunities.</p></div>
-            <div><h3 className="font-semibold">Platform</h3><div className="mt-5 space-y-3 text-sm text-slate-400"><a href="#">Opportunities</a><a href="#">Invest</a><a href="#">Companies</a><a href="#">Experts</a><a href="#">Careers</a><a href="#">Marketers</a></div></div>
-            <div><h3 className="font-semibold">Company</h3><div className="mt-5 space-y-3 text-sm text-slate-400"><a href="#">About</a><a href="#">Innovation</a><a href="#">Collaborations</a><a href="#">Contact</a><a href="#">Help Center</a></div></div>
-            <div><h3 className="font-semibold">Stay connected</h3><p className="mt-5 text-sm leading-6 text-slate-400">Receive updates about opportunities, insights and ACEPA news.</p><div className="mt-5 flex overflow-hidden rounded-xl border border-white/10"><input type="email" placeholder="Your email" className="min-w-0 flex-1 bg-white/5 px-4 py-3 text-sm outline-none placeholder:text-slate-500" /><button className="bg-purple-600 px-5 text-sm font-semibold">→</button></div></div>
+      <footer className="border-t border-purple-100 bg-purple-50 text-slate-950">
+        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
+          <div className="grid gap-12 lg:grid-cols-[1.35fr_0.7fr_0.7fr_1.1fr]">
+            <div className="max-w-md">
+              <a href="#" className="inline-flex items-center">
+                <img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-20 w-auto object-contain brightness-0" />
+              </a>
+              <p className="mt-5 text-base leading-7 text-slate-600">A global investment and business development platform connecting people, capital, ideas, businesses, and opportunities to create meaningful progress.</p>
+              <p className="mt-4 text-sm leading-6 text-slate-500">Connecting people to opportunity. Connecting capital to potential. Connecting ideas to progress.</p>
+            </div>
+            <div>
+              <h3 className="text-sm font-bold uppercase tracking-[0.14em]">Explore</h3>
+              <div className="mt-5 flex flex-col gap-3 text-sm text-slate-600">
+                <a href="#opportunities" className="transition hover:text-purple-600">Opportunities</a>
+                <a href="/discover" className="transition hover:text-purple-600">Discover</a>
+                <a href="#careers" className="transition hover:text-purple-600">Careers</a>
+                <a href="#about" className="transition hover:text-purple-600">About ACEPA</a>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-sm font-bold uppercase tracking-[0.14em]">For business</h3>
+              <div className="mt-5 flex flex-col gap-3 text-sm text-slate-600">
+                <a href="#companies" className="transition hover:text-purple-600">For Companies</a>
+                <a href="#" className="transition hover:text-purple-600">Investment</a>
+                <a href="#" className="transition hover:text-purple-600">Innovation</a>
+                <a href="#" className="transition hover:text-purple-600">Partnerships</a>
+              </div>
+            </div>
+            <div className="rounded-3xl border border-purple-100 bg-white p-7 shadow-sm">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-600">Stay connected</p>
+              <h3 className="mt-3 text-2xl font-bold tracking-tight">Stay informed about ACEPA.</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-600">Stay tuned for updates about new opportunities, platform news, insights, and important developments across the ACEPA ecosystem.</p>
+              <a href="#" className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-purple-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-purple-700">Get ACEPA updates →</a>
+            </div>
           </div>
-          <div className="mt-14 border-t border-white/10 pt-7 text-sm text-slate-500"><div className="flex flex-col justify-between gap-3 sm:flex-row"><p>© 2026 ACEPA. All rights reserved.</p><p>People. Opportunities. Progress.</p></div></div>
+          <div className="mt-14 border-t border-purple-200 pt-7">
+            <div className="flex flex-col gap-5 text-sm text-slate-500 lg:flex-row lg:items-center lg:justify-between">
+              <p>© 2026 ACEPA Investment &amp; Business Development Platform. All rights reserved.</p>
+              <div className="flex flex-wrap gap-x-6 gap-y-2">
+                <a href="#" className="transition hover:text-purple-600">Privacy</a>
+                <a href="#" className="transition hover:text-purple-600">Terms</a>
+                <a href="#" className="transition hover:text-purple-600">Help Center</a>
+                <a href="#" className="transition hover:text-purple-600">Contact</a>
+              </div>
+            </div>
+            <p className="mt-4 text-xs font-semibold tracking-[0.12em] text-purple-600">PEOPLE • OPPORTUNITIES • PROGRESS</p>
+          </div>
         </div>
-      </footer>
-    </main>
+      </footer>   </main>
   );
 }
