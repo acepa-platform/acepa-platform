@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function SignInPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -30,8 +32,7 @@ export default function SignInPage() {
       return;
     }
 
-    setMessage("Signed in successfully. Your ACEPA account is ready.");
-    setLoading(false);
+    router.push("/discover");
   }
 
   return (
