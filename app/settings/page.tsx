@@ -432,6 +432,62 @@ export default function SettingsPage() {
   );
 
 
+  const accountContent = (
+    <div className="space-y-6">
+      <div>
+        <p className="text-lg font-black">{activeAccount}</p>
+        <p className={"mt-1 text-sm " + muted}>Manage your account preferences and access settings.</p>
+      </div>
+      {activeAccount === "Account Information" ? (
+        <div className={"rounded-2xl border p-6 " + soft}>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div><label className="text-sm font-bold">Account Email</label><input value={email} disabled className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm opacity-80 " + field}/></div>
+            <div><label className="text-sm font-bold">Username</label><input value={profile.username} onChange={e=>setProfile(v=>({...v,username:e.target.value}))} className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm " + field}/></div>
+          </div>
+          <div className="mt-5 flex justify-end"><button onClick={saveProfile} disabled={saving} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-60">{saving ? "Saving..." : "Save Account Information"}</button></div>
+        </div>
+      ) : activeAccount === "Appearance" ? (
+        <div className={"rounded-2xl border p-6 " + soft}>
+          <p className="text-sm font-black">Appearance</p>
+          <p className={"mt-2 text-sm " + muted}>Choose how ACEPA looks on your device.</p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            {["light","dark","system"].map(value=><button key={value} onClick={()=>chooseAppearance(value)} className={"rounded-xl border p-4 text-left " + (appearance===value ? "border-purple-500 bg-purple-50 dark:bg-purple-950/40" : "")}><p className="text-sm font-bold">{value==="light"?"Light":value==="dark"?"Dark":"Automatic / System"}</p><p className={"mt-1 text-xs " + muted}>{appearance===value ? "Selected" : "Use this appearance"}</p></button>)}
+          </div>
+          <div className="mt-5 flex justify-end"><button onClick={saveAppearance} disabled={saving} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-60">{saving ? "Saving..." : "Save Appearance"}</button></div>
+        </div>
+      ) : (
+        <div className={"rounded-2xl border p-6 " + soft}>
+          <p className="text-sm font-black">Login & Sessions</p>
+          <p className={"mt-2 text-sm leading-6 " + muted}>Review active sessions and account security.</p>
+          <button onClick={()=>{setActiveTab("Security");setActiveSecurity("Sessions")}} className="mt-5 rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white">Manage Sessions</button>
+        </div>
+      )}
+    </div>
+  );
+
+  const notificationContent = (
+    <div className="space-y-6">
+      <div>
+        <p className="text-lg font-black">{activeGeneric || "Email Notifications"}</p>
+        <p className={"mt-1 text-sm " + muted}>Choose which ACEPA notifications you want to receive.</p>
+      </div>
+      <div className={"rounded-2xl border p-6 " + soft}>
+        {([
+          ["email","Email Notifications","Receive important account and platform emails."],
+          ["opportunity","Opportunity Notifications","Get updates about opportunities relevant to you."],
+          ["activity","Activity Notifications","Receive alerts about activity on your account and participation."],
+          ["marketing","Marketing Notifications","Receive ACEPA news, product updates and promotional messages."]
+        ] as const).map(([key,title,description])=>(
+          <div key={key} className="flex items-center justify-between gap-4 border-b py-4 last:border-b-0">
+            <div><p className="text-sm font-bold">{title}</p><p className={"mt-1 text-xs leading-5 " + muted}>{description}</p></div>
+            <button type="button" aria-pressed={notificationPrefs[key]} onClick={()=>setNotificationPrefs(v=>({...v,[key]:!v[key]}))} className={"relative h-7 w-12 shrink-0 rounded-full transition " + (notificationPrefs[key] ? "bg-purple-600" : "bg-slate-300 dark:bg-slate-700")}><span className={"absolute top-1 h-5 w-5 rounded-full bg-white transition " + (notificationPrefs[key] ? "left-6" : "left-1")}/></button>
+          </div>
+        ))}
+        <div className="mt-5 flex justify-end"><button onClick={()=>setMessage("Notification preferences saved successfully.")} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white">Save Notification Preferences</button></div>
+      </div>
+    </div>
+  );
+
   const securityContent = (
     <div className="space-y-6">
       <div>
