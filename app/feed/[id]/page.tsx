@@ -171,7 +171,13 @@ export default function FeedPostDetailsPage({ params }: { params: Promise<{ id: 
   }
 
   async function toggleLike() {
-    if (!post || !userId || actionLoading || isDemo) return;
+    if (!post || actionLoading) return;
+
+    if (isDemo) {
+      setLiked((current) => !current);
+      setLikeCount((current) => current + (liked ? -1 : 1));
+      return;
+    }
 
     setActionLoading(true);
     setMessage("");
@@ -194,7 +200,25 @@ export default function FeedPostDetailsPage({ params }: { params: Promise<{ id: 
 
   async function addComment() {
     const content = commentDraft.trim();
-    if (!post || !content || !userId || actionLoading || isDemo) return;
+    if (!post || !content || actionLoading) return;
+
+    if (isDemo) {
+      setComments((current) => [
+        ...current,
+        {
+          id: "demo-comment-" + Date.now(),
+          post_id: "demo",
+          author_id: userId,
+          author_name: userName,
+          author_avatar_url: userAvatar || null,
+          content,
+          created_at: new Date().toISOString(),
+        },
+      ]);
+      setCommentDraft("");
+      setMessage("Demo comment added — this is only a preview.");
+      return;
+    }
 
     setActionLoading(true);
     setMessage("");
@@ -390,12 +414,17 @@ export default function FeedPostDetailsPage({ params }: { params: Promise<{ id: 
                   <div className="mt-7 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-5">
                     <button
                       onClick={toggleLike}
-                      disabled={actionLoading || isDemo}
+                      disabled={actionLoading}
                       className={"rounded-xl px-3 py-2 text-xs font-bold transition " + (liked ? "bg-purple-50 text-purple-700" : "bg-slate-50 text-slate-500 hover:bg-slate-100")}
                     >
                       {liked ? "♥ Liked" : "♡ Like"} · {likeCount}
                     </button>
-                    <span className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-500">◌ Comment · {commentsCount}</span>
+                    <button
+                      onClick={() => document.getElementById("discussion")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                      className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-500 transition hover:bg-slate-100"
+                    >
+                      ◌ Comment · {commentsCount}
+                    </button>
                     <button
                       onClick={sharePost}
                       className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-500 transition hover:bg-slate-100"
@@ -456,7 +485,7 @@ export default function FeedPostDetailsPage({ params }: { params: Promise<{ id: 
                   />
                   <button
                     onClick={addComment}
-                    disabled={actionLoading || isDemo}
+                    disabled={actionLoading}
                     className="rounded-xl bg-slate-950 px-4 py-3 text-xs font-bold text-white hover:bg-purple-700 disabled:opacity-50"
                   >
                     Send
