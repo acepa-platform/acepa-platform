@@ -13,6 +13,9 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [mfaRequired, setMfaRequired] = useState(false);
+  const [mfaCode, setMfaCode] = useState("");
+  const [mfaFactorId, setMfaFactorId] = useState("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -25,6 +28,33 @@ export default function SignInPage() {
 
     if (signInError) {
       setError(signInError.message);
+      setLoading(false);
+      return;
+    }
+
+    const { data: aalData, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aalError) {
+      setError(aalError.message);
+      setLoading(false);
+      return;
+    }
+
+    if (aalData.currentLevel === "aal1" && aalData.nextLevel === "aal2") {
+      const { data: factors, error: factorError } = await supabase.auth.mfa.listFactors();
+      if (factorError) {
+        setError(factorError.message);
+        setLoading(false);
+        return;
+      }
+      const factor = factors.totp.find((item) => item.status === "verified");
+      if (!factor) {
+        setError("Your account has an MFA requirement, but no verified authenticator was found.");
+        setLoading(false);
+        return;
+      }
+      setMfaFactorId(factor.id);
+      setMfaRequired(true);
+      setMessage("Enter the verification code from your authenticator app.");
       setLoading(false);
       return;
     }
@@ -60,6 +90,35 @@ export default function SignInPage() {
             <p className="mt-2 text-sm leading-6 text-slate-500">Access your ACEPA account and continue your journey.</p>
           </div>
 
+          {mfaRequired ? (
+            <div className="mt-8 space-y-5">
+              <div className="rounded-2xl border border-purple-100 bg-purple-50 p-5">
+                <p className="text-sm font-black text-purple-800">Two-factor verification</p>
+                <p className="mt-1 text-sm leading-6 text-purple-700">Open your authenticator app and enter the current 6-digit code to finish signing in.</p>
+              </div>
+              <div>
+                <label htmlFor="mfa-code" className="text-sm font-semibold text-slate-800">Authenticator code</label>
+                <input id="mfa-code" inputMode="numeric" autoComplete="one-time-code" autoFocus value={mfaCode} onChange={(event) => setMfaCode(event.target.value.replace(/\\D/g, "").slice(0, 6))} placeholder="123456" className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-center text-lg tracking-[0.4em] outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10" />
+              </div>
+              {error && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700">{error}</div>}
+              <button type="button" disabled={loading} onClick={async () => {
+                if (mfaCode.length !== 6) {
+                  setError("Enter the 6-digit authenticator code.");
+                  return;
+                }
+                setLoading(true);
+                setError("");
+                const { error: verifyError } = await supabase.auth.mfa.challengeAndVerify({ factorId: mfaFactorId, code: mfaCode });
+                if (verifyError) {
+                  setError(verifyError.message);
+                  setLoading(false);
+                  return;
+                }
+                router.push("/dashboard");
+              }} className="w-full rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-bold text-white shadow-lg transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-60">{loading ? "Verifying..." : "Verify & continue →"}</button>
+              <button type="button" onClick={() => { setMfaRequired(false); setMfaCode(""); setMessage(""); setError(""); }} className="w-full text-sm font-semibold text-slate-500 hover:text-slate-900">Back to sign in</button>
+            </div>
+          ) : (
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             <div>
               <label htmlFor="email" className="text-sm font-semibold text-slate-800">Email address</label>
@@ -82,6 +141,7 @@ export default function SignInPage() {
 
             <button type="submit" disabled={loading} className="w-full rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-bold text-white shadow-lg transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-60">{loading ? "Signing in..." : "Sign in →"}</button>
           </form>
+          )}
 
           <div className="mt-7 border-t border-slate-100 pt-6 text-center text-sm text-slate-500">Don’t have an ACEPA account? <Link href="/get-started" className="font-bold text-slate-950 hover:text-purple-600">Get started</Link></div>
         </div>
