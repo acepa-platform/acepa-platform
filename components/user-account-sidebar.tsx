@@ -97,9 +97,13 @@ function NavIcon({ name, active = false }: { name: string; active?: boolean }) {
   );
 }
 
-export default function UserAccountSidebar() {
+type UserAccountSidebarProps = {
+  open: boolean;
+  onToggle: () => void;
+};
+
+export default function UserAccountSidebar({ open, onToggle }: UserAccountSidebarProps) {
   const pathname = usePathname();
-  const [open, setOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const isActive = (href: string) => {
@@ -124,7 +128,7 @@ export default function UserAccountSidebar() {
           />
         </Link>
         <button
-          onClick={() => setOpen((value) => !value)}
+          onClick={onToggle}
           aria-label={open ? "Hide sidebar" : "Show sidebar"}
           title={open ? "Hide sidebar" : "Show sidebar"}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-lg font-bold text-slate-500 transition hover:bg-slate-50 hover:text-slate-950"
