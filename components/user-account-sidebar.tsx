@@ -53,7 +53,6 @@ const sections = [
   {
     title: "Account & Support",
     items: [
-      { label: "Profile", href: "/profile", icon: "profile" },
       { label: "Notifications", href: "/notifications", icon: "notifications" },
       { label: "Settings", href: "/settings", icon: "settings" },
       { label: "Support", href: "/support", icon: "support" },
