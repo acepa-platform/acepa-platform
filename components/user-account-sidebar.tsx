@@ -9,7 +9,7 @@ const sections = [
     title: "Main",
     items: [
       { label: "Home", href: "/dashboard", icon: "home" },
-      { label: "Discover", href: "/discover", icon: "discover" },
+      { label: "Discover", href: "/dashboard/discover", icon: "discover" },
       { label: "Feed", href: "/feed", icon: "feed" },
       { label: "Opportunities", href: "/opportunities", icon: "spark" },
     ],
@@ -29,11 +29,11 @@ const sections = [
   {
     title: "Explore",
     items: [
-      { label: "Investments", href: "/discover?category=investment", icon: "investment" },
-      { label: "Campaigns", href: "/discover?category=marketing", icon: "spark" },
-      { label: "Innovations", href: "/discover?category=innovation", icon: "innovation" },
-      { label: "Collaborations", href: "/discover?category=collaboration", icon: "collaboration" },
-      { label: "Careers & Jobs", href: "/discover?category=careers-jobs", icon: "jobs" },
+      { label: "Investments", href: "/dashboard/discover?category=investment", icon: "investment" },
+      { label: "Campaigns", href: "/dashboard/discover?category=marketing", icon: "spark" },
+      { label: "Innovations", href: "/dashboard/discover?category=innovation", icon: "innovation" },
+      { label: "Collaborations", href: "/dashboard/discover?category=collaboration", icon: "collaboration" },
+      { label: "Careers & Jobs", href: "/dashboard/discover?category=careers-jobs", icon: "jobs" },
     ],
   },
   {
