@@ -101,9 +101,9 @@ export default function Home() {
                 </div>
               )}
             </div>
-            <a href="#companies" className="text-sm font-medium text-slate-900 transition hover:text-purple-600">For Companies</a>
-            <a href="#how-it-works" className="text-sm font-medium text-slate-900 transition hover:text-purple-600">How It Works</a>
-            <a href="#about" className="text-sm font-medium text-slate-900 transition hover:text-purple-600">About Us</a>
+            <a href="/companies" className="text-sm font-medium text-slate-900 transition hover:text-purple-600">For Companies</a>
+            <a href="/how-it-works" className="text-sm font-medium text-slate-900 transition hover:text-purple-600">How It Works</a>
+            <a href="/about" className="text-sm font-medium text-slate-900 transition hover:text-purple-600">About Us</a>
           </nav>
           <div className="flex items-center gap-3">
             <button type="button" aria-label="Search" className="hidden cursor-pointer rounded-xl p-2.5 text-slate-900 transition hover:bg-slate-100 hover:text-purple-600 sm:flex">
@@ -274,7 +274,7 @@ export default function Home() {
             <div>
               <h3 className="text-sm font-bold uppercase tracking-[0.14em]">For business</h3>
               <div className="mt-5 flex flex-col gap-3 text-sm text-slate-600">
-                <a href="#companies" className="transition hover:text-purple-600">For Companies</a>
+                <a href="/companies" className="transition hover:text-purple-600">For Companies</a>
                 <a href="#" className="transition hover:text-purple-600">Investment</a>
                 <a href="#" className="transition hover:text-purple-600">Innovation</a>
                 <a href="#" className="transition hover:text-purple-600">Partnerships</a>
