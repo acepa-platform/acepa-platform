@@ -117,7 +117,7 @@ export default function Home() {
 
       <section id="home" className="relative min-h-[680px] overflow-hidden bg-white">
         <img src={heroImages[heroIndex]} alt="Modern city skyline and waterfront" className="absolute inset-0 h-full w-full object-cover object-center" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white 0%, from-white 10%, via-white/97 18%, via-white/78 28%, via-white/48 38%, via-white/20 50%, via-white/5 62%, to-transparent 74%" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white 0%, from-white 7%, via-white/88 18%, via-white/60 28%, via-white/32 38%, via-white/12 50%, via-white/3 62%, to-transparent 72%" />
         <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-center px-6 pt-32 pb-16 lg:px-10 lg:pt-24 lg:pb-20">
           <div className="max-w-2xl">
             <div className="inline-flex rounded-full border border-purple-200 bg-purple-50 px-4 py-2 text-xs font-semibold tracking-[0.18em] text-purple-700">INVESTMENT &amp; BUSINESS DEVELOPMENT PLATFORM</div>
