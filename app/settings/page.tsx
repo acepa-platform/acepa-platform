@@ -19,6 +19,44 @@ type Profile = {
   website: string;
 };
 
+type BusinessInfo = {
+  business_name: string;
+  business_type: string;
+  registration_number: string;
+  industry: string;
+  business_email: string;
+  business_phone: string;
+  website: string;
+  description: string;
+};
+
+type Address = {
+  address_line: string;
+  city: string;
+  state: string;
+  country: string;
+  postal_code: string;
+};
+
+type SocialLinks = {
+  x: string;
+  linkedin: string;
+  youtube: string;
+  tiktok: string;
+  instagram: string;
+  facebook: string;
+};
+
+type PaymentMethod = {
+  id: string;
+  method_type: "card" | "bank_account" | "wallet" | "other";
+  provider: string | null;
+  label: string;
+  last4: string | null;
+  external_reference: string | null;
+  status: "active" | "inactive";
+};
+
 const emptyProfile: Profile = {
   full_name: "",
   username: "",
@@ -26,6 +64,34 @@ const emptyProfile: Profile = {
   location: "",
   avatar_url: "",
   website: "",
+};
+
+const emptyBusinessInfo: BusinessInfo = {
+  business_name: "",
+  business_type: "",
+  registration_number: "",
+  industry: "",
+  business_email: "",
+  business_phone: "",
+  website: "",
+  description: "",
+};
+
+const emptyAddress: Address = {
+  address_line: "",
+  city: "",
+  state: "",
+  country: "Nigeria",
+  postal_code: "",
+};
+
+const emptySocialLinks: SocialLinks = {
+  x: "",
+  linkedin: "",
+  youtube: "",
+  tiktok: "",
+  instagram: "",
+  facebook: "",
 };
 
 function MiniIcon({ children }: { children: React.ReactNode }) {
@@ -36,6 +102,22 @@ export default function SettingsPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [profile, setProfile] = useState<Profile>(emptyProfile);
+  const [businessInfo, setBusinessInfo] = useState<BusinessInfo>(emptyBusinessInfo);
+  const [addresses, setAddresses] = useState<Address[]>([
+    { ...emptyAddress },
+    { ...emptyAddress },
+    { ...emptyAddress },
+  ]);
+  const [socialLinks, setSocialLinks] = useState<SocialLinks>(emptySocialLinks);
+  const [identityStatus, setIdentityStatus] = useState("not_started");
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [paymentDraft, setPaymentDraft] = useState({
+    method_type: "card" as PaymentMethod["method_type"],
+    provider: "",
+    label: "",
+    last4: "",
+    external_reference: "",
+  });
   const [appearance, setAppearance] = useState("system");
   const [activeTab, setActiveTab] = useState("Profile");
   const [activeProfile, setActiveProfile] = useState("Profile Information");
@@ -56,7 +138,9 @@ export default function SettingsPage() {
   const [message, setMessage] = useState("");
   const [search, setSearch] = useState("");
   const [notificationPrefs, setNotificationPrefs] = useState({ email: true, opportunity: true, activity: true, marketing: false });
+  const [profileVisibility, setProfileVisibility] = useState("public");
   const [sessionInfo, setSessionInfo] = useState({ email: "", lastSignIn: "", expiresAt: "", browser: "" });
+  const [avatarUploading, setAvatarUploading] = useState(false);
   const [sessionLoading, setSessionLoading] = useState(false);
 
   useEffect(() => {
@@ -78,10 +162,13 @@ export default function SettingsPage() {
 
     setEmail(user.email ?? "");
 
-    const [{ data: profileData }, { data: preferenceData }] = await Promise.all([
-      supabase.from("profiles").select("full_name,username,bio,location,avatar_url,website").eq("id", user.id).maybeSingle(),
-      supabase.from("user_preferences").select("appearance").eq("user_id", user.id).maybeSingle(),
+    const [{ data: profileData, error: profileError }, { data: preferenceData, error: preferenceError }] = await Promise.all([
+      supabase.from("profiles").select("full_name,username,bio,location,avatar_url,website,business_info,addresses,social_links,identity_status").eq("id", user.id).maybeSingle(),
+      supabase.from("user_preferences").select("appearance,email_notifications,opportunity_notifications,activity_notifications,marketing_notifications,profile_visibility").eq("user_id", user.id).maybeSingle(),
     ]);
+
+    if (profileError) setMessage(profileError.message);
+    if (preferenceError) setMessage(preferenceError.message);
 
     setProfile({
       full_name: profileData?.full_name ?? "",
@@ -92,11 +179,29 @@ export default function SettingsPage() {
       website: profileData?.website ?? "",
     });
 
+    setBusinessInfo({ ...emptyBusinessInfo, ...(profileData?.business_info ?? {}) });
+    const savedAddresses = Array.isArray(profileData?.addresses) ? profileData.addresses.slice(0, 3) : [];
+    setAddresses([0,1,2].map((index) => ({ ...emptyAddress, ...(savedAddresses[index] ?? {}) })));
+    setSocialLinks({ ...emptySocialLinks, ...(profileData?.social_links ?? {}) });
+    setIdentityStatus(profileData?.identity_status ?? "not_started");
+    setNotificationPrefs({
+      email: preferenceData?.email_notifications ?? true,
+      opportunity: preferenceData?.opportunity_notifications ?? true,
+      activity: preferenceData?.activity_notifications ?? true,
+      marketing: preferenceData?.marketing_notifications ?? false,
+    });
+    setProfileVisibility(preferenceData?.profile_visibility ?? "public");
     const savedAppearance = localStorage.getItem("acepa-appearance");
     const nextAppearance = savedAppearance || preferenceData?.appearance || "system";
     setAppearance(nextAppearance);
     localStorage.setItem("acepa-appearance", nextAppearance);
     window.dispatchEvent(new CustomEvent("acepa-appearance-change", { detail: nextAppearance }));
+    const { data: paymentData, error: paymentError } = await supabase
+      .from("payment_methods")
+      .select("id,method_type,provider,label,last4,external_reference,status")
+      .order("created_at", { ascending: false });
+    if (!paymentError) setPaymentMethods((paymentData ?? []) as PaymentMethod[]);
+    else setMessage(paymentError.message);
   }
 
   useEffect(() => {
@@ -146,6 +251,215 @@ export default function SettingsPage() {
 
     setMessage(error ? error.message : "Profile changes saved successfully.");
     setSaving(false);
+  }
+
+  async function saveBusinessInfo() {
+    setSaving(true);
+    setMessage("");
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSaving(false); return; }
+
+    const { error } = await supabase.from("profiles").update({ business_info: businessInfo }).eq("id", user.id);
+    setMessage(error ? error.message : "Business information saved successfully.");
+    setSaving(false);
+  }
+
+  async function saveAddresses() {
+    setSaving(true);
+    setMessage("");
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSaving(false); return; }
+
+    const cleaned = addresses
+      .map((address) => ({
+        address_line: address.address_line.trim(),
+        city: address.city.trim(),
+        state: address.state.trim(),
+        country: address.country.trim(),
+        postal_code: address.postal_code.trim(),
+      }))
+      .filter((address) => Object.values(address).some(Boolean))
+      .slice(0, 3);
+
+    const { error } = await supabase.from("profiles").update({ addresses: cleaned }).eq("id", user.id);
+    if (!error) {
+      setAddresses([0,1,2].map((index) => ({ ...emptyAddress, ...(cleaned[index] ?? {}) })));
+    }
+    setMessage(error ? error.message : "Addresses saved successfully.");
+    setSaving(false);
+  }
+
+  async function saveSocialLinks() {
+    setSaving(true);
+    setMessage("");
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSaving(false); return; }
+
+    const cleaned = Object.fromEntries(
+      Object.entries(socialLinks).map(([key, value]) => [key, value.trim()])
+    ) as SocialLinks;
+
+    const { error } = await supabase.from("profiles").update({ social_links: cleaned }).eq("id", user.id);
+    setSocialLinks(cleaned);
+    setMessage(error ? error.message : "Social links saved successfully.");
+    setSaving(false);
+  }
+
+  async function saveNotificationPreferences() {
+    setSaving(true);
+    setMessage("");
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSaving(false); return; }
+
+    const { error } = await supabase.from("user_preferences").upsert({
+      user_id: user.id,
+      appearance,
+      email_notifications: notificationPrefs.email,
+      opportunity_notifications: notificationPrefs.opportunity,
+      activity_notifications: notificationPrefs.activity,
+      marketing_notifications: notificationPrefs.marketing,
+      profile_visibility: profileVisibility,
+    });
+
+    setMessage(error ? error.message : "Notification preferences saved successfully.");
+    setSaving(false);
+  }
+
+  async function savePrivacy() {
+    setSaving(true);
+    setMessage("");
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSaving(false); return; }
+
+    const { error } = await supabase.from("user_preferences").upsert({
+      user_id: user.id,
+      appearance,
+      email_notifications: notificationPrefs.email,
+      opportunity_notifications: notificationPrefs.opportunity,
+      activity_notifications: notificationPrefs.activity,
+      marketing_notifications: notificationPrefs.marketing,
+      profile_visibility: profileVisibility,
+    });
+
+    setMessage(error ? error.message : "Privacy preference saved successfully.");
+    setSaving(false);
+  }
+
+  async function addPaymentMethod() {
+    setSaving(true);
+    setMessage("");
+
+    const label = paymentDraft.label.trim();
+    const last4 = paymentDraft.last4.trim();
+    if (!label) {
+      setMessage("Add a name for this payment method.");
+      setSaving(false);
+      return;
+    }
+    if (last4 && !/^\d{4}$/.test(last4)) {
+      setMessage("Last four digits must contain exactly 4 numbers.");
+      setSaving(false);
+      return;
+    }
+
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSaving(false); return; }
+
+    const { data, error } = await supabase.from("payment_methods").insert({
+      user_id: user.id,
+      method_type: paymentDraft.method_type,
+      provider: paymentDraft.provider.trim() || null,
+      label,
+      last4: last4 || null,
+      external_reference: paymentDraft.external_reference.trim() || null,
+      status: "active",
+    }).select("id,method_type,provider,label,last4,external_reference,status").single();
+
+    if (!error && data) {
+      setPaymentMethods((current) => [data as PaymentMethod, ...current]);
+      setPaymentDraft({ method_type: "card", provider: "", label: "", last4: "", external_reference: "" });
+      setMessage("Payment method saved successfully.");
+    } else {
+      setMessage(error?.message ?? "Unable to save payment method.");
+    }
+    setSaving(false);
+  }
+
+  async function removePaymentMethod(id: string) {
+    setSaving(true);
+    setMessage("");
+    const supabase = createClient();
+    const { error } = await supabase.from("payment_methods").delete().eq("id", id);
+    if (!error) {
+      setPaymentMethods((current) => current.filter((method) => method.id !== id));
+      setMessage("Payment method removed.");
+    } else {
+      setMessage(error.message);
+    }
+    setSaving(false);
+  }
+
+  async function changeAvatar(file: File | null) {
+    if (!file) return;
+    if (!["image/jpeg","image/png","image/gif","image/webp"].includes(file.type)) {
+      setMessage("Use JPG, PNG, GIF or WebP for your profile photo.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage("Profile photo must be 5MB or smaller.");
+      return;
+    }
+
+    setAvatarUploading(true);
+    setMessage("");
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setAvatarUploading(false); return; }
+
+    const path = user.id + "/avatar";
+    const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, {
+      upsert: true,
+      cacheControl: "3600",
+      contentType: file.type,
+    });
+
+    if (uploadError) {
+      setMessage(uploadError.message);
+      setAvatarUploading(false);
+      return;
+    }
+
+    const { data: publicData } = supabase.storage.from("avatars").getPublicUrl(path);
+    const avatarUrl = publicData.publicUrl + "?v=" + Date.now();
+    const { error: profileError } = await supabase.from("profiles").update({ avatar_url: avatarUrl }).eq("id", user.id);
+
+    setMessage(profileError ? profileError.message : "Profile photo updated successfully.");
+    if (!profileError) setProfile((current) => ({ ...current, avatar_url: avatarUrl }));
+    setAvatarUploading(false);
+  }
+
+  async function removeAvatar() {
+    setAvatarUploading(true);
+    setMessage("");
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setAvatarUploading(false); return; }
+
+    await supabase.storage.from("avatars").remove([user.id + "/avatar"]);
+    const { error } = await supabase.from("profiles").update({ avatar_url: null }).eq("id", user.id);
+    setMessage(error ? error.message : "Profile photo removed successfully.");
+    if (!error) setProfile((current) => ({ ...current, avatar_url: "" }));
+    setAvatarUploading(false);
+  }
+
+  function updateAddress(index: number, key: keyof Address, value: string) {
+    setAddresses((current) => current.map((address, addressIndex) => addressIndex === index ? { ...address, [key]: value } : address));
   }
 
   async function saveAppearance() {
@@ -354,8 +668,11 @@ export default function SettingsPage() {
             <p className="text-sm font-bold">Upload a profile photo</p>
             <p className={"mt-1 text-xs " + muted}>JPG, PNG or GIF. Max size 5MB.</p>
             <div className="mt-3 flex gap-2">
-              <button className="rounded-xl border border-purple-300 px-4 py-2 text-sm font-bold text-purple-700">Change Photo</button>
-              <button className="rounded-xl px-4 py-2 text-sm font-bold text-red-500">Remove</button>
+              <label className={"rounded-xl border border-purple-300 px-4 py-2 text-sm font-bold text-purple-700 cursor-pointer " + (avatarUploading ? "opacity-60 pointer-events-none" : "")}>
+                {avatarUploading ? "Uploading..." : "Change Photo"}
+                <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" className="hidden" disabled={avatarUploading} onChange={(event) => changeAvatar(event.target.files?.[0] ?? null)} />
+              </label>
+              <button type="button" onClick={removeAvatar} disabled={avatarUploading || !profile.avatar_url} className="rounded-xl px-4 py-2 text-sm font-bold text-red-500 disabled:opacity-40">Remove</button>
             </div>
           </div>
         </div>
@@ -409,30 +726,77 @@ export default function SettingsPage() {
   const profilePlaceholder = (
     <div className="space-y-6">
       <div><p className="text-lg font-black">{activeProfile}</p><p className={"mt-1 text-sm " + muted}>Edit your {activeProfile.toLowerCase()} directly here.</p></div>
+
       {activeProfile === "Business Information" ? (
         <div className="grid gap-5 sm:grid-cols-2">
-          {["Business Name","Business Type","Registration Number","Industry","Business Email","Business Phone","Website","Business Description"].map(label=><div key={label}><label className="text-sm font-bold">{label}</label><input placeholder={"Enter " + label.toLowerCase()} className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field}/></div>)}
-          <div className="sm:col-span-2 flex justify-end"><button onClick={()=>setMessage("Business information saved successfully.")} className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-bold text-white">Save Business Information</button></div>
+          {([
+            ["business_name","Business Name"],
+            ["business_type","Business Type"],
+            ["registration_number","Registration Number"],
+            ["industry","Industry"],
+            ["business_email","Business Email"],
+            ["business_phone","Business Phone"],
+            ["website","Website"],
+          ] as const).map(([key,label]) => (
+            <div key={key}>
+              <label className="text-sm font-bold">{label}</label>
+              <input value={businessInfo[key]} onChange={(event) => setBusinessInfo((current) => ({ ...current, [key]: event.target.value }))} placeholder={"Enter " + label.toLowerCase()} className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field}/>
+            </div>
+          ))}
+          <div className="sm:col-span-2">
+            <label className="text-sm font-bold">Business Description</label>
+            <textarea value={businessInfo.description} onChange={(event) => setBusinessInfo((current) => ({ ...current, description: event.target.value }))} rows={4} className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field}/>
+          </div>
+          <div className="sm:col-span-2 flex justify-end">
+            <button onClick={saveBusinessInfo} disabled={saving} className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-bold text-white disabled:opacity-60">{saving ? "Saving..." : "Save Business Information"}</button>
+          </div>
         </div>
       ) : activeProfile === "Address" ? (
         <div className="space-y-5">
-          {[1,2,3].map(n=><div key={n} className={"rounded-2xl border p-5 " + soft}><p className="text-sm font-black">Address {n}</p><div className="mt-4 grid gap-4 sm:grid-cols-2">{["Address Line","City","State / Province","Country","Postal Code"].map(label=><input key={label} placeholder={label} className={"rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field}/>)}</div></div>)}
-          <div className="flex justify-end"><button onClick={()=>setMessage("Addresses saved successfully.")} className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-bold text-white">Save Addresses</button></div>
+          <p className={"text-sm " + muted}>You can save up to 3 addresses.</p>
+          {addresses.map((address,index)=><div key={index} className={"rounded-2xl border p-5 " + soft}>
+            <p className="text-sm font-black">Address {index + 1}</p>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              {([
+                ["address_line","Address Line"],
+                ["city","City"],
+                ["state","State / Province"],
+                ["country","Country"],
+                ["postal_code","Postal Code"],
+              ] as const).map(([key,label])=><input key={key} value={address[key]} onChange={(event)=>updateAddress(index,key,event.target.value)} placeholder={label} className={"rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field}/>)}
+            </div>
+          </div>)}
+          <div className="flex justify-end"><button onClick={saveAddresses} disabled={saving} className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-bold text-white disabled:opacity-60">{saving ? "Saving..." : "Save Addresses"}</button></div>
         </div>
       ) : activeProfile === "Social Links" ? (
-        <div className="grid gap-5 sm:grid-cols-2">{["X / Twitter","LinkedIn","YouTube","TikTok","Instagram","Facebook"].map(label=><div key={label}><label className="text-sm font-bold">{label}</label><input placeholder={"Paste your " + label + " profile link"} className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field}/></div>)}<div className="sm:col-span-2 flex justify-end"><button onClick={()=>setMessage("Social links saved successfully.")} className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-bold text-white">Save Social Links</button></div></div>
+        <div className="grid gap-5 sm:grid-cols-2">
+          {([
+            ["x","X / Twitter"],
+            ["linkedin","LinkedIn"],
+            ["youtube","YouTube"],
+            ["tiktok","TikTok"],
+            ["instagram","Instagram"],
+            ["facebook","Facebook"],
+          ] as const).map(([key,label])=><div key={key}><label className="text-sm font-bold">{label}</label><input value={socialLinks[key]} onChange={(event)=>setSocialLinks((current)=>({...current,[key]:event.target.value}))} placeholder={"Paste your " + label + " profile link"} className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field}/></div>)}
+          <div className="sm:col-span-2 flex justify-end"><button onClick={saveSocialLinks} disabled={saving} className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-bold text-white disabled:opacity-60">{saving ? "Saving..." : "Save Social Links"}</button></div>
+        </div>
       ) : (
         <div className={"rounded-2xl border p-6 " + soft}>
           <p className="text-sm font-black">ACEPA Authentication</p>
-          <p className={"mt-2 text-sm leading-6 " + muted}>Manage identity and account verification from this direct settings area.</p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2"><button onClick={()=>{setActiveTab("Security");setActiveSecurity("Two-Factor Authentication")}} className="rounded-xl border border-purple-300 p-4 text-left text-sm font-bold text-purple-700">Two-Factor Authentication →</button><button onClick={()=>setMessage("Identity verification is ready for the next verification workflow.")} className="rounded-xl border border-purple-300 p-4 text-left text-sm font-bold text-purple-700">Identity Verification →</button></div>
+          <p className={"mt-2 text-sm leading-6 " + muted}>Use two-factor authentication to protect your account. Identity verification is a separate review process.</p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <button onClick={()=>{setActiveTab("Security");setActiveSecurity("Two-Factor Authentication")}} className="rounded-xl border border-purple-300 p-4 text-left text-sm font-bold text-purple-700">Two-Factor Authentication →</button>
+            <div className={"rounded-xl border p-4 " + card}>
+              <p className="text-sm font-bold">Identity Verification</p>
+              <p className={"mt-1 text-xs " + muted}>Status: {identityStatus === "not_started" ? "Not started" : identityStatus}</p>
+              <p className={"mt-2 text-xs leading-5 " + muted}>Identity verification requires a dedicated verification workflow/provider before documents can be submitted securely.</p>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 
-
-  const accountContent = (
     <div className="space-y-6">
       <div>
         <p className="text-lg font-black">{activeAccount}</p>
@@ -483,7 +847,7 @@ export default function SettingsPage() {
             <button type="button" aria-pressed={notificationPrefs[key]} onClick={()=>setNotificationPrefs(v=>({...v,[key]:!v[key]}))} className={"relative h-7 w-12 shrink-0 rounded-full transition " + (notificationPrefs[key] ? "bg-purple-600" : "bg-slate-300 dark:bg-slate-700")}><span className={"absolute top-1 h-5 w-5 rounded-full bg-white transition " + (notificationPrefs[key] ? "left-6" : "left-1")}/></button>
           </div>
         ))}
-        <div className="mt-5 flex justify-end"><button onClick={()=>setMessage("Notification preferences saved successfully.")} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white">Save Notification Preferences</button></div>
+        <div className="mt-5 flex justify-end"><button onClick={saveNotificationPreferences} disabled={saving} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-60">{saving ? "Saving..." : "Save Notification Preferences"}</button></div>
       </div>
     </div>
   );
@@ -545,16 +909,65 @@ export default function SettingsPage() {
         ? ["Payment Methods", "Payout Preferences"]
         : ["API Keys", "Connected Integrations"];
 
-  const genericTabContent = activeTab === "Notifications" ? notificationContent : (
+  const genericTabContent = (
     <div className="space-y-6">
       <div><p className="text-lg font-black">{activeGeneric || genericItems[0]}</p><p className={"mt-1 text-sm " + muted}>Manage your {(activeGeneric || genericItems[0]).toLowerCase()} settings.</p></div>
       <div className={"rounded-2xl border p-6 " + soft}>
         {activeTab === "Privacy" && activeGeneric === "Privacy Controls" ? (
-          <><p className="text-sm font-black">Profile Visibility</p><p className={"mt-2 text-sm leading-6 " + muted}>Control how your ACEPA profile and activity are visible.</p><div className="mt-5 grid gap-3 sm:grid-cols-3">{["Public","ACEPA members","Private"].map(v=><button key={v} onClick={()=>setMessage("Privacy preference selected: " + v)} className={"rounded-xl border p-4 text-left text-sm font-bold " + card}>{v}</button>)}</div></>
+          <>
+            <p className="text-sm font-black">Profile Visibility</p>
+            <p className={"mt-2 text-sm leading-6 " + muted}>Control how your ACEPA profile is visible.</p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              {[
+                ["public","Public"],
+                ["members","ACEPA members"],
+                ["private","Private"],
+              ].map(([value,label])=><button key={value} onClick={()=>setProfileVisibility(value)} className={"rounded-xl border p-4 text-left text-sm font-bold " + (profileVisibility===value ? "border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-950/40" : card)}>{label}<p className={"mt-1 text-xs font-normal " + muted}>{profileVisibility===value ? "Selected" : "Choose this setting"}</p></button>)}
+            </div>
+            <div className="mt-5 flex justify-end"><button onClick={savePrivacy} disabled={saving} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-60">{saving ? "Saving..." : "Save Privacy Settings"}</button></div>
+          </>
+        ) : activeTab === "Privacy" && activeGeneric === "Data & Privacy" ? (
+          <>
+            <p className="text-sm font-black">Data & Privacy</p>
+            <p className={"mt-2 text-sm leading-6 " + muted}>Your account profile and preference data is stored under your authenticated ACEPA account. Data export and account deletion workflows will be added before public launch.</p>
+          </>
         ) : activeTab === "Payment Methods" && activeGeneric === "Payment Methods" ? (
-          <><p className="text-sm font-black">Payment Methods</p><p className={"mt-2 text-sm leading-6 " + muted}>Add and manage payment methods used for eligible ACEPA transactions.</p><button onClick={()=>setMessage("Payment method setup will be connected here.")} className="mt-5 rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white">Add Payment Method</button></>
+          <>
+            <p className="text-sm font-black">Saved Payment Methods</p>
+            <p className={"mt-2 text-sm leading-6 " + muted}>You can save non-sensitive payment method details here. ACEPA does not store full card numbers, CVV, PINs or bank passwords.</p>
+            <div className="mt-5 space-y-3">
+              {paymentMethods.length === 0 ? <p className={"rounded-xl border border-dashed p-4 text-sm " + muted}>No payment methods saved yet.</p> : paymentMethods.map((method)=><div key={method.id} className={"flex flex-wrap items-center justify-between gap-4 rounded-xl border p-4 " + card}><div><p className="text-sm font-bold">{method.label}</p><p className={"mt-1 text-xs " + muted}>{method.method_type.replace("_"," ")}{method.provider ? " • " + method.provider : ""}{method.last4 ? " •••• " + method.last4 : ""}</p></div><button onClick={()=>removePaymentMethod(method.id)} disabled={saving} className="rounded-xl border border-red-200 px-4 py-2 text-sm font-bold text-red-600 disabled:opacity-50">Remove</button></div>)}
+            </div>
+            <div className={"mt-6 rounded-2xl border p-5 " + card}>
+              <p className="text-sm font-black">Add a payment method</p>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <select value={paymentDraft.method_type} onChange={(event)=>setPaymentDraft((current)=>({...current,method_type:event.target.value as PaymentMethod["method_type"]}))} className={"rounded-xl border px-4 py-3 text-sm " + field}>
+                  <option value="card">Card</option><option value="bank_account">Bank Account</option><option value="wallet">Wallet</option><option value="other">Other</option>
+                </select>
+                <input value={paymentDraft.label} onChange={(event)=>setPaymentDraft((current)=>({...current,label:event.target.value}))} placeholder="Name (e.g. Main Card)" className={"rounded-xl border px-4 py-3 text-sm " + field}/>
+                <input value={paymentDraft.provider} onChange={(event)=>setPaymentDraft((current)=>({...current,provider:event.target.value}))} placeholder="Provider (e.g. Stripe)" className={"rounded-xl border px-4 py-3 text-sm " + field}/>
+                <input value={paymentDraft.last4} onChange={(event)=>setPaymentDraft((current)=>({...current,last4:event.target.value.replace(/\D/g, "").slice(0,4)}))} inputMode="numeric" maxLength={4} placeholder="Last 4 digits (optional)" className={"rounded-xl border px-4 py-3 text-sm " + field}/>
+                <input value={paymentDraft.external_reference} onChange={(event)=>setPaymentDraft((current)=>({...current,external_reference:event.target.value}))} placeholder="Provider reference (optional)" className={"sm:col-span-2 rounded-xl border px-4 py-3 text-sm " + field}/>
+              </div>
+              <div className="mt-5 flex justify-end"><button onClick={addPaymentMethod} disabled={saving} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-60">{saving ? "Saving..." : "Save Payment Method"}</button></div>
+            </div>
+            <p className={"mt-3 text-xs " + muted}>Actual card/bank credential linking will be handled by a connected payment provider when ACEPA enables live payment processing.</p>
+          </>
+        ) : activeTab === "Payment Methods" && activeGeneric === "Payout Preferences" ? (
+          <>
+            <p className="text-sm font-black">Payout Preferences</p>
+            <p className={"mt-2 text-sm leading-6 " + muted}>Choose payout rules and a default payout method after a live payout provider is connected. Your saved payment methods will be available here later.</p>
+          </>
+        ) : activeTab === "API & Integrations" && activeGeneric === "API Keys" ? (
+          <>
+            <p className="text-sm font-black">API Keys</p>
+            <p className={"mt-2 text-sm leading-6 " + muted}>API key issuance is not enabled yet because the public ACEPA API and server-side key validation layer are not live.</p>
+          </>
         ) : (
-          <><p className="text-sm font-black">{activeGeneric || genericItems[0]}</p><p className={"mt-2 text-sm leading-6 " + muted}>This is the direct settings area for {((activeGeneric || genericItems[0]).toLowerCase())}.</p><button onClick={()=>setMessage((activeGeneric || genericItems[0]) + " is selected and ready for configuration.")} className="mt-5 rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Edit Settings</button></>
+          <>
+            <p className="text-sm font-black">Connected Integrations</p>
+            <p className={"mt-2 text-sm leading-6 " + muted}>No external integrations are connected yet. Connected providers will appear here once their OAuth/API connections are enabled.</p>
+          </>
         )}
       </div>
     </div>
