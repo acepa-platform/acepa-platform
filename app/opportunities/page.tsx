@@ -196,59 +196,63 @@ export default function OpportunitiesPage() {
             <p className="text-xs font-semibold text-slate-400">{visible.length} opportunities</p>
           </div>
 
-          <section className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <section className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {visible.map((opportunity) => (
-              <article key={opportunity.id} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-lg">
-                <Link href={"/opportunities/" + opportunity.id} className="block">
-                  <div className="relative h-40 overflow-hidden bg-slate-950">
-                    <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-purple-500/25 blur-2xl" />
-                    <div className="absolute -bottom-10 -left-8 h-28 w-28 rounded-full bg-fuchsia-500/15 blur-2xl" />
-                    <div className="relative flex h-full flex-col justify-between bg-gradient-to-br from-purple-700 via-indigo-700 to-slate-950 p-5">
-                      <div className="flex items-center justify-between">
-                        <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-white/80 backdrop-blur">{opportunity.type}</span>
-                        <span className="rounded-xl border border-white/15 bg-white/10 px-2.5 py-1.5 text-[9px] font-black text-white/70 backdrop-blur">ACEPA</span>
+              <Link
+                key={opportunity.id}
+                href={"/opportunities/" + opportunity.id}
+                className="group block aspect-square overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-lg"
+              >
+                <div className="flex h-full flex-col">
+                  <div className="relative h-[42%] min-h-0 overflow-hidden bg-slate-950">
+                    <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-purple-500/25 blur-2xl" />
+                    <div className="absolute -bottom-8 -left-8 h-20 w-20 rounded-full bg-fuchsia-500/15 blur-2xl" />
+                    <div className="relative flex h-full flex-col justify-between bg-gradient-to-br from-purple-700 via-indigo-700 to-slate-950 p-4">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="max-w-[72%] truncate rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-white/80 backdrop-blur">
+                          {opportunity.type}
+                        </span>
+                        <span className="rounded-lg border border-white/15 bg-white/10 px-2 py-1 text-[8px] font-black text-white/65 backdrop-blur">
+                          ACEPA
+                        </span>
                       </div>
-                      <p className="max-w-sm text-xl font-black tracking-[-0.035em] text-white">{opportunity.title}</p>
+                      <p className="line-clamp-2 text-base font-black leading-5 tracking-[-0.03em] text-white">
+                        {opportunity.title}
+                      </p>
                     </div>
                   </div>
 
-                  <div className="p-5">
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-950 text-xs font-black text-white">
+                  <div className="flex min-h-0 flex-1 flex-col p-4">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-950 text-[9px] font-black text-white">
                         {opportunity.company.split(" ").map((part) => part[0]).slice(0, 2).join("")}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-black">{opportunity.company}</p>
-                        <p className="mt-1 text-[11px] text-slate-400">{opportunity.location} · {opportunity.status}</p>
+                        <p className="truncate text-xs font-black text-slate-800">{opportunity.company}</p>
+                        <p className="truncate text-[9px] text-slate-400">{opportunity.location}</p>
                       </div>
                     </div>
 
-                    <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-600">{opportunity.summary}</p>
-
-                    <div className="mt-5 grid grid-cols-2 gap-3 rounded-2xl bg-slate-50 p-3.5">
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Value</p>
-                        <p className="mt-1 text-sm font-black text-slate-800">{opportunity.amount}</p>
+                    <div className="mt-auto grid grid-cols-2 gap-2">
+                      <div className="rounded-xl bg-slate-50 p-2.5">
+                        <p className="text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">Value</p>
+                        <p className="mt-1 line-clamp-1 text-[11px] font-black text-slate-800">{opportunity.amount}</p>
                       </div>
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Closing</p>
-                        <p className="mt-1 text-sm font-black text-slate-800">{opportunity.closing}</p>
+                      <div className="rounded-xl bg-slate-50 p-2.5">
+                        <p className="text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">Closing</p>
+                        <p className="mt-1 line-clamp-1 text-[11px] font-black text-slate-800">{opportunity.closing}</p>
                       </div>
                     </div>
 
-                    <div className="mt-5 flex flex-wrap gap-2">
-                      {opportunity.tags.map((tag) => (
-                        <span key={tag} className="rounded-full bg-purple-50 px-2.5 py-1 text-[10px] font-bold text-purple-700">{tag}</span>
-                      ))}
-                    </div>
-
-                    <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-bold">
-                      <span className="text-slate-400">Open opportunity</span>
-                      <span className="text-purple-700 transition group-hover:translate-x-0.5">View details →</span>
+                    <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
+                      <span className="text-[9px] font-semibold text-slate-400">{opportunity.status}</span>
+                      <span className="text-[10px] font-black text-purple-700 transition group-hover:translate-x-0.5">
+                        Open →
+                      </span>
                     </div>
                   </div>
-                </Link>
-              </article>
+                </div>
+              </Link>
             ))}
           </section>
 
