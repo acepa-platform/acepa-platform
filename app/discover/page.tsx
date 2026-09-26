@@ -54,25 +54,10 @@ export default function DiscoverPage() {
           <nav className="hidden items-center gap-4 xl:flex">
             {["Dashboard","Activities"].map(label=><Link key={label} href={label==="Dashboard"?"/dashboard":label==="Opportunities"?"/opportunities":"/activity"} className="whitespace-nowrap text-sm font-bold text-slate-950 transition hover:text-purple-600">{label}</Link>)}
           </nav>
-          <div className="ml-auto flex shrink-0 items-center gap-2">
-            <div className="relative">
-              <button type="button" onClick={()=>setProfileOpen(open=>!open)} aria-expanded={profileOpen} className="flex h-10 shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-white px-2.5 pr-3 text-sm font-bold text-slate-700 transition hover:border-purple-200 hover:text-purple-600">
-                {profile?.avatar_url?<img src={profile.avatar_url} alt="" className="h-7 w-7 rounded-lg object-cover"/>:<span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-950 text-[11px] text-white">{initials}</span>}
-                <span className="hidden 2xl:block max-w-28 truncate">{displayName}</span>
-                <span className="text-xs text-slate-400">⌄</span>
-              </button>
-              {profileOpen&&<div className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
-                <div className="border-b border-slate-100 px-3 py-2.5"><p className="truncate text-sm font-bold text-slate-900">{displayName}</p>{profile?.username&&<p className="truncate text-xs text-slate-500">@{profile.username}</p>}</div>
-                <Link href="/profile" onClick={()=>setProfileOpen(false)} className="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Profile</Link>
-                <Link href="/settings" onClick={()=>setProfileOpen(false)} className="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Settings</Link>
-                <button type="button" onClick={signOut} className="w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-red-600 hover:bg-red-50">Sign out</button>
-              </div>}
-            </div>
-            <Link href="/messages" title="Messages" aria-label="Messages" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="message"/></Link>
+          <div className="ml-auto flex shrink-0 items-center gap-2">            <Link href="/messages" title="Messages" aria-label="Messages" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="message"/></Link>
             <Link href="/notifications" title="Notifications" aria-label="Notifications" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="notification"/></Link>
             <Link href="/wallet" title="Wallet" aria-label="Wallet" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="wallet"/></Link>
-          </div>
-        </div>      </div>
+          </div>     </div>      </div>
     </header>
 
     <section className="relative overflow-hidden bg-slate-950 px-6 py-9 text-white lg:px-8 lg:py-11">
