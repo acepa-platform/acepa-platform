@@ -133,7 +133,7 @@ export default function WalletPage() {
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-purple-300">ACEPA Wallet</p>
                 <div className="mt-3 flex flex-wrap items-end gap-x-4 gap-y-2">
-                  <p className="text-4xl font-black tracking-[-0.05em] sm:text-5xl">$2,500.00</p>
+                  <p className="text-4xl font-black tracking-[-0.05em] sm:text-5xl">${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                   <span className="mb-1 rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white/70">Demo wallet</span>
                 </div>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-white/60">
@@ -149,7 +149,7 @@ export default function WalletPage() {
               <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/45">Wallet overview</p>
                 <div className="mt-5 space-y-4">
-                  <div className="flex items-center justify-between border-b border-white/10 pb-4"><span className="text-sm text-white/55">Available</span><span className="text-sm font-black">$2,500.00</span></div>
+                  <div className="flex items-center justify-between border-b border-white/10 pb-4"><span className="text-sm text-white/55">Available</span><span className="text-sm font-black">${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></div>
                   <div className="flex items-center justify-between border-b border-white/10 pb-4"><span className="text-sm text-white/55">Reserved</span><span className="text-sm font-black">$0.00</span></div>
                   <div className="flex items-center justify-between"><span className="text-sm text-white/55">Pending payout</span><span className="text-sm font-black">$180.00</span></div>
                 </div>
@@ -173,7 +173,7 @@ export default function WalletPage() {
             <>
               <section className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {[
-                  ["Available", "$2,500.00", "Ready for eligible use"],
+                  ["Available", "${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}", "Ready for eligible use"],
                   ["Reserved", "$0.00", "Currently reserved"],
                   ["Earned", "$320.00", "Recorded ACEPA earnings"],
                   ["Pending", "$180.00", "Awaiting payout"],
