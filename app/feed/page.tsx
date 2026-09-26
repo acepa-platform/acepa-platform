@@ -232,10 +232,16 @@ export default function FeedPage() {
   }, [posts, filter]);
 
   const currentName = profile.full_name || email.split("@")[0] || "ACEPA Member";
+  const showDemoPost = posts.length === 0 && filter === "all";
 
   return (
     <UserAccountShell>
-      <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
+      <main className="relative min-h-screen overflow-hidden bg-[#f7f8fc] text-slate-950">
+        <div className="pointer-events-none absolute inset-0 -z-0 overflow-hidden">
+          <div className="absolute -left-24 top-24 h-72 w-72 rounded-full bg-purple-200/30 blur-3xl" />
+          <div className="absolute right-[-90px] top-10 h-80 w-80 rounded-full bg-fuchsia-200/20 blur-3xl" />
+          <div className="absolute bottom-[-120px] left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-indigo-200/20 blur-3xl" />
+        </div>
         <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
           <div className="flex h-20 items-center justify-between px-5 sm:px-8 lg:px-10">
             <div>
@@ -279,10 +285,58 @@ export default function FeedPage() {
                 <div className="mt-5 rounded-3xl border border-slate-200 bg-white p-10 text-center text-sm text-slate-500">
                   Loading your feed...
                 </div>
+              ) : showDemoPost ? (
+                <div className="mt-5 space-y-5">
+                  <article className="overflow-hidden rounded-3xl border border-purple-100 bg-white shadow-[0_18px_55px_rgba(76,29,149,0.10)]">
+                    <div className="flex items-center justify-between border-b border-purple-100 bg-purple-50/70 px-5 py-3 sm:px-6">
+                      <p className="text-[11px] font-black uppercase tracking-[0.18em] text-purple-700">Demo preview</p>
+                      <span className="rounded-full border border-purple-200 bg-white px-3 py-1 text-[10px] font-bold text-purple-700">Company post</span>
+                    </div>
+
+                    <div className="relative overflow-hidden bg-slate-950 px-6 py-8 sm:px-8 sm:py-10">
+                      <div className="absolute -right-14 -top-16 h-44 w-44 rounded-full bg-purple-500/30 blur-2xl" />
+                      <div className="absolute -bottom-16 -left-10 h-36 w-36 rounded-full bg-fuchsia-500/20 blur-2xl" />
+                      <div className="relative flex min-h-[190px] flex-col justify-end overflow-hidden rounded-[26px] border border-white/10 bg-gradient-to-br from-purple-700 via-indigo-700 to-slate-950 p-6 sm:min-h-[230px] sm:p-8">
+                        <div className="absolute right-5 top-5 rounded-2xl border border-white/15 bg-white/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/80 backdrop-blur">ACEPA</div>
+                        <div className="absolute -right-8 bottom-[-58px] h-48 w-48 rotate-12 rounded-[42px] border border-white/10 bg-white/5" />
+                        <div className="absolute right-20 top-14 h-20 w-20 rounded-full border border-white/10 bg-white/5" />
+                        <p className="relative z-10 text-[11px] font-bold uppercase tracking-[0.2em] text-white/65">Opportunity insight</p>
+                        <p className="relative z-10 mt-2 max-w-xl text-2xl font-black tracking-[-0.04em] text-white sm:text-3xl">A polished company visual can introduce an opportunity before anyone opens the details.</p>
+                      </div>
+                    </div>
+
+                    <div className="p-5 sm:p-6">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-950 text-sm font-black text-white">NV</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="text-sm font-black">Nexa Ventures</p>
+                            <span className="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700">Verified company</span>
+                          </div>
+                          <p className="mt-1 text-xs text-slate-400">Opportunity Insight · Demo</p>
+                          <p className="mt-5 text-sm leading-7 text-slate-700">This is how a real company update can look inside ACEPA Feed. The company shares a short insight, adds a strong visual, and members can like or comment from here.</p>
+                        </div>
+                      </div>
+
+                      <div className="mt-5 flex items-center gap-2 border-t border-slate-100 pt-4">
+                        <span className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-500">♡ Like · 24</span>
+                        <span className="rounded-xl px-3 py-2 text-xs font-bold text-slate-500">◌ Comment · 6</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <div className="rounded-3xl border border-dashed border-slate-300 bg-white/85 p-8 text-center backdrop-blur sm:p-10">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 text-lg text-purple-700">✦</div>
+                    <p className="mt-4 text-sm font-black">No live company posts yet.</p>
+                    <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                      This demo is shown only so you can preview the Feed layout. Real company posts will replace it automatically when they are published.
+                    </p>
+                  </div>
+                </div>
               ) : visiblePosts.length === 0 ? (
                 <div className="mt-5 rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 text-lg">✦</div>
-                  <p className="mt-4 text-sm font-black">No company posts yet.</p>
+                  <p className="mt-4 text-sm font-black">No company posts in this category yet.</p>
                   <p className="mt-2 mx-auto max-w-md text-sm leading-6 text-slate-500">
                     Company profiles will publish updates, opportunity insights and business progress here.
                   </p>
