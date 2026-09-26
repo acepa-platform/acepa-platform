@@ -84,9 +84,9 @@ export default function GetStartedPage() {
         </div>
       </header>
 
-      <section className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-7 lg:px-10 lg:py-8">
-        <div className="grid overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.10)] lg:min-h-[calc(100vh-150px)] lg:grid-cols-2">
-          <div className="relative min-h-[620px] overflow-hidden lg:min-h-full">
+      <section className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-6">
+        <div className="grid gap-5 lg:min-h-[calc(100vh-138px)] lg:grid-cols-2 lg:gap-8">
+          <div className="relative min-h-[600px] overflow-hidden rounded-[2rem] shadow-[0_24px_70px_rgba(15,23,42,0.16)] lg:min-h-full">
             <img
               src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1800&q=90"
               alt="People collaborating around opportunity in a modern workspace"
@@ -134,8 +134,8 @@ export default function GetStartedPage() {
             </div>
           </div>
 
-          <div className="flex items-start bg-slate-50 p-4 sm:p-6 lg:p-8">
-            <div className="w-full max-w-xl rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:p-8 lg:p-10 lg:mx-auto lg:pt-8">
+          <div className="flex items-start justify-center bg-transparent px-0 py-0 lg:pt-1">
+            <div className="w-full max-w-xl rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_24px_70px_rgba(15,23,42,0.10)] sm:p-8 lg:p-10">
               <div>
                 <p className="text-xs font-bold tracking-[0.2em] text-purple-600">CREATE YOUR ACCOUNT</p>
                 <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Get started</h2>
