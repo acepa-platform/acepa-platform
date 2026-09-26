@@ -78,10 +78,7 @@ export default function DiscoverPage() {
       <div className="absolute -right-20 -top-24 h-56 w-56 rounded-full bg-purple-600/15 blur-3xl"/>
       <div className="relative mx-auto max-w-[1500px]">
         <p className="text-[10px] font-bold tracking-[0.22em] text-purple-300">DISCOVER ACEPA</p>
-        <div className="mt-2 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div><h1 className="text-2xl font-bold tracking-[-0.03em] sm:text-3xl">Find where you can <span className="text-purple-300">create value.</span></h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Explore opportunities to invest, innovate, market, build, collaborate, work, and contribute.</p></div>
-          <Link href="/get-started" className="w-fit rounded-xl bg-white px-4 py-2.5 text-xs font-bold text-slate-950 transition hover:bg-purple-50">Get started →</Link>
-        </div>
+        <div className="mt-2"><div><h1 className="text-2xl font-bold tracking-[-0.03em] sm:text-3xl">Find where you can <span className="text-purple-300">create value.</span></h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Explore opportunities to invest, innovate, market, build, collaborate, work, and contribute.</p></div></div>
       </div>
     </section>
 
