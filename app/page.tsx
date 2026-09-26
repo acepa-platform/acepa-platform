@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const heroImages = [
   "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1800&q=90",
@@ -42,6 +43,13 @@ export default function Home() {
   const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const [signInEmail, setSignInEmail] = useState("");
+  const [signInPassword, setSignInPassword] = useState("");
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
+  const [signInLoading, setSignInLoading] = useState(false);
+  const [signInError, setSignInError] = useState("");
+  const [signInMessage, setSignInMessage] = useState("");
 
   useEffect(() => {
     const timer = setInterval(() => setHeroIndex((current) => (current + 1) % heroImages.length), 6000);
@@ -110,11 +118,61 @@ export default function Home() {
             <Link href="/search" aria-label="Search" className="hidden cursor-pointer rounded-xl p-2.5 text-slate-900 transition hover:bg-slate-100 hover:text-purple-600 sm:flex">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="h-5 w-5"><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" /></svg>
             </Link>
-            <Link href="/sign-in" className="hidden rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:text-purple-500 sm:block">Sign in</Link>
+            <button type="button" onClick={() => setIsSignInOpen(true)} className="hidden rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:text-purple-500 sm:block">Sign in</button>
             <a href="#get-started" className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-purple-200">Get started</a>
           </div>
         </div>
       </header>
+
+      {isSignInOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="sign-in-title" onMouseDown={(event) => { if (event.target === event.currentTarget) closeSignIn(); }}>
+          <div className="relative grid w-full max-w-4xl overflow-hidden rounded-[28px] border border-white/20 bg-white shadow-2xl lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="relative hidden min-h-[540px] overflow-hidden lg:block">
+              <img src="https://images.unsplash.com/photo-1635766854982-fc151c6e9278?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=85&w=1400" alt="Professional using a laptop in a modern workspace" className="absolute inset-0 h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-8 text-white">
+                <p className="text-[11px] font-bold tracking-[0.2em] text-white/70">WELCOME BACK</p>
+                <h2 className="mt-3 text-3xl font-black tracking-[-0.04em]">Continue where opportunity meets progress.</h2>
+                <p className="mt-3 text-sm leading-6 text-white/75">Discover opportunities, participate, track progress, and access the value you create across ACEPA.</p>
+              </div>
+            </div>
+
+            <div className="relative p-7 sm:p-9">
+              <button type="button" onClick={closeSignIn} aria-label="Close sign in" className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-lg text-slate-500 transition hover:bg-slate-200 hover:text-slate-900">×</button>
+              <div className="pr-10">
+                <p className="text-[11px] font-bold tracking-[0.2em] text-purple-600">ACEPA ACCOUNT</p>
+                <h2 id="sign-in-title" className="mt-3 text-3xl font-black tracking-[-0.04em]">Sign in</h2>
+                <p className="mt-2 text-sm leading-6 text-slate-500">Access your ACEPA account and continue your journey.</p>
+              </div>
+
+              <form onSubmit={handleSignIn} className="mt-7 space-y-4">
+                <div>
+                  <label htmlFor="home-sign-in-email" className="text-sm font-semibold text-slate-800">Email address</label>
+                  <input id="home-sign-in-email" type="email" autoComplete="email" required value={signInEmail} onChange={(event) => setSignInEmail(event.target.value)} placeholder="you@example.com" className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10" />
+                </div>
+                <div>
+                  <div className="flex items-center justify-between gap-4">
+                    <label htmlFor="home-sign-in-password" className="text-sm font-semibold text-slate-800">Password</label>
+                    <Link href="/forgot-password" onClick={closeSignIn} className="text-xs font-semibold text-purple-600 hover:text-purple-700">Forgot password?</Link>
+                  </div>
+                  <div className="relative mt-2">
+                    <input id="home-sign-in-password" type={showSignInPassword ? "text" : "password"} autoComplete="current-password" required value={signInPassword} onChange={(event) => setSignInPassword(event.target.value)} placeholder="Enter your password" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-20 text-sm outline-none transition placeholder:text-slate-400 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10" />
+                    <button type="button" onClick={() => setShowSignInPassword((value) => !value)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:text-slate-900">{showSignInPassword ? "Hide" : "Show"}</button>
+                  </div>
+                </div>
+                {signInError && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700">{signInError}</div>}
+                {signInMessage && <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-700">{signInMessage}</div>}
+                <button type="submit" disabled={signInLoading} className="w-full rounded-xl bg-slate-950 px-5 py-3.5 text-sm font-bold text-white shadow-lg transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-60">{signInLoading ? "Signing in..." : "Sign in →"}</button>
+              </form>
+
+              <div className="mt-6 border-t border-slate-100 pt-5 text-center text-sm text-slate-500">
+                Don’t have an ACEPA account?{" "}
+                <Link href="/get-started" onClick={closeSignIn} className="font-bold text-slate-950 hover:text-purple-600">Get started</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <section id="home" className="relative min-h-[680px] overflow-hidden bg-white">
         <img src={heroImages[heroIndex]} alt="Modern city skyline and waterfront" className="absolute inset-0 h-full w-full object-cover object-center" />
