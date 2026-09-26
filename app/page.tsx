@@ -77,10 +77,19 @@ const opportunities = [
   },
 ];
 
+const impactMetrics = [
+  { value: "$120M+", label: "Payments & earnings facilitated", icon: "↗" },
+  { value: "850+", label: "Successful collaborations", icon: "◎" },
+  { value: "320+", label: "Innovation success stories", icon: "✦" },
+  { value: "42", label: "Countries reached", icon: "◌" },
+  { value: "2.2K+", label: "Companies connected", icon: "▦" },
+  { value: "5K+", label: "Opportunities created", icon: "◇" },
+];
+
 export default function Home() {
   const [heroIndex, setHeroIndex] = useState(0);
-const [isScrolled, setIsScrolled] = useState(false);
-const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -91,189 +100,194 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
   }, []);
 
   useEffect(() => {
-  const handleScroll = () => {
-    setIsScrolled(window.scrollY > 40);
-    setIsDiscoverOpen(false);
-  };
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
+      setIsDiscoverOpen(false);
+    };
 
-  window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <main className="min-h-screen bg-white text-slate-950">
       {/* NAVIGATION */}
       <header
-  className={`fixed left-0 top-0 z-50 w-full transition-all duration-300 ${
-    isScrolled
-      ? "bg-white/95 shadow-lg backdrop-blur-md"
-      : "bg-white/95"
-  }`}
->
+        className={`fixed left-0 top-0 z-50 w-full transition-all duration-300 ${
+          isScrolled
+            ? "bg-white/95 shadow-lg backdrop-blur-md"
+            : "bg-white/95"
+        }`}
+      >
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
           <a href="#" className="-ml-2 flex flex-col leading-none">
-           
-           <img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-20 w-auto object-contain brightness-0" />
+            <img
+              src="/acepa-logo-white-transparent-tagline-brighter.png"
+              alt="ACEPA — People, Opportunities, Progress"
+              className="h-20 w-auto object-contain brightness-0"
+            />
           </a>
 
-         <nav className="hidden items-center gap-8 lg:flex">
-  {/* Home */}
-  <a
-    href="#home"
-    className="text-sm font-medium text-purple-600"
-  >
-    Home
-  </a>
-
-{/* Discover Menu */}
-<div
-  className="group relative"
-  onMouseEnter={() => setIsDiscoverOpen(true)}
-  onMouseLeave={() => setIsDiscoverOpen(false)}
->
-  <a
-    href="/discover"
-    className="flex items-center gap-1 text-sm font-medium text-slate-900 transition hover:text-purple-600"
-  >
-    Discover
-    <svg
-      className={`h-4 w-4 transition-transform duration-200 ${
-        isDiscoverOpen ? "rotate-180" : ""
-      }`}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="m6 9 6 6 6-6" />
-    </svg>
-  </a>
-
-  {isDiscoverOpen && (
-    <div className="absolute left-1/2 top-full z-[100] w-[520px] -translate-x-1/2 pt-3">
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/10">
-        <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-purple-600">
-              Discover ACEPA
-            </p>
-            <p className="mt-1 text-sm font-semibold text-slate-950">
-              Explore opportunities and ways to earn across the ecosystem.
-            </p>
-          </div>
-          <a href="/discover" className="text-xs font-semibold text-purple-600 hover:text-purple-700">
-            View all →
-          </a>
-        </div>
-
-        <div className="grid grid-cols-2 gap-1 p-2">
-          {[
-            ["Projects", "/discover/projects", "Invest in real projects and participate in opportunities designed to generate returns."],
-            ["Products", "/discover/products", "Back products seeking funding or participation and earn where the opportunity provides returns."],
-            ["Innovation", "/discover/innovation", "Bring ideas and solutions to real challenges and discover opportunities to earn from your contribution."],
-            ["Marketing", "/discover/marketing", "Promote companies and opportunities and earn through eligible marketing and referral opportunities."],
-            ["Business", "/discover/business", "Participate in businesses, ventures and commercial opportunities that can create revenue and income."],
-            ["Collaboration", "/discover/collaboration", "Bring skills, resources or partnerships to opportunities where participants can create and earn value."],
-            ["Experts", "/discover/experts", "Put your expertise to work for businesses and earn from eligible professional opportunities."],
-            ["Careers & Jobs", "/discover/careers", "Find paid jobs and career opportunities with companies across the ACEPA ecosystem."],
-          ].map(([title, href, description]) => (
-            <a
-              key={href}
-              href={href}
-              className="rounded-xl px-4 py-3 transition hover:bg-purple-50"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-sm font-semibold text-slate-950 hover:text-purple-600">{title}</span>
-                <span className="text-xs text-slate-400">→</span>
-              </div>
-              <p className="mt-1 text-[11px] leading-5 text-slate-500">{description}</p>
+          <nav className="hidden items-center gap-8 lg:flex">
+            {/* Home */}
+            <a href="#home" className="text-sm font-medium text-purple-600">
+              Home
             </a>
-          ))}
-        </div>
-      </div>
-    </div>
-  )}
-</div>
 
-  {/* For Companies */}
-  <a
-    href="#companies"
-    className="text-sm font-medium text-slate-900 transition hover:text-purple-600"
-  >
-    For Companies
-  </a>
+            {/* Discover Menu */}
+            <div
+              className="group relative"
+              onMouseEnter={() => setIsDiscoverOpen(true)}
+              onMouseLeave={() => setIsDiscoverOpen(false)}
+            >
+              <a
+                href="/discover"
+                className="flex items-center gap-1 text-sm font-medium text-slate-900 transition hover:text-purple-600"
+              >
+                Discover
+                <svg
+                  className={`h-4 w-4 transition-transform duration-200 ${
+                    isDiscoverOpen ? "rotate-180" : ""
+                  }`}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m6 9 6 6 6-6"
+                  />
+                </svg>
+              </a>
 
-  {/* How It Works */}
-  <a
-    href="#how-it-works"
-    className="text-sm font-medium text-slate-900 transition hover:text-purple-600"
-  >
-    How It Works
-  </a>
+              {isDiscoverOpen && (
+                <div className="absolute left-1/2 top-full z-[100] w-[520px] -translate-x-1/2 pt-3">
+                  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/10">
+                    <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+                      <div>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-purple-600">
+                          Discover ACEPA
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-slate-950">
+                          Explore opportunities and ways to earn across the ecosystem.
+                        </p>
+                      </div>
+                      <a
+                        href="/discover"
+                        className="text-xs font-semibold text-purple-600 hover:text-purple-700"
+                      >
+                        View all →
+                      </a>
+                    </div>
 
-  {/* About Us */}
-  <a
-    href="#about"
-    className="text-sm font-medium text-slate-900 transition hover:text-purple-600"
-  >
-    About Us
-  </a>
-</nav>
+                    <div className="grid grid-cols-2 gap-1 p-2">
+                      {[
+                        ["Projects", "/discover/projects", "Invest in real projects and participate in opportunities designed to generate returns."],
+                        ["Products", "/discover/products", "Back products seeking funding or participation and earn where the opportunity provides returns."],
+                        ["Innovation", "/discover/innovation", "Bring ideas and solutions to real challenges and discover opportunities to earn from your contribution."],
+                        ["Marketing", "/discover/marketing", "Promote companies and opportunities and earn through eligible marketing and referral opportunities."],
+                        ["Business", "/discover/business", "Participate in businesses, ventures and commercial opportunities that can create revenue and income."],
+                        ["Collaboration", "/discover/collaboration", "Bring skills, resources or partnerships to opportunities where participants can create and earn value."],
+                        ["Experts", "/discover/experts", "Put your expertise to work for businesses and earn from eligible professional opportunities."],
+                        ["Careers & Jobs", "/discover/careers", "Find paid jobs and career opportunities with companies across the ACEPA ecosystem."],
+                      ].map(([title, href, description]) => (
+                        <a
+                          key={href}
+                          href={href}
+                          className="rounded-xl px-4 py-3 transition hover:bg-purple-50"
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-sm font-semibold text-slate-950 hover:text-purple-600">
+                              {title}
+                            </span>
+                            <span className="text-xs text-slate-400">→</span>
+                          </div>
+                          <p className="mt-1 text-[11px] leading-5 text-slate-500">
+                            {description}
+                          </p>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
-{/* Right Side Actions */}
-<div className="flex items-center gap-3">
+            {/* For Companies */}
+            <a
+              href="#companies"
+              className="text-sm font-medium text-slate-900 transition hover:text-purple-600"
+            >
+              For Companies
+            </a>
 
-  {/* Search */}
-  <button
-    type="button"
-    aria-label="Search"
-    className="hidden cursor-pointer rounded-xl p-2.5 text-slate-900 transition hover:bg-slate-100 hover:text-purple-600 sm:flex"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.8}
-      stroke="currentColor"
-      className="h-5 w-5"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-      />
-    </svg>
-  </button>
+            {/* How It Works */}
+            <a
+              href="#how-it-works"
+              className="text-sm font-medium text-slate-900 transition hover:text-purple-600"
+            >
+              How It Works
+            </a>
 
-  {/* Sign In */}
-  <a
-    href="#signin"
-    className="hidden rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:text-purple-500 sm:block"
-  >
-    Sign in
-  </a>
+            {/* About Us */}
+            <a
+              href="#about"
+              className="text-sm font-medium text-slate-900 transition hover:text-purple-600"
+            >
+              About Us
+            </a>
+          </nav>
 
-    {/* Get Started */}
-  <a
-    href="#get-started"
-    className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-purple-200"
-  >
-    Get started
-  </a>
+          {/* Right Side Actions */}
+          <div className="flex items-center gap-3">
+            {/* Search */}
+            <button
+              type="button"
+              aria-label="Search"
+              className="hidden cursor-pointer rounded-xl p-2.5 text-slate-900 transition hover:bg-slate-100 hover:text-purple-600 sm:flex"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.8}
+                stroke="currentColor"
+                className="h-5 w-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+                />
+              </svg>
+            </button>
 
-</div>
+            {/* Sign In */}
+            <a
+              href="#signin"
+              className="hidden rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:text-purple-500 sm:block"
+            >
+              Sign in
+            </a>
 
+            {/* Get Started */}
+            <a
+              href="#get-started"
+              className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-purple-200"
+            >
+              Get started
+            </a>
+          </div>
         </div>
       </header>
 
       {/* HERO */}
-      <section
-        id="home"
-        className="relative min-h-[680px] overflow-hidden bg-white"
-      >
+      <section id="home" className="relative min-h-[680px] overflow-hidden bg-white">
         <img
           src={heroImages[heroIndex]}
           alt="Modern city skyline and waterfront"
@@ -329,10 +343,10 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
           </div>
         </div>
       </section>
+
       {/* ECOSYSTEM */}
       <section className="border-y border-slate-200 bg-white py-10">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-
           <div className="mx-auto max-w-4xl text-center">
             <p className="text-xs font-bold tracking-[0.22em] text-purple-600">
               ONE ECOSYSTEM
@@ -408,9 +422,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
                     {role.icon}
                   </div>
 
-                  <h3 className="mt-6 text-2xl font-bold">
-                    {role.title}
-                  </h3>
+                  <h3 className="mt-6 text-2xl font-bold">{role.title}</h3>
 
                   <p className="mt-3 max-w-sm text-sm leading-6 text-slate-200">
                     {role.text}
@@ -442,10 +454,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
               </h2>
             </div>
 
-            <a
-              href="#"
-              className="text-sm font-semibold text-purple-600"
-            >
+            <a href="#" className="text-sm font-semibold text-purple-600">
               View all opportunities →
             </a>
           </div>
@@ -584,7 +593,7 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
               href="#"
               className="rounded-xl bg-purple-600 px-7 py-4 text-sm font-semibold text-white shadow-lg shadow-purple-200 hover:bg-purple-700"
             >
-               Get started →
+              Get started →
             </a>
 
             <a
@@ -597,35 +606,66 @@ const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
         </div>
       </section>
 
-      {/* STATS */}
-      <section className="bg-slate-950 py-10 text-white">
-        <div className="mx-auto grid max-w-7xl gap-8 px-6 sm:grid-cols-2 lg:grid-cols-5 lg:px-8">
-          <div>
-            <p className="text-3xl font-bold text-purple-400">10K+</p>
-            <p className="mt-1 text-sm text-slate-400">Active users</p>
+      {/* GLOBAL IMPACT */}
+      <section className="relative overflow-hidden bg-slate-950 py-20 text-white">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/30 via-slate-950 to-slate-950" />
+
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+            <div className="max-w-3xl">
+              <p className="text-xs font-bold tracking-[0.22em] text-purple-300">
+                GLOBAL IMPACT, REAL RESULTS
+              </p>
+
+              <h2 className="mt-4 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
+                Building a borderless ecosystem that creates measurable progress.
+              </h2>
+
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
+                Together, we are building a borderless ecosystem that empowers
+                people, moves capital, advances innovation, and creates lasting
+                change worldwide.
+              </p>
+            </div>
+
+            <a
+              href="#"
+              className="inline-flex shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-purple-300 hover:bg-purple-600"
+            >
+              See our results →
+            </a>
           </div>
 
-          <div>
-            <p className="text-3xl font-bold text-purple-400">2.5K+</p>
-            <p className="mt-1 text-sm text-slate-400">Companies</p>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {impactMetrics.map((metric) => (
+              <div
+                key={metric.label}
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 transition hover:-translate-y-1 hover:bg-white/[0.07]"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-500/15 text-xl text-purple-300">
+                    {metric.icon}
+                  </span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    Demo
+                  </span>
+                </div>
+
+                <p className="mt-7 text-3xl font-bold tracking-tight sm:text-4xl">
+                  {metric.value}
+                </p>
+
+                <p className="mt-2 text-sm leading-6 text-slate-300">
+                  {metric.label}
+                </p>
+              </div>
+            ))}
           </div>
 
-          <div>
-            <p className="text-3xl font-bold text-purple-400">1.2K+</p>
-            <p className="mt-1 text-sm text-slate-400">Opportunities</p>
-          </div>
-
-          <div>
-            <p className="text-3xl font-bold text-purple-400">$500M+</p>
-            <p className="mt-1 text-sm text-slate-400">Capital facilitated</p>
-          </div>
-
-          <div>
-            <p className="text-3xl font-bold text-purple-400">Global</p>
-            <p className="mt-1 text-sm text-slate-400">
-              People, ideas & growth
-            </p>
-          </div>
+          <p className="mt-6 text-xs leading-5 text-slate-500">
+            Demonstration figures for the website prototype. These will be
+            replaced with verified ACEPA platform results when live data is available.
+          </p>
         </div>
       </section>
 
