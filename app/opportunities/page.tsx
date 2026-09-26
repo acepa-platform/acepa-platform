@@ -140,7 +140,10 @@ export default function OpportunitiesPage() {
             <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-purple-500/25 blur-3xl" />
             <div className="absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-fuchsia-500/15 blur-3xl" />
             <div className="relative max-w-3xl">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-purple-300">DISCOVER → PARTICIPATE → PROGRESS</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-purple-300">DISCOVER → PARTICIPATE → PROGRESS</p>
+                <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-white/70">Demo opportunities</span>
+              </div>
               <h1 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl lg:text-5xl">
                 Opportunities built around action.
               </h1>
