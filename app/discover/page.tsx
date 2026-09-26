@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { createClient } from "@/lib/supabase/client";
 import UserAccountTopNav from "@/components/user-account-top-nav";
+import UserAccountShell from "@/components/user-account-shell";
 
 type Opportunity = {
   id: string;
@@ -74,7 +75,8 @@ export default function DiscoverPage() {
   );
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-950">
+    <UserAccountShell>
+      <main className="min-h-screen bg-slate-50 text-slate-950">
       <UserAccountTopNav
         searchValue={search}
         onSearchChange={setSearch}
@@ -190,6 +192,7 @@ export default function DiscoverPage() {
           </div>
         )}
       </section>
-    </main>
+      </main>
+    </UserAccountShell>
   );
 }
