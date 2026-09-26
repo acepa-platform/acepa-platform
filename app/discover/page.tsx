@@ -52,7 +52,7 @@ export default function DiscoverPage() {
         <div className="ml-auto flex min-w-0 flex-1 items-center gap-2 lg:gap-4">
           <div className="hidden min-w-0 max-w-md flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 md:flex"><input aria-label="Search opportunities" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search opportunities, companies or locations" className="h-10 w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"/></div>
           <nav className="hidden items-center gap-4 xl:flex">
-            {["Dashboard","Invest","Opportunities","Activities"].map(label=><Link key={label} href={label==="Dashboard"?"/dashboard":label==="Invest"?"/discover?category=investment":label==="Opportunities"?"/opportunities":"/activity"} className="whitespace-nowrap text-sm font-bold text-slate-950 transition hover:text-purple-600">{label}</Link>)}
+            {["Dashboard","Opportunities","Activities"].map(label=><Link key={label} href={label==="Dashboard"?"/dashboard":label==="Opportunities"?"/opportunities":"/activity"} className="whitespace-nowrap text-sm font-bold text-slate-950 transition hover:text-purple-600">{label}</Link>)}
           </nav>
           <div className="ml-auto flex shrink-0 items-center gap-2">
             <div className="relative">
