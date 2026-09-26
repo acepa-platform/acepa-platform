@@ -45,7 +45,7 @@ export default function UserOpportunityListPage({ listType }: { listType: ListTy
     } = await supabase.auth.getUser();
 
     if (!user) {
-      router.push(" /sign-in?next=/" + listType);
+      router.push("/sign-in?next=/" + listType);
       return;
     }
 
