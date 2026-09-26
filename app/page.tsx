@@ -51,6 +51,34 @@ export default function Home() {
   const [signInError, setSignInError] = useState("");
   const [signInMessage, setSignInMessage] = useState("");
 
+  async function handleSignIn(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSignInLoading(true);
+    setSignInError("");
+    setSignInMessage("");
+
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithPassword({
+      email: signInEmail,
+      password: signInPassword,
+    });
+
+    if (error) {
+      setSignInError(error.message);
+      setSignInLoading(false);
+      return;
+    }
+
+    setSignInMessage("Signed in successfully. Your ACEPA account is ready.");
+    setSignInLoading(false);
+  }
+
+  function closeSignIn() {
+    setIsSignInOpen(false);
+    setSignInError("");
+    setSignInMessage("");
+  }
+
   useEffect(() => {
     const timer = setInterval(() => setHeroIndex((current) => (current + 1) % heroImages.length), 6000);
     return () => clearInterval(timer);
