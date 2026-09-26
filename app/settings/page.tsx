@@ -190,7 +190,7 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="space-y-5">
+      <div className="grid gap-5 sm:grid-cols-2">
         {[
           ["Full Name", "full_name", profile.full_name],
           ["Username", "username", profile.username],
@@ -470,7 +470,7 @@ export default function SettingsPage() {
             </aside>
           </div>
 
-          <section className={"mt-6 flex flex-wrap items-center justify-between gap-4 rounded-3xl border p-6 shadow-sm sm:p-7 " + (dark ? "border-purple-950/60 bg-purple-950/20" : "border-purple-100 bg-purple-50/70")}>
+          <section className={"mt-6 flex flex-wrap items-center justify-between gap-4 rounded-3xl border p-6 shadow-sm sm:p-7 xl:col-span-2 " + (dark ? "border-purple-950/60 bg-purple-950/20" : "border-purple-100 bg-purple-50/70")}>
             <div>
               <p className="text-lg font-black">Your Security Matters</p>
               <p className={"mt-1 max-w-2xl text-sm leading-6 " + muted}>We use industry-standard security practices to help keep your account and data safe.</p>
