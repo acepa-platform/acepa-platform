@@ -196,7 +196,7 @@ export default function OpportunitiesPage() {
             <p className="text-xs font-semibold text-slate-400">{visible.length} opportunities</p>
           </div>
 
-          <section className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <section className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {visible.map((opportunity) => (
               <article key={opportunity.id} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-lg">
                 <Link href={"/opportunities/" + opportunity.id} className="block">
