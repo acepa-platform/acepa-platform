@@ -199,7 +199,7 @@ export default function SettingsPage() {
           ["Date of Birth", "dob", "Add your date of birth"],
           ["Country", "location", profile.location || "Nigeria"],
         ].map(([label, key, value]) => (
-          <div key={label}>
+          <div key={label} className="w-full">
             <label className="text-sm font-bold">{label}</label>
             <input
               value={String(value)}
@@ -335,9 +335,6 @@ export default function SettingsPage() {
       <main className={"min-h-screen " + surface}>
         <header className={"sticky top-0 z-30 border-b " + (dark ? "border-slate-800 bg-slate-950/95" : "border-slate-200 bg-white/95") + " backdrop-blur-md"}>
           <div className="mx-auto flex min-h-20 max-w-[1500px] items-center gap-5 px-5 lg:px-8">
-            <Link href="/dashboard" className="flex shrink-0 items-center">
-              <img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA" className={"h-11 w-auto object-contain " + (dark ? "" : "brightness-0")} />
-            </Link>
             <div className="min-w-0">
               <p className="text-xl font-black">Settings</p>
               <p className={"hidden text-xs sm:block " + muted}>Manage your account, preferences and security settings.</p>
