@@ -268,7 +268,7 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
     if (!formValid) {
       setNotice(
         type === "Investment"
-          ? "Complete the required investor details, choose an amount between the minimum and maximum, and accept the investment terms."
+          ? "Choose an investment amount between the minimum and maximum and accept the investment terms."
           : "Please complete all required fields before continuing."
       );
       return;
