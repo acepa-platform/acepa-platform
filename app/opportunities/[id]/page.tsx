@@ -449,10 +449,10 @@ export default function OpportunityDetailsPage({ params }: { params: Promise<{ i
                                   : "Submit your profile and application materials for the role."}
                     </p>
                     <button
-                      onClick={handlePrimaryAction}
+                      onClick={() => router.push("/opportunities/" + id + "/participate")}
                       className="mt-5 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-purple-700"
                     >
-                      {interested ? actionLabel + " recorded ✓" : actionLabel}
+                      {actionLabel} →
                     </button>
                     <button
                       onClick={() => {
