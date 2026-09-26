@@ -161,7 +161,6 @@ export default function SettingsPage() {
 
           <section className={"mt-8 rounded-3xl border p-6 shadow-sm sm:p-8 " + card}><h2 className="text-lg font-black">Your security matters</h2><p className={"mt-2 max-w-2xl text-sm leading-6 " + muted}>We use industry-standard security practices to help keep your account and data safe.</p><button className="mt-4 rounded-xl border border-purple-200 px-4 py-2.5 text-sm font-bold text-purple-700 hover:bg-purple-50">Learn more →</button></section>
           {message && <p className={"mt-5 rounded-2xl border p-4 text-sm font-semibold " + card}>{message}</p>}
-          }
         </div>
       </main>
     </UserAccountShell>
