@@ -138,6 +138,8 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
   const [step, setStep] = useState<"form" | "review" | "confirm" | "complete">("form");
   const [notice, setNotice] = useState("");
   const [profileLoading, setProfileLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [referenceId, setReferenceId] = useState("");
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -277,13 +279,109 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
     setStep("review");
   }
 
-  function confirmSubmission() {
+  async function confirmSubmission() {
+    if (!opportunity || submitting) return;
+
+    setNotice("");
+    setSubmitting(true);
+
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setSubmitting(false);
+      router.push("/sign-in?next=/opportunities/" + id + "/participate");
+      return;
+    }
+
+    const generatedReference = "ACEPA-" + Date.now().toString(36).toUpperCase() + "-" + crypto.randomUUID().slice(0, 8).toUpperCase();
+
+    let details: Record<string, string> = {};
+
+    switch (opportunity.type) {
+      case "Investment":
+        details = {
+          "Investment amount": "$" + numericAmount.toLocaleString(),
+          "Funding source": fundingSource,
+          "Terms accepted": "Yes",
+        };
+        break;
+      case "Innovation":
+        details = {
+          "Solution title": solutionTitle,
+          "Solution overview": solution,
+          "Relevant experience": innovationExperience,
+        };
+        break;
+      case "Marketing":
+        details = {
+          "Portfolio / work samples": portfolio,
+          "Execution channels": channels,
+          "Campaign experience": campaignExperience,
+        };
+        break;
+      case "Business":
+        details = {
+          "Business / organization": organization,
+          "Territory": territory,
+          "Contribution": businessContribution,
+        };
+        break;
+      case "Collaboration":
+        details = {
+          "Proposed role": proposedRole,
+          "Contribution": collaborationContribution,
+          "Availability": availability,
+        };
+        break;
+      case "Experts":
+        details = {
+          "Area of expertise": expertise,
+          "Professional experience": professionalExperience,
+          "Qualifications / certifications": qualifications,
+        };
+        break;
+      case "Careers & Jobs":
+        details = {
+          "Education / training": education,
+          "Work experience": workExperience,
+          "Cover note": coverNote,
+        };
+        break;
+    }
+
+    const { error } = await supabase.from("opportunity_participations").insert({
+      user_id: user.id,
+      opportunity_slug: id,
+      opportunity_title: opportunity.title,
+      company_name: opportunity.company,
+      category: opportunity.type,
+      action: actionLabel,
+      status: "submitted",
+      payment_status: opportunity.type === "Investment" ? "successful_demo" : "not_required",
+      amount: opportunity.type === "Investment" ? numericAmount : null,
+      currency: "USD",
+      funding_source: opportunity.type === "Investment" ? fundingSource : null,
+      reference_id: generatedReference,
+      details,
+    });
+
+    if (error) {
+      setSubmitting(false);
+      setNotice("We could not record this submission. Please try again.");
+      return;
+    }
+
+    setReferenceId(generatedReference);
     setStep("complete");
     setNotice(
-      type === "Investment"
+      opportunity.type === "Investment"
         ? "Investment request recorded successfully. Demo payment status: Successful. No real money was debited, transferred, or reserved."
-        : "Demo submission recorded. The live company workflow will be connected later."
+        : "Submission recorded successfully. The live company workflow will be connected later."
     );
+    setSubmitting(false);
   }
 
   if (!opportunity) {
@@ -583,8 +681,8 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
 
                 <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:justify-between">
                   <button onClick={() => setStep("review")} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-600 hover:border-purple-200 hover:text-purple-700">Back to review</button>
-                  <button onClick={confirmSubmission} className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700">
-                    {opportunity.type === "Investment" ? "Confirm investment request" : "Confirm submission"}
+                  <button disabled={submitting} onClick={confirmSubmission} className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50">
+                    {submitting ? "Recording..." : opportunity.type === "Investment" ? "Confirm investment request" : "Confirm submission"}
                   </button>
                 </div>
               </section>
@@ -598,18 +696,23 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
                   <h2 className="mt-2 text-3xl font-black tracking-[-0.04em]">Your {actionLabel.toLowerCase()} request has been recorded successfully.</h2>
                   <p className="mt-4 text-sm leading-7 text-slate-600">{notice}</p>
 
-                  {opportunity.type === "Investment" && (
-                    <div className="mt-6 rounded-3xl bg-slate-50 p-6 text-left">
-                      <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Investment request</p>
-                      <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                        <ReviewItem label="Amount" value={"$" + numericAmount.toLocaleString()} />
-                        <ReviewItem label="Funding source" value={fundingSource} />
-                        <ReviewItem label="Payment status" value="Successful (Demo)" />
-                      </div>
+                  <div className="mt-6 rounded-3xl bg-slate-50 p-6 text-left">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Participation record</p>
+                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                      <ReviewItem label="Status" value="Submitted" />
+                      <ReviewItem label="Reference ID" value={referenceId || "Recorded"} />
+                      {opportunity.type === "Investment" && (
+                        <>
+                          <ReviewItem label="Amount" value={"$" + numericAmount.toLocaleString()} />
+                          <ReviewItem label="Funding source" value={fundingSource} />
+                          <ReviewItem label="Payment status" value="Successful (Demo)" />
+                        </>
+                      )}
                     </div>
-                  )}
+                  </div>
 
                   <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                    <button onClick={() => router.push("/activity")} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700 hover:border-purple-200 hover:text-purple-700">View my activity</button>
                     <button onClick={() => router.push("/opportunities/" + id)} className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700">Back to opportunity</button>
                     <button onClick={() => router.push("/opportunities")} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700 hover:border-purple-200 hover:text-purple-700">Browse more opportunities</button>
                   </div>
