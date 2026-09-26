@@ -15,6 +15,9 @@ type Profile = {
   username: string;
   bio: string;
   location: string;
+  phone_number: string;
+  date_of_birth: string;
+  country: string;
   avatar_url: string;
   website: string;
 };
@@ -62,6 +65,9 @@ const emptyProfile: Profile = {
   username: "",
   bio: "",
   location: "",
+  phone_number: "",
+  date_of_birth: "",
+  country: "Nigeria",
   avatar_url: "",
   website: "",
 };
@@ -163,7 +169,7 @@ export default function SettingsPage() {
     setEmail(user.email ?? "");
 
     const [{ data: profileData, error: profileError }, { data: preferenceData, error: preferenceError }] = await Promise.all([
-      supabase.from("profiles").select("full_name,username,bio,location,avatar_url,website,business_info,addresses,social_links,identity_status").eq("id", user.id).maybeSingle(),
+      supabase.from("profiles").select("full_name,username,bio,location,phone_number,date_of_birth,country,avatar_url,website,business_info,addresses,social_links,identity_status").eq("id", user.id).maybeSingle(),
       supabase.from("user_preferences").select("appearance,email_notifications,opportunity_notifications,activity_notifications,marketing_notifications,profile_visibility").eq("user_id", user.id).maybeSingle(),
     ]);
 
@@ -175,6 +181,9 @@ export default function SettingsPage() {
       username: profileData?.username ?? "",
       bio: profileData?.bio ?? "",
       location: profileData?.location ?? "",
+      phone_number: profileData?.phone_number ?? "",
+      date_of_birth: profileData?.date_of_birth ?? "",
+      country: profileData?.country ?? "Nigeria",
       avatar_url: profileData?.avatar_url ?? "",
       website: profileData?.website ?? "",
     });
@@ -244,6 +253,9 @@ export default function SettingsPage() {
         username: profile.username || null,
         bio: profile.bio,
         location: profile.location,
+        phone_number: profile.phone_number || null,
+        date_of_birth: profile.date_of_birth || null,
+        country: profile.country || null,
         avatar_url: profile.avatar_url || null,
         website: profile.website || null,
       })
@@ -683,21 +695,29 @@ export default function SettingsPage() {
           ["Full Name", "full_name", profile.full_name],
           ["Username", "username", profile.username],
           ["Email Address", "email", email],
-          ["Phone Number", "phone", "Add your phone number"],
-          ["Date of Birth", "dob", "Add your date of birth"],
-          ["Country", "location", profile.location || "Nigeria"],
+          ["Phone Number", "phone_number", profile.phone_number],
+          ["Date of Birth", "date_of_birth", profile.date_of_birth],
+          ["Country", "country", profile.country],
         ].map(([label, key, value]) => (
           <div key={label} className="w-full">
             <label className="text-sm font-bold">{label}</label>
             <input
+              type={key === "date_of_birth" ? "date" : "text"}
               value={String(value)}
-              disabled={key === "email" || key === "phone" || key === "dob"}
+              disabled={key === "email"}
+              placeholder={
+                key === "phone_number"
+                  ? "+234 800 000 0000"
+                  : key === "country"
+                    ? "Nigeria"
+                    : ""
+              }
               onChange={(event) => {
-                if (key === "full_name" || key === "username" || key === "location") {
+                if (key === "full_name" || key === "username" || key === "location" || key === "phone_number" || key === "date_of_birth" || key === "country") {
                   setProfile((current) => ({ ...current, [key]: event.target.value }));
                 }
               }}
-              className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field + (key !== "email" && key !== "phone" && key !== "dob" ? "" : " opacity-80")}
+              className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field + (key === "email" ? " opacity-80" : "")}
             />
           </div>
         ))}
