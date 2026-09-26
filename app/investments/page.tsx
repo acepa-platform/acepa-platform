@@ -35,9 +35,9 @@ export default function InvestmentsPage() {
             <p className="mt-3 max-w-2xl text-sm leading-7 text-white/60">These sample investments are here to let you test the user portfolio experience. Real investment records will appear here when connected to live investment data.</p>
           </section>
           <section className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-3xl border border-slate-200 bg-white p-5"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Total invested</p><p className="mt-2 text-2xl font-black">"$" + totalInvested.toLocaleString()</p></div>
-            <div className="rounded-3xl border border-slate-200 bg-white p-5"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Current value</p><p className="mt-2 text-2xl font-black">"$" + currentValue.toLocaleString()</p></div>
-            <div className="rounded-3xl border border-slate-200 bg-white p-5"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Demo return</p><p className={"mt-2 text-2xl font-black " + (totalReturn >= 0 ? "text-emerald-700" : "text-rose-700")}>{totalReturn >= 0 ? "+" : "-"}"$" + Math.abs(totalReturn).toLocaleString()</p></div>
+            <div className="rounded-3xl border border-slate-200 bg-white p-5"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Total invested</p><p className="mt-2 text-2xl font-black">{"$" + totalInvested.toLocaleString()}</p></div>
+            <div className="rounded-3xl border border-slate-200 bg-white p-5"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Current value</p><p className="mt-2 text-2xl font-black">{"$" + currentValue.toLocaleString()}</p></div>
+            <div className="rounded-3xl border border-slate-200 bg-white p-5"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Demo return</p><p className={"mt-2 text-2xl font-black " + (totalReturn >= 0 ? "text-emerald-700" : "text-rose-700")}>{totalReturn >= 0 ? "+" : "-"}{"$" + Math.abs(totalReturn).toLocaleString()}</p></div>
             <div className="rounded-3xl border border-slate-200 bg-white p-5"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Active investments</p><p className="mt-2 text-2xl font-black">{activeCount}</p></div>
           </section>
           <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
