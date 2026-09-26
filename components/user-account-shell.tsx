@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import UserAccountSidebar from "@/components/user-account-sidebar";
 
-export default function UserAccountShell({ children }: { children: React.ReactNode }) {
+export default function UserAccountShell({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
