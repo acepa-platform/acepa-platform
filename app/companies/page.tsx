@@ -2,6 +2,15 @@
 
 import Link from "next/link";
 
+const participationPaths = [
+  { title: "Invest", text: "Participate in eligible investment opportunities published across ACEPA.", icon: "↗" },
+  { title: "Innovate", text: "Submit ideas, solutions, products, or expertise to opportunities that fit your company’s interests.", icon: "✦" },
+  { title: "Market", text: "Participate in eligible marketing, referral, and performance-based opportunities.", icon: "◇" },
+  { title: "Collaborate", text: "Join collaborations, partnerships, and business opportunities where your company can create value.", icon: "🤝" },
+  { title: "Work & Hire", text: "Explore careers, engage experts, or find talent when it fits your company’s needs.", icon: "◎" },
+  { title: "Choose Your Path", text: "Companies are not locked into one role. Choose the activities and opportunities you want to participate in — and skip the ones you do not.", icon: "▦" },
+];
+
 const companyPaths = [
   {
     title: "Raise Capital",
@@ -112,6 +121,27 @@ export default function ForCompaniesPage() {
                 <p className="mt-3 text-sm leading-6 text-slate-600">{path.text}</p>
                 <span className="mt-6 inline-flex text-sm font-semibold text-purple-600">Explore →</span>
               </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+            <div>
+              <p className="text-xs font-bold tracking-[0.22em] text-purple-600">COMPANIES CAN PARTICIPATE TOO</p>
+              <h2 className="mt-4 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">Your company can participate in the ecosystem — on your own terms.</h2>
+            </div>
+            <p className="max-w-2xl text-lg leading-8 text-slate-600">ACEPA is not only a place for companies to publish opportunities. Companies can also participate in activities and opportunities created by other companies and participants. Choose what fits your goals, interests, resources, and strategy. Participate where you want, and leave what you do not want.</p>
+          </div>
+          <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {participationPaths.map((path) => (
+              <div key={path.title} className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-xl">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 text-xl font-bold text-purple-600">{path.icon}</div>
+                <h3 className="mt-6 text-xl font-bold">{path.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">{path.text}</p>
+              </div>
             ))}
           </div>
         </div>
