@@ -407,115 +407,26 @@ export default function SettingsPage() {
   );
 
   const profilePlaceholder = (
-    <div className="space-y-5">
-      <div>
-        <p className="text-lg font-black">{activeProfile}</p>
-        <p className={"mt-1 text-sm " + muted}>Manage your {activeProfile.toLowerCase()} settings.</p>
-      </div>
-      <div className={"rounded-2xl border p-6 " + soft}>
-        <p className="font-bold">{activeProfile}</p>
-        <p className={"mt-2 text-sm leading-6 " + muted}>This section is your direct editing area. Use the controls here to add or edit your information without scrolling through the rest of Settings.</p>
-        <button className="mt-5 rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Continue →</button>
-      </div>
-    </div>
-  );
-
-  const notificationContent = (
     <div className="space-y-6">
-      <div><p className="text-lg font-black">{activeGeneric || "Email Notifications"}</p><p className={"mt-1 text-sm " + muted}>Choose which ACEPA notifications you want to receive.</p></div>
-      <div className="space-y-3">
-        {[
-          ["Email Notifications","Receive important ACEPA updates by email.","email"],
-          ["Opportunity Notifications","Get alerts about opportunities, applications and updates.","opportunity"],
-          ["Activity Notifications","Receive notifications about your activities, milestones and interactions.","activity"],
-          ["Marketing Notifications","Receive product news, announcements and promotional messages.","marketing"],
-        ].map(([title,description,key]) => (
-          <div key={key} className={"flex items-center justify-between gap-4 rounded-2xl border p-5 " + soft}>
-            <div><p className="text-sm font-black">{title}</p><p className={"mt-1 text-sm leading-5 " + muted}>{description}</p></div>
-            <button type="button" onClick={() => setNotificationPrefs(v => ({...v, [key]: !v[key as keyof typeof v]}))} className={"relative h-7 w-12 shrink-0 rounded-full transition " + (notificationPrefs[key as keyof typeof notificationPrefs] ? "bg-purple-600" : "bg-slate-300")}>
-              <span className={"absolute top-1 h-5 w-5 rounded-full bg-white shadow transition " + (notificationPrefs[key as keyof typeof notificationPrefs] ? "left-6" : "left-1")} />
-            </button>
-          </div>
-        ))}
-      </div>
-      <div className="flex justify-end"><button onClick={() => setMessage("Notification preferences saved successfully.")} className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-bold text-white hover:bg-purple-700">Save Notification Preferences</button></div>
-    </div>
-  );
-
-  const accountContent = (
-    <div className="space-y-6">
-      <div>
-        <p className="text-lg font-black">{activeAccount}</p>
-        <p className={"mt-1 text-sm " + muted}>Manage your {activeAccount.toLowerCase()} settings.</p>
-      </div>
-      {activeAccount === "Account Information" ? (
-        <div className={"rounded-2xl border p-5 " + soft}>
-          <p className="text-sm font-black">Account Email</p>
-          <p className={"mt-2 text-sm " + muted}>{email}</p>
-          <p className={"mt-4 text-xs leading-5 " + muted}>Your sign-in email is managed through your ACEPA authentication account.</p>
+      <div><p className="text-lg font-black">{activeProfile}</p><p className={"mt-1 text-sm " + muted}>Edit your {activeProfile.toLowerCase()} directly here.</p></div>
+      {activeProfile === "Business Information" ? (
+        <div className="grid gap-5 sm:grid-cols-2">
+          {["Business Name","Business Type","Registration Number","Industry","Business Email","Business Phone","Website","Business Description"].map(label=><div key={label}><label className="text-sm font-bold">{label}</label><input placeholder={"Enter " + label.toLowerCase()} className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field}/></div>)}
+          <div className="sm:col-span-2 flex justify-end"><button onClick={()=>setMessage("Business information saved successfully.")} className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-bold text-white">Save Business Information</button></div>
         </div>
-      ) : activeAccount === "Appearance" ? (
-      <div className={"rounded-2xl border p-5 " + soft}>
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-purple-600">Appearance</p>
-        <h3 className="mt-2 text-xl font-black">Choose your appearance</h3>
-        <p className={"mt-1 text-sm " + muted}>Choose how ACEPA should look across your devices.</p>
-        <div className="mt-5 grid gap-3 sm:grid-cols-3">
-          {[
-            ["light", "☀️", "Light", "Bright and clean"],
-            ["dark", "🌙", "Dark", "Dark interface"],
-            ["system", "🖥️", "Automatic / System", "Follow your device"],
-          ].map(([value, icon, label, description]) => (
-            <button key={value} onClick={() => chooseAppearance(value)} className={"rounded-2xl border p-4 text-left transition " + (appearance === value ? "border-purple-500 bg-purple-50 text-purple-700" : soft)}>
-              <span className="text-xl">{icon}</span>
-              <p className="mt-2 text-sm font-black">{label}</p>
-              <p className={"mt-1 text-xs " + muted}>{description}</p>
-            </button>
-          ))}
+      ) : activeProfile === "Address" ? (
+        <div className="space-y-5">
+          {[1,2,3].map(n=><div key={n} className={"rounded-2xl border p-5 " + soft}><p className="text-sm font-black">Address {n}</p><div className="mt-4 grid gap-4 sm:grid-cols-2">{["Address Line","City","State / Province","Country","Postal Code"].map(label=><input key={label} placeholder={label} className={"rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field}/>)}</div></div>)}
+          <div className="flex justify-end"><button onClick={()=>setMessage("Addresses saved successfully.")} className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-bold text-white">Save Addresses</button></div>
         </div>
-        <button onClick={saveAppearance} disabled={saving} className="mt-5 rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700 disabled:opacity-60">
-          {saving ? "Saving..." : "Save Appearance"}
-        </button>
-      </div>
+      ) : activeProfile === "Social Links" ? (
+        <div className="grid gap-5 sm:grid-cols-2">{["X / Twitter","LinkedIn","YouTube","TikTok","Instagram","Facebook"].map(label=><div key={label}><label className="text-sm font-bold">{label}</label><input placeholder={"Paste your " + label + " profile link"} className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field}/></div>)}<div className="sm:col-span-2 flex justify-end"><button onClick={()=>setMessage("Social links saved successfully.")} className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-bold text-white">Save Social Links</button></div></div>
       ) : (
-        <div className={"rounded-2xl border p-5 " + soft}>
-          <p className="text-sm font-black">Login & Sessions</p>
-          <p className={"mt-2 text-sm leading-6 " + muted}>Review and manage your active login sessions from Security.</p>
-          <button onClick={() => { setActiveTab("Security"); setActiveSecurity("Sessions"); }} className="mt-5 rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700">Open Login Sessions</button>
+        <div className={"rounded-2xl border p-6 " + soft}>
+          <p className="text-sm font-black">ACEPA Authentication</p>
+          <p className={"mt-2 text-sm leading-6 " + muted}>Manage identity and account verification from this direct settings area.</p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2"><button onClick={()=>{setActiveTab("Security");setActiveSecurity("Two-Factor Authentication")}} className="rounded-xl border border-purple-300 p-4 text-left text-sm font-bold text-purple-700">Two-Factor Authentication →</button><button onClick={()=>setMessage("Identity verification is ready for the next verification workflow.")} className="rounded-xl border border-purple-300 p-4 text-left text-sm font-bold text-purple-700">Identity Verification →</button></div>
         </div>
       )}
-    </div>
-  );
-
-  const genericItems = activeTab === "Notifications"
-    ? ["Email Notifications", "Opportunity Notifications", "Activity Notifications", "Marketing Notifications"]
-    : activeTab === "Privacy"
-      ? ["Privacy Controls", "Data & Privacy"]
-      : activeTab === "Payment Methods"
-        ? ["Payment Methods", "Payout Preferences"]
-        : ["API Keys", "Connected Integrations"];
-
-  const genericTabContent = (
-    <div className="space-y-6">
-      <div><p className="text-lg font-black">{activeGeneric || genericItems[0]}</p><p className={"mt-1 text-sm " + muted}>Manage your {(activeGeneric || genericItems[0]).toLowerCase()} settings.</p></div>
-      <div className={"rounded-2xl border p-6 " + soft}>
-        {activeTab === "Privacy" && activeGeneric === "Privacy Controls" ? (
-          <>
-            <p className="text-sm font-black">Profile Visibility</p>
-            <p className={"mt-2 text-sm leading-6 " + muted}>Control how your ACEPA profile and activity are visible to other members.</p>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">{["Public","ACEPA members","Private"].map(v=><button key={v} className={"rounded-xl border p-4 text-left text-sm font-bold " + card}>{v}<span className={"ml-2 text-xs " + muted}>Select</span></button>)}</div>
-          </>
-        ) : activeTab === "Payment Methods" && activeGeneric === "Payment Methods" ? (
-          <>
-            <p className="text-sm font-black">Payment Methods</p><p className={"mt-2 text-sm leading-6 " + muted}>Add and manage payment methods used for eligible ACEPA transactions.</p>
-            <button onClick={() => setMessage("Payment method setup will be connected here.")} className="mt-5 rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white">Add Payment Method</button>
-          </>
-        ) : (
-          <>
-            <p className="text-sm font-black">{activeGeneric || genericItems[0]}</p>
-            <p className={"mt-2 text-sm leading-6 " + muted}>This is the direct settings area for {((activeGeneric || genericItems[0]).toLowerCase())}. Configure, edit and manage it here without scrolling through unrelated settings.</p>
-            <button onClick={() => setMessage((activeGeneric || genericItems[0]) + " is selected and ready for configuration.")} className="mt-5 rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Edit Settings</button>
-          </>
-        )}
-      </div>
     </div>
   );
