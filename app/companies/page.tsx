@@ -69,8 +69,8 @@ export default function ForCompaniesPage() {
             <Link href="/" className="text-sm font-medium text-slate-700 transition hover:text-purple-600">Home</Link>
             <Link href="/discover" className="text-sm font-medium text-slate-700 transition hover:text-purple-600">Discover</Link>
             <Link href="/companies" className="text-sm font-semibold text-purple-600">For Companies</Link>
-            <Link href="#how-it-works" className="text-sm font-medium text-slate-700 transition hover:text-purple-600">How It Works</Link>
-            <Link href="#why-acepa" className="text-sm font-medium text-slate-700 transition hover:text-purple-600">Why ACEPA</Link>
+            <Link href="/how-it-works" className="text-sm font-medium text-slate-700 transition hover:text-purple-600">How It Works</Link>
+            <Link href="/about" className="text-sm font-medium text-slate-700 transition hover:text-purple-600">About Us</Link>
           </nav>
           <div className="flex items-center gap-3">
             <Link href="/discover" className="hidden rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 transition hover:text-purple-600 sm:block">Explore</Link>
