@@ -430,3 +430,124 @@ export default function SettingsPage() {
       )}
     </div>
   );
+
+
+  const securityContent = (
+    <div className="space-y-6">
+      <div>
+        <p className="text-lg font-black">{activeSecurity}</p>
+        <p className={"mt-1 text-sm " + muted}>Manage your account security and login protection.</p>
+      </div>
+      {activeSecurity === "Password & Login" ? (
+        <div className={"rounded-2xl border p-6 " + soft}>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="sm:col-span-2"><label className="text-sm font-bold">Current Password</label><input type="password" value={currentPassword} onChange={e=>setCurrentPassword(e.target.value)} className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm " + field}/></div>
+            <div><label className="text-sm font-bold">New Password</label><input type="password" value={newPassword} onChange={e=>setNewPassword(e.target.value)} className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm " + field}/></div>
+            <div><label className="text-sm font-bold">Confirm New Password</label><input type="password" value={confirmPassword} onChange={e=>setConfirmPassword(e.target.value)} className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm " + field}/></div>
+          </div>
+          <Link href="/forgot-password" className="mt-4 inline-block text-sm font-bold text-purple-600">Forgot your password?</Link>
+          <div className="mt-5 flex justify-end"><button onClick={changePassword} disabled={saving} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-60">{saving ? "Changing..." : "Change Password"}</button></div>
+        </div>
+      ) : activeSecurity === "Two-Factor Authentication" ? (
+        <div className={"rounded-2xl border p-6 " + soft}>
+          <p className="text-sm font-black">Two-Factor Authentication</p>
+          <p className={"mt-2 text-sm leading-6 " + muted}>Protect your ACEPA account with an authenticator app.</p>
+          {mfaFactors.length > 0 ? (
+            <div className="mt-5 space-y-3">{mfaFactors.map(f=><div key={f.id} className={"flex items-center justify-between rounded-xl border p-4 " + card}><div><p className="text-sm font-bold">{f.friendly_name || "Authenticator app"}</p><p className={"text-xs " + muted}>Enabled</p></div><button onClick={()=>disableMfa(f.id)} disabled={saving} className="rounded-xl border border-red-200 px-4 py-2 text-sm font-bold text-red-600">Disable</button></div>)}</div>
+          ) : !mfaSetup ? (
+            <button onClick={startMfaSetup} disabled={saving} className="mt-5 rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-60">{saving ? "Preparing..." : "Enable Two-Factor Authentication"}</button>
+          ) : (
+            <div className="mt-5 rounded-2xl border p-5">
+              {mfaQrCode && <img src={mfaQrCode} alt="Authenticator QR code" className="h-48 w-48 rounded-xl border p-2" />}
+              <p className={"mt-4 text-sm " + muted}>Manual setup key</p>
+              <div className={"mt-2 rounded-xl border px-4 py-3 font-mono text-sm break-all " + field}>{mfaSecret}</div>
+              <label className="mt-4 block text-sm font-bold">6-digit code</label>
+              <input inputMode="numeric" maxLength={6} value={mfaCode} onChange={e=>setMfaCode(e.target.value.replace(/\D/g, ""))} className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm " + field}/>
+              <div className="mt-4 flex gap-2"><button onClick={verifyMfaSetup} disabled={saving} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white">Verify & Enable</button><button onClick={()=>setMfaSetup(false)} className="rounded-xl border px-5 py-3 text-sm font-bold">Cancel</button></div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className={"rounded-2xl border p-6 " + soft}>
+          <p className="text-sm font-black">Current Session</p>
+          {sessionLoading ? <p className={"mt-3 text-sm " + muted}>Loading session information...</p> : (
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              {[["Account",sessionInfo.email],["Browser",sessionInfo.browser],["Last sign-in",sessionInfo.lastSignIn],["Session expires",sessionInfo.expiresAt]].map(([label,value])=><div key={label} className={"rounded-xl border p-4 " + card}><p className={"text-xs font-bold uppercase tracking-wide " + muted}>{label}</p><p className="mt-2 text-sm font-bold break-words">{value || "Not available"}</p></div>)}
+            </div>
+          )}
+          <div className="mt-5 flex flex-wrap gap-3"><button onClick={signOutOtherSessions} disabled={sessionLoading} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-60">Sign Out Other Sessions</button><button onClick={()=>setActiveSecurity("Password & Login")} className="rounded-xl border px-5 py-3 text-sm font-bold">Password & Login</button><button onClick={()=>setActiveSecurity("Two-Factor Authentication")} className="rounded-xl border px-5 py-3 text-sm font-bold">2FA</button></div>
+        </div>
+      )}
+    </div>
+  );
+
+  const genericItems = activeTab === "Notifications"
+    ? ["Email Notifications", "Opportunity Notifications", "Activity Notifications", "Marketing Notifications"]
+    : activeTab === "Privacy"
+      ? ["Privacy Controls", "Data & Privacy"]
+      : activeTab === "Payment Methods"
+        ? ["Payment Methods", "Payout Preferences"]
+        : ["API Keys", "Connected Integrations"];
+
+  const genericTabContent = activeTab === "Notifications" ? notificationContent : (
+    <div className="space-y-6">
+      <div><p className="text-lg font-black">{activeGeneric || genericItems[0]}</p><p className={"mt-1 text-sm " + muted}>Manage your {(activeGeneric || genericItems[0]).toLowerCase()} settings.</p></div>
+      <div className={"rounded-2xl border p-6 " + soft}>
+        {activeTab === "Privacy" && activeGeneric === "Privacy Controls" ? (
+          <><p className="text-sm font-black">Profile Visibility</p><p className={"mt-2 text-sm leading-6 " + muted}>Control how your ACEPA profile and activity are visible.</p><div className="mt-5 grid gap-3 sm:grid-cols-3">{["Public","ACEPA members","Private"].map(v=><button key={v} onClick={()=>setMessage("Privacy preference selected: " + v)} className={"rounded-xl border p-4 text-left text-sm font-bold " + card}>{v}</button>)}</div></>
+        ) : activeTab === "Payment Methods" && activeGeneric === "Payment Methods" ? (
+          <><p className="text-sm font-black">Payment Methods</p><p className={"mt-2 text-sm leading-6 " + muted}>Add and manage payment methods used for eligible ACEPA transactions.</p><button onClick={()=>setMessage("Payment method setup will be connected here.")} className="mt-5 rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white">Add Payment Method</button></>
+        ) : (
+          <><p className="text-sm font-black">{activeGeneric || genericItems[0]}</p><p className={"mt-2 text-sm leading-6 " + muted}>This is the direct settings area for {((activeGeneric || genericItems[0]).toLowerCase())}.</p><button onClick={()=>setMessage((activeGeneric || genericItems[0]) + " is selected and ready for configuration.")} className="mt-5 rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Edit Settings</button></>
+        )}
+      </div>
+    </div>
+  );
+
+  const sidebarItems = activeTab === "Profile" ? profileItems : activeTab === "Account" ? ["Account Information","Appearance","Login & Sessions"] : activeTab === "Security" ? ["Password & Login","Two-Factor Authentication","Sessions"] : genericItems;
+  const selected = activeTab === "Profile" ? activeProfile : activeTab === "Account" ? activeAccount : activeTab === "Security" ? activeSecurity : activeGeneric;
+
+  function selectTab(tab: string) {
+    setActiveTab(tab);
+    setMessage("");
+    if (tab === "Profile") setActiveProfile("Profile Information");
+    if (tab === "Account") setActiveAccount("Account Information");
+    if (tab === "Security") setActiveSecurity("Password & Login");
+    if (tab === "Notifications") setActiveGeneric("Email Notifications");
+    if (tab === "Privacy") setActiveGeneric("Privacy Controls");
+    if (tab === "Payment Methods") setActiveGeneric("Payment Methods");
+    if (tab === "API & Integrations") setActiveGeneric("API Keys");
+  }
+
+  return (
+    <UserAccountShell>
+      <div className={"min-h-screen " + surface}>
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between gap-4">
+            <div><p className="text-2xl font-black">Settings</p><p className={"mt-1 text-sm " + muted}>Manage your ACEPA account, security and preferences.</p></div>
+            <UserAccountActions />
+          </div>
+          <div className="mt-6">
+            <div className={"relative flex items-center gap-3 rounded-2xl border p-3 " + card}>
+              <span className="text-sm">⌕</span>
+              <input name="acepa-settings-query" type="search" autoComplete="new-password" autoCorrect="off" spellCheck={false} aria-autocomplete="none" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search settings..." className={"w-full bg-transparent text-sm outline-none " + muted}/>
+            </div>
+            {search.trim() && <div className="mt-2 flex flex-wrap gap-2">{filteredTabs.map(tab=><button key={tab} onClick={()=>{selectTab(tab);setSearch("")}} className="rounded-xl border px-3 py-2 text-xs font-bold">{tab}</button>)}</div>}
+          </div>
+          <div className="mt-6 grid gap-6 lg:grid-cols-[250px_1fr]">
+            <aside className={"rounded-2xl border p-3 " + card}>
+              <div className="px-3 py-3"><p className="text-xs font-black uppercase tracking-[0.16em] text-purple-600">Settings</p><p className={"mt-1 text-xs " + muted}>Account preferences</p></div>
+              <div className="space-y-1">{tabs.map(tab=><button key={tab} onClick={()=>selectTab(tab)} className={"flex w-full items-center rounded-xl px-3 py-3 text-left text-sm font-bold " + (activeTab===tab ? "bg-purple-50 text-purple-700 dark:bg-purple-950/40" : "")}>{tab}</button>)}</div>
+              <div className={"my-3 border-t " + (dark ? "border-slate-800" : "border-slate-200")}/>
+              <div className="space-y-1">{sidebarItems.map(item=><button key={item} onClick={()=>{if(activeTab==="Profile")setActiveProfile(item);else if(activeTab==="Account")setActiveAccount(item);else if(activeTab==="Security")setActiveSecurity(item);else setActiveGeneric(item);setMessage("")}} className={"flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm " + (selected===item ? "bg-purple-50 font-bold text-purple-700 dark:bg-purple-950/40" : muted)}><MiniIcon>•</MiniIcon>{item}</button>)}</div>
+            </aside>
+            <main className={"min-w-0 rounded-2xl border p-5 sm:p-7 " + card}>
+              {activeTab === "Profile" ? (activeProfile === "Profile Information" ? profileContent : profilePlaceholder) : activeTab === "Account" ? accountContent : activeTab === "Security" ? securityContent : activeTab === "Notifications" ? notificationContent : genericTabContent}
+              {message && <div className="mt-6 rounded-xl border border-purple-200 bg-purple-50 px-4 py-3 text-sm font-medium text-purple-800">{message}</div>}
+            </main>
+          </div>
+        </div>
+      </div>
+    </UserAccountShell>
+  );
+}
