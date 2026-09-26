@@ -1,10 +1,11 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import UserAccountShell from "@/components/user-account-shell";
 import { UserAccountActions } from "@/components/user-account-top-nav";
+import { createClient } from "@/lib/supabase/client";
 
 type OpportunityType =
   | "Investment"
@@ -339,9 +340,95 @@ export default function OpportunityDetailsPage({ params }: { params: Promise<{ i
   const opportunity = opportunityMap[id as keyof typeof opportunityMap];
   const [notice, setNotice] = useState("");
   const [saved, setSaved] = useState(false);
+  const [watchlisted, setWatchlisted] = useState(false);
+  const [listLoading, setListLoading] = useState(true);
 
   const type = opportunity?.type as OpportunityType | undefined;
   const actionLabel = type ? actionLabels[type] : "Participate";
+
+  useEffect(() => {
+    loadUserLists();
+  }, [id]);
+
+  async function loadUserLists() {
+    if (!opportunity) {
+      setListLoading(false);
+      return;
+    }
+
+    setListLoading(true);
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setListLoading(false);
+      return;
+    }
+
+    const { data } = await supabase
+      .from("user_opportunity_lists")
+      .select("list_type")
+      .eq("opportunity_slug", id);
+
+    const types = new Set((data || []).map((item) => item.list_type));
+    setSaved(types.has("saved"));
+    setWatchlisted(types.has("watchlist"));
+    setListLoading(false);
+  }
+
+  async function toggleList(listType: "saved" | "watchlist") {
+    if (!opportunity) return;
+
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      router.push("/sign-in?next=/opportunities/" + id);
+      return;
+    }
+
+    const active = listType === "saved" ? saved : watchlisted;
+
+    if (active) {
+      const { error } = await supabase
+        .from("user_opportunity_lists")
+        .delete()
+        .eq("opportunity_slug", id)
+        .eq("list_type", listType);
+
+      if (error) {
+        setNotice("We could not update your " + (listType === "saved" ? "Saved" : "Watchlist") + " right now.");
+        return;
+      }
+
+      if (listType === "saved") setSaved(false);
+      else setWatchlisted(false);
+      setNotice(listType === "saved" ? "Removed from Saved." : "Removed from Watchlist.");
+      return;
+    }
+
+    const { error } = await supabase.from("user_opportunity_lists").insert({
+      user_id: user.id,
+      opportunity_slug: id,
+      opportunity_title: opportunity.title,
+      company_name: opportunity.company,
+      category: opportunity.type,
+      list_type: listType,
+    });
+
+    if (error && error.code !== "23505") {
+      setNotice("We could not update your " + (listType === "saved" ? "Saved" : "Watchlist") + " right now.");
+      return;
+    }
+
+    if (listType === "saved") setSaved(true);
+    else setWatchlisted(true);
+    setNotice(listType === "saved" ? "Opportunity saved." : "Added to Watchlist.");
+  }
 
   return (
     <UserAccountShell>
@@ -449,13 +536,18 @@ export default function OpportunityDetailsPage({ params }: { params: Promise<{ i
                       {actionLabel} →
                     </button>
                     <button
-                      onClick={() => {
-                        setSaved((current) => !current);
-                        setNotice(saved ? "Demo opportunity removed from Saved." : "Demo opportunity saved. Your Saved area will connect to live data later.");
-                      }}
-                      className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm font-bold transition " + (saved ? "border-purple-200 bg-purple-50 text-purple-700" : "border-slate-200 text-slate-700 hover:border-purple-200 hover:text-purple-700")}
+                      disabled={listLoading}
+                      onClick={() => toggleList("saved")}
+                      className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm font-bold transition " + (saved ? "border-purple-200 bg-purple-50 text-purple-700" : "border-slate-200 text-slate-700 hover:border-purple-200 hover:text-purple-700") + " disabled:cursor-not-allowed disabled:opacity-60"}
                     >
                       {saved ? "Saved ✓" : "Save opportunity"}
+                    </button>
+                    <button
+                      disabled={listLoading}
+                      onClick={() => toggleList("watchlist")}
+                      className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm font-bold transition " + (watchlisted ? "border-amber-200 bg-amber-50 text-amber-700" : "border-slate-200 text-slate-700 hover:border-amber-200 hover:text-amber-700") + " disabled:cursor-not-allowed disabled:opacity-60"}
+                    >
+                      {watchlisted ? "On Watchlist ✓" : "Add to Watchlist"}
                     </button>
                   </div>
 
