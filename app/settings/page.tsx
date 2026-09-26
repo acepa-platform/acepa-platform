@@ -37,12 +37,12 @@ export default function SettingsPage() {
       return;
     }
     setEmail(user.email ?? "");
+    const savedAppearance = localStorage.getItem("acepa-appearance");
     const { data } = await supabase.from("user_preferences").select("appearance").eq("user_id", user.id).maybeSingle();
-    if (data?.appearance) {
-      setAppearance(data.appearance);
-      localStorage.setItem("acepa-appearance", data.appearance);
-      window.dispatchEvent(new CustomEvent("acepa-appearance-change", { detail: data.appearance }));
-    }
+    const nextAppearance = savedAppearance || data?.appearance || "system";
+    setAppearance(nextAppearance);
+    localStorage.setItem("acepa-appearance", nextAppearance);
+    window.dispatchEvent(new CustomEvent("acepa-appearance-change", { detail: nextAppearance }));
   }
 
   const dark = appearance === "dark" || (appearance === "system" && systemDark);
