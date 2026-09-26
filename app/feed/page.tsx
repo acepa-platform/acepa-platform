@@ -1,0 +1,507 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import UserAccountShell from "@/components/user-account-shell";
+import { UserAccountActions } from "@/components/user-account-top-nav";
+
+type Profile = {
+  full_name: string;
+  avatar_url: string;
+};
+
+type FeedPost = {
+  id: string;
+  author_id: string;
+  author_name: string;
+  author_avatar_url: string | null;
+  post_type: "update" | "opportunity_insight" | "business_update";
+  content: string;
+  created_at: string;
+};
+
+type FeedComment = {
+  id: string;
+  post_id: string;
+  author_id: string;
+  author_name: string;
+  author_avatar_url: string | null;
+  content: string;
+  created_at: string;
+};
+
+const filters = [
+  ["all", "For You"],
+  ["mine", "My Posts"],
+  ["opportunity_insight", "Opportunity Insights"],
+  ["business_update", "Business Updates"],
+] as const;
+
+const postTypes = [
+  ["update", "General Update"],
+  ["opportunity_insight", "Opportunity Insight"],
+  ["business_update", "Business Update"],
+] as const;
+
+function initials(name: string) {
+  return (name || "A")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+}
+
+function timeAgo(value: string) {
+  const seconds = Math.max(1, Math.floor((Date.now() - new Date(value).getTime()) / 1000));
+  if (seconds < 60) return seconds + "s";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return minutes + "m";
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return hours + "h";
+  const days = Math.floor(hours / 24);
+  if (days < 7) return days + "d";
+  return new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+export default function FeedPage() {
+  const [profile, setProfile] = useState<Profile>({ full_name: "", avatar_url: "" });
+  const [email, setEmail] = useState("");
+  const [userId, setUserId] = useState("");
+  const [posts, setPosts] = useState<FeedPost[]>([]);
+  const [comments, setComments] = useState<FeedComment[]>([]);
+  const [likedPostIds, setLikedPostIds] = useState<Set<string>>(new Set());
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+  const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+  const [openComments, setOpenComments] = useState<Set<string>>(new Set());
+  const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({});
+  const [composer, setComposer] = useState("");
+  const [postType, setPostType] = useState<FeedPost["post_type"]>("update");
+  const [filter, setFilter] = useState<(typeof filters)[number][0]>("all");
+  const [loading, setLoading] = useState(true);
+  const [posting, setPosting] = useState(false);
+  const [actionId, setActionId] = useState("");
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    loadFeed();
+  }, []);
+
+  async function loadFeed() {
+    setLoading(true);
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      window.location.href = "/sign-in?next=/feed";
+      return;
+    }
+
+    setUserId(user.id);
+    setEmail(user.email ?? "");
+
+    const [{ data: profileData, error: profileError }, { data: postData, error: postError }] = await Promise.all([
+      supabase.from("profiles").select("full_name,avatar_url").eq("id", user.id).maybeSingle(),
+      supabase
+        .from("feed_posts")
+        .select("id,author_id,author_name,author_avatar_url,post_type,content,created_at")
+        .eq("status", "published")
+        .order("created_at", { ascending: false })
+        .limit(50),
+    ]);
+
+    if (profileError || postError) {
+      setMessage(profileError?.message ?? postError?.message ?? "Unable to load your feed.");
+      setLoading(false);
+      return;
+    }
+
+    setProfile({
+      full_name: profileData?.full_name ?? "",
+      avatar_url: profileData?.avatar_url ?? "",
+    });
+    setPosts((postData ?? []) as FeedPost[]);
+
+    const postIds = (postData ?? []).map((post) => post.id);
+    if (postIds.length > 0) {
+      const [{ data: likeData }, { data: commentData }] = await Promise.all([
+        supabase.from("feed_likes").select("post_id,user_id").in("post_id", postIds),
+        supabase
+          .from("feed_comments")
+          .select("id,post_id,author_id,author_name,author_avatar_url,content,created_at")
+          .in("post_id", postIds)
+          .order("created_at", { ascending: true }),
+      ]);
+
+      const nextLikeCounts: Record<string, number> = {};
+      const nextLiked = new Set<string>();
+      for (const like of likeData ?? []) {
+        nextLikeCounts[like.post_id] = (nextLikeCounts[like.post_id] ?? 0) + 1;
+        if (like.user_id === user.id) nextLiked.add(like.post_id);
+      }
+
+      const nextCommentCounts: Record<string, number> = {};
+      for (const comment of commentData ?? []) {
+        nextCommentCounts[comment.post_id] = (nextCommentCounts[comment.post_id] ?? 0) + 1;
+      }
+
+      setLikeCounts(nextLikeCounts);
+      setLikedPostIds(nextLiked);
+      setComments((commentData ?? []) as FeedComment[]);
+      setCommentCounts(nextCommentCounts);
+    } else {
+      setLikeCounts({});
+      setLikedPostIds(new Set());
+      setComments([]);
+      setCommentCounts({});
+    }
+
+    setLoading(false);
+  }
+
+  async function createPost() {
+    const content = composer.trim();
+    if (!content) {
+      setMessage("Write something before posting.");
+      return;
+    }
+
+    setPosting(true);
+    setMessage("");
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setPosting(false);
+      return;
+    }
+
+    const authorName = profile.full_name || user.email?.split("@")[0] || "ACEPA Member";
+    const { data, error } = await supabase
+      .from("feed_posts")
+      .insert({
+        author_id: user.id,
+        author_name: authorName,
+        author_avatar_url: profile.avatar_url || null,
+        post_type: postType,
+        content,
+        status: "published",
+      })
+      .select("id,author_id,author_name,author_avatar_url,post_type,content,created_at")
+      .single();
+
+    if (error) {
+      setMessage(error.message);
+      setPosting(false);
+      return;
+    }
+
+    setPosts((current) => [data as FeedPost, ...current]);
+    setComposer("");
+    setPostType("update");
+    setMessage("Your post is live on ACEPA Feed.");
+    setPosting(false);
+  }
+
+  async function toggleLike(post: FeedPost) {
+    if (!userId || actionId) return;
+    setActionId(post.id);
+    const supabase = createClient();
+    const liked = likedPostIds.has(post.id);
+
+    const result = liked
+      ? await supabase.from("feed_likes").delete().eq("post_id", post.id).eq("user_id", userId)
+      : await supabase.from("feed_likes").insert({ post_id: post.id, user_id: userId });
+
+    if (result.error) {
+      setMessage(result.error.message);
+      setActionId("");
+      return;
+    }
+
+    setLikedPostIds((current) => {
+      const next = new Set(current);
+      if (liked) next.delete(post.id);
+      else next.add(post.id);
+      return next;
+    });
+    setLikeCounts((current) => ({
+      ...current,
+      [post.id]: Math.max(0, (current[post.id] ?? 0) + (liked ? -1 : 1)),
+    }));
+    setActionId("");
+  }
+
+  async function addComment(post: FeedPost) {
+    const content = (commentDrafts[post.id] ?? "").trim();
+    if (!content || !userId || actionId) return;
+
+    setActionId(post.id);
+    setMessage("");
+    const supabase = createClient();
+    const authorName = profile.full_name || email.split("@")[0] || "ACEPA Member";
+
+    const { data, error } = await supabase
+      .from("feed_comments")
+      .insert({
+        post_id: post.id,
+        author_id: userId,
+        author_name: authorName,
+        author_avatar_url: profile.avatar_url || null,
+        content,
+      })
+      .select("id,post_id,author_id,author_name,author_avatar_url,content,created_at")
+      .single();
+
+    if (error) {
+      setMessage(error.message);
+      setActionId("");
+      return;
+    }
+
+    setComments((current) => [...current, data as FeedComment]);
+    setCommentCounts((current) => ({ ...current, [post.id]: (current[post.id] ?? 0) + 1 }));
+    setCommentDrafts((current) => ({ ...current, [post.id]: "" }));
+    setOpenComments((current) => new Set(current).add(post.id));
+    setActionId("");
+  }
+
+  async function deletePost(post: FeedPost) {
+    if (post.author_id !== userId || actionId) return;
+    setActionId(post.id);
+    const supabase = createClient();
+    const { error } = await supabase.from("feed_posts").delete().eq("id", post.id);
+
+    if (error) {
+      setMessage(error.message);
+      setActionId("");
+      return;
+    }
+
+    setPosts((current) => current.filter((item) => item.id !== post.id));
+    setComments((current) => current.filter((comment) => comment.post_id !== post.id));
+    setLikeCounts((current) => {
+      const next = { ...current };
+      delete next[post.id];
+      return next;
+    });
+    setCommentCounts((current) => {
+      const next = { ...current };
+      delete next[post.id];
+      return next;
+    });
+    setOpenComments((current) => {
+      const next = new Set(current);
+      next.delete(post.id);
+      return next;
+    });
+    setMessage("Post deleted.");
+    setActionId("");
+  }
+
+  const visiblePosts = useMemo(() => {
+    return posts.filter((post) => {
+      if (filter === "mine") return post.author_id === userId;
+      if (filter === "opportunity_insight") return post.post_type === "opportunity_insight";
+      if (filter === "business_update") return post.post_type === "business_update";
+      return true;
+    });
+  }, [posts, filter, userId]);
+
+  const currentName = profile.full_name || email.split("@")[0] || "ACEPA Member";
+
+  return (
+    <UserAccountShell>
+      <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
+        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+          <div className="flex h-20 items-center justify-between px-5 sm:px-8 lg:px-10">
+            <div>
+              <p className="text-xs font-semibold text-slate-400">ACEPA COMMUNITY</p>
+              <p className="mt-1 text-sm font-bold">Feed</p>
+            </div>
+            <UserAccountActions />
+          </div>
+        </header>
+
+        <div className="mx-auto max-w-[1180px] px-4 py-7 sm:px-6 lg:px-8 lg:py-10">
+          <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_310px]">
+            <section>
+              <div className="mb-6">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-purple-600">PEOPLE • OPPORTUNITIES • PROGRESS</p>
+                <h1 className="mt-2 text-3xl font-black tracking-[-0.05em] sm:text-4xl">What’s happening on ACEPA</h1>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
+                  Share updates, useful opportunity insights and business progress with the ACEPA community.
+                </p>
+              </div>
+
+              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                <div className="flex gap-4">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-950 text-sm font-black text-white">
+                    {profile.avatar_url ? <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" /> : initials(currentName)}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <textarea
+                      value={composer}
+                      onChange={(event) => setComposer(event.target.value)}
+                      maxLength={5000}
+                      rows={4}
+                      placeholder="Share something useful with the ACEPA community..."
+                      className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-100"
+                    />
+                    <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold text-slate-400">{composer.length}/5000</span>
+                        <select
+                          value={postType}
+                          onChange={(event) => setPostType(event.target.value as FeedPost["post_type"])}
+                          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none"
+                        >
+                          {postTypes.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                        </select>
+                      </div>
+                      <button
+                        onClick={createPost}
+                        disabled={posting}
+                        className="rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-purple-700 disabled:opacity-50"
+                      >
+                        {posting ? "Posting..." : "Post to Feed"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-wrap gap-2">
+                {filters.map(([value, label]) => (
+                  <button
+                    key={value}
+                    onClick={() => setFilter(value)}
+                    className={"rounded-full px-4 py-2 text-xs font-bold transition " + (filter === value ? "bg-slate-950 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-purple-200 hover:text-purple-700")}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {message && <div className="mt-4 rounded-2xl border border-purple-100 bg-purple-50 px-4 py-3 text-sm font-semibold text-purple-800">{message}</div>}
+
+              {loading ? (
+                <div className="mt-5 rounded-3xl border border-slate-200 bg-white p-10 text-center text-sm text-slate-500">Loading your feed...</div>
+              ) : visiblePosts.length === 0 ? (
+                <div className="mt-5 rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 text-lg">✦</div>
+                  <p className="mt-4 text-sm font-black">{filter === "mine" ? "You have not posted yet." : "Your feed is ready for its first post."}</p>
+                  <p className="mt-2 mx-auto max-w-md text-sm leading-6 text-slate-500">Be the first to share a useful update, opportunity insight or business update.</p>
+                </div>
+              ) : (
+                <div className="mt-5 space-y-5">
+                  {visiblePosts.map((post) => {
+                    const postComments = comments.filter((comment) => comment.post_id === post.id);
+                    const liked = likedPostIds.has(post.id);
+                    const isMine = post.author_id === userId;
+                    return (
+                      <article key={post.id} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-950 text-sm font-black text-white">
+                            {post.author_avatar_url ? <img src={post.author_avatar_url} alt="" className="h-full w-full object-cover" /> : initials(post.author_name)}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <p className="text-sm font-black">{post.author_name}</p>
+                                <p className="mt-1 text-xs text-slate-400">
+                                  {post.post_type === "opportunity_insight" ? "Opportunity Insight" : post.post_type === "business_update" ? "Business Update" : "General Update"} · {timeAgo(post.created_at)}
+                                </p>
+                              </div>
+                              {isMine && <button onClick={() => deletePost(post)} disabled={actionId === post.id} className="text-xs font-bold text-slate-400 hover:text-red-600">{actionId === post.id ? "Deleting..." : "Delete"}</button>}
+                            </div>
+                            <p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-slate-700">{post.content}</p>
+                          </div>
+                        </div>
+
+                        <div className="mt-5 flex items-center gap-2 border-t border-slate-100 pt-4">
+                          <button
+                            onClick={() => toggleLike(post)}
+                            disabled={actionId === post.id}
+                            className={"rounded-xl px-3 py-2 text-xs font-bold transition " + (liked ? "bg-purple-50 text-purple-700" : "text-slate-500 hover:bg-slate-50")}
+                          >
+                            {liked ? "♥ Liked" : "♡ Like"} · {likeCounts[post.id] ?? 0}
+                          </button>
+                          <button
+                            onClick={() => setOpenComments((current) => {
+                              const next = new Set(current);
+                              if (next.has(post.id)) next.delete(post.id); else next.add(post.id);
+                              return next;
+                            })}
+                            className="rounded-xl px-3 py-2 text-xs font-bold text-slate-500 transition hover:bg-slate-50"
+                          >
+                            ◌ Comment · {commentCounts[post.id] ?? 0}
+                          </button>
+                        </div>
+
+                        {openComments.has(post.id) && (
+                          <div className="mt-4 rounded-2xl bg-slate-50 p-4">
+                            <div className="space-y-4">
+                              {postComments.length === 0 ? (
+                                <p className="text-xs text-slate-400">No comments yet. Start the conversation.</p>
+                              ) : postComments.map((comment) => (
+                                <div key={comment.id} className="flex gap-3">
+                                  <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white text-[10px] font-black text-slate-700 shadow-sm">
+                                    {comment.author_avatar_url ? <img src={comment.author_avatar_url} alt="" className="h-full w-full object-cover" /> : initials(comment.author_name)}
+                                  </div>
+                                  <div className="min-w-0 rounded-2xl bg-white px-4 py-3">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <p className="text-xs font-black">{comment.author_name}</p>
+                                      <span className="text-[10px] text-slate-400">{timeAgo(comment.created_at)}</span>
+                                    </div>
+                                    <p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-slate-600">{comment.content}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="mt-4 flex gap-2">
+                              <input
+                                value={commentDrafts[post.id] ?? ""}
+                                onChange={(event) => setCommentDrafts((current) => ({ ...current, [post.id]: event.target.value }))}
+                                onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); addComment(post); } }}
+                                maxLength={2000}
+                                placeholder="Write a comment..."
+                                className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs outline-none focus:border-purple-500"
+                              />
+                              <button onClick={() => addComment(post)} disabled={actionId === post.id} className="rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white hover:bg-purple-700 disabled:opacity-50">
+                                Send
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+
+            <aside className="space-y-5">
+              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-600">ACEPA Feed</p>
+                <h2 className="mt-2 text-xl font-black tracking-[-0.03em]">A place to share useful progress.</h2>
+                <p className="mt-3 text-sm leading-6 text-slate-500">Use Feed for updates, opportunity insights and business progress. Keep opportunity transactions themselves inside the relevant ACEPA activity or opportunity.</p>
+              </div>
+              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Your profile</p>
+                <p className="mt-3 text-sm font-black">{currentName}</p>
+                <p className="mt-1 text-xs text-slate-500">{email}</p>
+                <a href="/profile" className="mt-4 inline-flex rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-700 hover:border-purple-200 hover:text-purple-700">Edit Profile →</a>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </main>
+    </UserAccountShell>
+  );
+}
