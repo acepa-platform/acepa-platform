@@ -281,7 +281,7 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
     setStep("complete");
     setNotice(
       type === "Investment"
-        ? "Demo investment request recorded. No money was debited, transferred, or reserved."
+        ? "Investment request recorded successfully. Demo payment status: Successful. No real money was debited, transferred, or reserved."
         : "Demo submission recorded. The live company workflow will be connected later."
     );
   }
@@ -595,7 +595,7 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
                 <div className="mx-auto max-w-2xl text-center">
                   <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-50 text-2xl text-emerald-700">✓</div>
                   <p className="mt-5 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Demo recorded</p>
-                  <h2 className="mt-2 text-3xl font-black tracking-[-0.04em]">Your {actionLabel.toLowerCase()} request has been recorded.</h2>
+                  <h2 className="mt-2 text-3xl font-black tracking-[-0.04em]">Your {actionLabel.toLowerCase()} request has been recorded successfully.</h2>
                   <p className="mt-4 text-sm leading-7 text-slate-600">{notice}</p>
 
                   {opportunity.type === "Investment" && (
@@ -604,7 +604,7 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
                       <div className="mt-4 grid gap-4 sm:grid-cols-3">
                         <ReviewItem label="Amount" value={"$" + numericAmount.toLocaleString()} />
                         <ReviewItem label="Funding source" value={fundingSource} />
-                        <ReviewItem label="Payment status" value="No payment made" />
+                        <ReviewItem label="Payment status" value="Successful (Demo)" />
                       </div>
                     </div>
                   )}
