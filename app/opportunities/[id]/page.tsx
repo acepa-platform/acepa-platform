@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import UserAccountShell from "@/components/user-account-shell";
@@ -151,6 +151,9 @@ export default function OpportunityDetailsPage({ params }: { params: Promise<{ i
   const { id } = use(params);
   const router = useRouter();
   const opportunity = opportunityMap[id as keyof typeof opportunityMap];
+  const [notice, setNotice] = useState("");
+  const [saved, setSaved] = useState(false);
+  const [interested, setInterested] = useState(false);
 
   return (
     <UserAccountShell>
@@ -247,14 +250,31 @@ export default function OpportunityDetailsPage({ params }: { params: Promise<{ i
 
                 <aside className="space-y-5">
                   <div className="sticky top-28 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                    {notice && (
+                      <div className="mb-4 rounded-2xl border border-purple-100 bg-purple-50 px-4 py-3 text-xs font-semibold leading-5 text-purple-800">
+                        {notice}
+                      </div>
+                    )}
                     <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Ready to participate?</p>
                     <h2 className="mt-2 text-xl font-black tracking-[-0.03em]">Take the next step.</h2>
                     <p className="mt-3 text-sm leading-6 text-slate-500">Participation flows will be connected to the relevant opportunity workflow when company-side publishing and eligibility are fully built.</p>
-                    <button className="mt-5 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-purple-700">
-                      Express interest
+                    <button
+                      onClick={() => {
+                        setInterested((current) => !current);
+                        setNotice(interested ? "Demo interest withdrawn. The live participation workflow will connect here later." : "Demo interest recorded. The live participation workflow will connect here later.");
+                      }}
+                      className="mt-5 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-purple-700"
+                    >
+                      {interested ? "Interest recorded ✓" : "Express interest"}
                     </button>
-                    <button className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-purple-200 hover:text-purple-700">
-                      Save opportunity
+                    <button
+                      onClick={() => {
+                        setSaved((current) => !current);
+                        setNotice(saved ? "Demo opportunity removed from Saved." : "Demo opportunity saved. Your Saved area will connect to live data later.");
+                      }}
+                      className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm font-bold transition " + (saved ? "border-purple-200 bg-purple-50 text-purple-700" : "border-slate-200 text-slate-700 hover:border-purple-200 hover:text-purple-700")}
+                    >
+                      {saved ? "Saved ✓" : "Save opportunity"}
                     </button>
                   </div>
 
