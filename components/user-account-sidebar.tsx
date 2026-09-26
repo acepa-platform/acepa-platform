@@ -12,13 +12,14 @@ const sections = [
       { label: "Discover", href: "/dashboard/discover", icon: "discover" },
       { label: "Feed", href: "/feed", icon: "feed" },
       { label: "Opportunities", href: "/opportunities", icon: "spark" },
+      { label: "Wallet", href: "/wallet", icon: "wallet" },
+      { label: "Activity", href: "/activity", icon: "activity" },
+      { label: "Profile", href: "/profile", icon: "profile" },
     ],
   },
   {
     title: "My ACEPA",
     items: [
-      { label: "My Activity", href: "/activity", icon: "activity" },
-      { label: "My Wallet", href: "/wallet", icon: "wallet" },
       { label: "My Investments", href: "/investments", icon: "investment" },
       { label: "My Earnings", href: "/earnings", icon: "earnings" },
       { label: "Saved", href: "/saved", icon: "saved" },
@@ -171,7 +172,7 @@ export default function UserAccountSidebar({ open, onToggle }: UserAccountSideba
           <div className="mt-8 rounded-2xl bg-slate-950 p-5 text-white">
             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/50">Your ACEPA journey</p>
             <p className="mt-3 text-sm font-semibold leading-6">Discover opportunities and turn participation into progress.</p>
-            <Link href="/discover" className="mt-4 inline-flex rounded-lg bg-white px-3 py-2 text-xs font-bold text-slate-950 transition hover:bg-purple-50">
+            <Link href="/dashboard/discover" className="mt-4 inline-flex rounded-lg bg-white px-3 py-2 text-xs font-bold text-slate-950 transition hover:bg-purple-50">
               Explore now →
             </Link>
           </div>
