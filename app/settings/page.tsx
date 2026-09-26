@@ -39,6 +39,10 @@ export default function SettingsPage() {
   const [appearance, setAppearance] = useState("system");
   const [activeTab, setActiveTab] = useState("Profile");
   const [activeProfile, setActiveProfile] = useState("Profile Information");
+  const [activeSecurity, setActiveSecurity] = useState("Password & Login");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [systemDark, setSystemDark] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -153,6 +157,57 @@ export default function SettingsPage() {
     setAppearance(value);
     localStorage.setItem("acepa-appearance", value);
     window.dispatchEvent(new CustomEvent("acepa-appearance-change", { detail: value }));
+  }
+
+  async function changePassword() {
+    setSaving(true);
+    setMessage("");
+
+    if (newPassword.length < 6) {
+      setMessage("New password must be at least 6 characters.");
+      setSaving(false);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setMessage("New password and confirmation do not match.");
+      setSaving(false);
+      return;
+    }
+
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user?.email) {
+      setMessage("Your authenticated email could not be verified.");
+      setSaving(false);
+      return;
+    }
+
+    const { error: reauthError } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: currentPassword,
+    });
+
+    if (reauthError) {
+      setMessage("Current password is incorrect.");
+      setSaving(false);
+      return;
+    }
+
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+    if (error) {
+      setMessage(error.message);
+      setSaving(false);
+      return;
+    }
+
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setMessage("Password changed successfully.");
+    setSaving(false);
   }
 
   const avatarInitials = (profile.full_name || email || "A")
@@ -324,11 +379,71 @@ export default function SettingsPage() {
 
   const selectedLeft = activeTab === "Profile" ? activeProfile : leftItems[0];
 
+  const securityContent = activeSecurity === "Password & Login" ? (
+    <div className="space-y-6">
+      <div>
+        <p className="text-lg font-black">Password & Login</p>
+        <p className={"mt-1 text-sm " + muted}>Change your password and keep your ACEPA account protected.</p>
+      </div>
+
+      <div className={"rounded-2xl border p-5 " + soft}>
+        <p className="text-sm font-black">Change Password</p>
+        <p className={"mt-1 text-sm " + muted}>For your security, confirm your current password before choosing a new one.</p>
+
+        <div className="mt-5 grid gap-5">
+          {[
+            ["Current Password", currentPassword, setCurrentPassword, "Enter your current password"],
+            ["New Password", newPassword, setNewPassword, "At least 6 characters"],
+            ["Confirm New Password", confirmPassword, setConfirmPassword, "Re-enter your new password"],
+          ].map(([label, value, setter, placeholder]) => (
+            <div key={String(label)}>
+              <label className="text-sm font-bold">{label}</label>
+              <input
+                type="password"
+                value={String(value)}
+                onChange={(event) => (setter as React.Dispatch<React.SetStateAction<string>>)(event.target.value)}
+                placeholder={String(placeholder)}
+                className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-5 flex items-center justify-between gap-4">
+          <Link href="/forgot-password" className="text-sm font-bold text-purple-600 hover:underline">
+            Forgot your password?
+          </Link>
+          <button onClick={changePassword} disabled={saving} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700 disabled:opacity-60">
+            {saving ? "Changing..." : "Change Password"}
+          </button>
+        </div>
+      </div>
+
+      <div className={"rounded-2xl border p-5 " + soft}>
+        <p className="text-sm font-black">Login protection</p>
+        <p className={"mt-2 text-sm leading-6 " + muted}>Two-factor authentication and session controls will be connected here as the ACEPA security system expands.</p>
+      </div>
+    </div>
+  ) : (
+    <div className="space-y-5">
+      <div>
+        <p className="text-lg font-black">{activeSecurity}</p>
+        <p className={"mt-1 text-sm " + muted}>Manage your {activeSecurity.toLowerCase()} settings.</p>
+      </div>
+      <div className={"rounded-2xl border p-6 " + soft}>
+        <p className="font-bold">{activeSecurity}</p>
+        <p className={"mt-2 text-sm leading-6 " + muted}>This security control is reserved for the next ACEPA security build.</p>
+      </div>
+    </div>
+  );
+
   const middleContent = activeTab === "Profile"
     ? (activeProfile === "Profile Information" ? profileContent : profilePlaceholder)
     : activeTab === "Account"
       ? accountContent
-      : genericTabContent;
+      : activeTab === "Security"
+        ? securityContent
+        : genericTabContent;
 
   return (
     <UserAccountShell>
@@ -368,7 +483,7 @@ export default function SettingsPage() {
                     return (
                       <button
                         key={item}
-                        onClick={() => activeTab === "Profile" && setActiveProfile(item)}
+                        onClick={() => activeTab === "Profile" ? setActiveProfile(item) : activeTab === "Security" && setActiveSecurity(item)}
                         className={"flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition " + (selected ? "bg-purple-50 text-purple-700 dark:bg-purple-950/40" : muted)}
                       >
                         <span className="text-base">{["♙", "▣", "⌖", "↗", "✓", "◉"][index % 6]}</span>
