@@ -457,16 +457,49 @@ export default function SettingsPage() {
   }
 
   async function removeAvatar() {
+    if (!profile.avatar_url) return;
+
     setAvatarUploading(true);
     setMessage("");
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setAvatarUploading(false); return; }
+    if (!user) {
+      setAvatarUploading(false);
+      return;
+    }
 
-    await supabase.storage.from("avatars").remove([user.id + "/avatar"]);
-    const { error } = await supabase.from("profiles").update({ avatar_url: null }).eq("id", user.id);
-    setMessage(error ? error.message : "Profile photo removed successfully.");
-    if (!error) setProfile((current) => ({ ...current, avatar_url: "" }));
+    const paths = new Set<string>([user.id + "/avatar"]);
+    const marker = "/storage/v1/object/public/avatars/";
+    const markerIndex = profile.avatar_url.indexOf(marker);
+    if (markerIndex >= 0) {
+      const storedPath = decodeURIComponent(profile.avatar_url.slice(markerIndex + marker.length).split("?")[0]);
+      if (storedPath) paths.add(storedPath);
+    }
+
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ avatar_url: null })
+      .eq("id", user.id);
+
+    if (profileError) {
+      setMessage(profileError.message);
+      setAvatarUploading(false);
+      return;
+    }
+
+    setProfile((current) => ({ ...current, avatar_url: "" }));
+
+    const { error: storageError } = await supabase
+      .storage
+      .from("avatars")
+      .remove(Array.from(paths));
+
+    if (storageError) {
+      setMessage("Profile photo removed from your profile. The old image file could not be cleaned up: " + storageError.message);
+    } else {
+      setMessage("Profile photo removed successfully.");
+    }
+
     setAvatarUploading(false);
   }
 
