@@ -14,37 +14,37 @@ const steps = [
   {
     number: "03",
     title: "Decide",
-    text: "Choose the opportunities that fit your goals, interests, resources, skills, capital, or business strategy. You are never required to participate in every opportunity.",
+    text: "Choose opportunities that fit your goals, interests, resources, skills, capital, or business strategy. Each eligible opportunity should make clear what you contribute and what you may receive in return. You are never required to participate in every opportunity.",
   },
   {
     number: "04",
     title: "Participate",
-    text: "Invest, contribute an idea, provide expertise, market an opportunity, collaborate, work, support a business, or participate in another eligible activity.",
+    text: "Invest, contribute an idea, provide expertise, market an opportunity, collaborate, work, support a business, or participate in another eligible activity — with the applicable return, revenue share, commission, payment, wage, or reward clearly defined where relevant.",
   },
   {
     number: "05",
     title: "Track",
-    text: "Keep up with your activity, participation status, updates, progress, earnings, investments, communications, and other relevant information.",
+    text: "Keep up with your activity, participation status, updates, progress, earnings, investments, payments, communications, and other relevant information so you can see what your participation is producing.",
   },
   {
     number: "06",
     title: "Complete",
-    text: "Move opportunities through their defined stages, receive applicable outcomes, and maintain a clear record of what happened.",
+    text: "Move opportunities through their defined stages, receive applicable outcomes or earnings, and maintain a clear record of what happened.",
   },
   {
     number: "07",
     title: "Progress",
-    text: "Use what you have learned and earned to discover new opportunities, build stronger relationships, grow your work, and create further progress.",
+    text: "Use what you have learned and earned to discover new opportunities, grow your business or career, build stronger relationships, reinvest where appropriate, and create further progress.",
   },
 ];
 
 const paths = [
-  ["Invest", "Deploy capital into eligible investment opportunities and track your participation and investment progress."],
-  ["Create", "Bring ideas, products, solutions, or innovation to opportunities where your contribution can create value."],
-  ["Market", "Promote eligible businesses and opportunities through marketing, referral, or performance-based activities."],
-  ["Collaborate", "Bring skills, resources, relationships, or strategic partnerships to opportunities that need them."],
-  ["Work", "Find paid careers, jobs, expert engagements, and other professional opportunities."],
-  ["Build", "Companies can publish opportunities and also participate in opportunities created by other companies and participants."],
+  ["Invest", "Deploy capital into eligible investment opportunities where the terms define the potential return, distribution, or other investment outcome, and track your participation and investment progress."],
+  ["Create", "Bring ideas, products, solutions, or innovation to opportunities where your contribution can create value and, where applicable, earn revenue, fees, royalties, rewards, or another agreed benefit."],
+  ["Market", "Promote eligible businesses and opportunities through marketing, referral, or performance-based activities where the applicable commission, fee, revenue share, or reward is defined."],
+  ["Collaborate", "Bring skills, resources, relationships, or strategic partnerships to opportunities where your contribution can generate an agreed payment, revenue share, commercial benefit, or other eligible reward."],
+  ["Work", "Find paid careers, jobs, expert engagements, and other professional opportunities where your work is connected to a defined payment or earning arrangement."],
+  ["Build", "Companies can publish opportunities and also participate in opportunities created by other companies and participants — earning or gaining the applicable business, commercial, investment, or strategic value defined by each opportunity."],
 ];
 
 export default function HowItWorksPage() {
@@ -81,7 +81,7 @@ export default function HowItWorksPage() {
             <div className="inline-flex rounded-full border border-purple-300/30 bg-purple-500/15 px-4 py-2 text-xs font-bold tracking-[0.18em] text-purple-200">HOW ACEPA WORKS</div>
             <h1 className="mt-7 text-5xl font-bold leading-[0.96] tracking-[-0.05em] sm:text-6xl lg:text-7xl">From possibility to progress.</h1>
             <p className="mt-7 max-w-3xl text-lg leading-8 text-slate-200 sm:text-xl">
-              ACEPA brings people, companies, opportunities, and participation into one ecosystem — so you can discover what fits you, make informed decisions, participate, track what happens, and keep moving forward.
+              ACEPA connects people and companies to opportunities where what they bring can create value — and where eligible participants can earn revenue, returns, commissions, fees, wages, or other defined rewards for their contribution, investment, work, or participation.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
               <Link href="/discover" className="rounded-xl bg-purple-600 px-6 py-3.5 text-sm font-semibold text-white shadow-xl shadow-purple-950/30 transition hover:bg-purple-500">Explore opportunities →</Link>
@@ -96,7 +96,7 @@ export default function HowItWorksPage() {
           <div className="max-w-3xl">
             <p className="text-xs font-bold tracking-[0.22em] text-purple-600">THE ACEPA LOOP</p>
             <h2 className="mt-4 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">Discover. Explore. Decide. Participate. Track. Complete. Progress.</h2>
-            <p className="mt-5 text-lg leading-8 text-slate-600">The platform is built around a simple journey, while the actual activity can be different for every person and company.</p>
+            <p className="mt-5 text-lg leading-8 text-slate-600">The platform is built around a simple journey, but the outcome is practical: you bring something of value, participate in the right opportunity, and receive the applicable financial or non-financial benefit defined by that opportunity.</p>
           </div>
 
           <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -126,7 +126,7 @@ export default function HowItWorksPage() {
             <div>
               <p className="text-xs font-bold tracking-[0.22em] text-purple-600">WAYS TO PARTICIPATE</p>
               <h2 className="mt-4 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">There is no single way to use ACEPA.</h2>
-              <p className="mt-5 text-lg leading-8 text-slate-600">Your path depends on what you want to achieve and what you can bring. You can choose one path, combine several, or change direction as your goals change.</p>
+              <p className="mt-5 text-lg leading-8 text-slate-600">Your path depends on what you want to achieve and what you can bring. ACEPA is built around exchange: you bring capital, ideas, skills, influence, work, relationships, or business value, and eligible opportunities can provide a defined way for you to earn or benefit from that contribution.</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {paths.map(([title, text]) => (
@@ -147,7 +147,7 @@ export default function HowItWorksPage() {
               <p className="text-xs font-bold tracking-[0.22em] text-purple-600">FOR COMPANIES</p>
               <h2 className="mt-4 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">Companies are participants too.</h2>
               <p className="mt-5 text-lg leading-8 text-slate-600">
-                A company can publish opportunities, participate in activities created by others, or do both. Companies choose what fits their business goals, interests, resources, and strategy — and can skip opportunities they do not want.
+                A company can publish opportunities, participate in activities created by others, or do both. Companies choose what fits their business goals, interests, resources, and strategy — and can skip opportunities they do not want. When a company participates, the applicable commercial, investment, service, or other benefit should be clear before it commits.
               </p>
               <Link href="/companies" className="mt-8 inline-flex rounded-xl bg-slate-950 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-purple-700">Explore the company experience →</Link>
             </div>
@@ -158,7 +158,7 @@ export default function HowItWorksPage() {
                   <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.05] px-5 py-4 text-sm font-semibold">{item}</div>
                 ))}
               </div>
-              <p className="mt-6 text-sm leading-6 text-slate-300">Different participants bring different forms of value. ACEPA connects those forms of value around structured opportunities.</p>
+              <p className="mt-6 text-sm leading-6 text-slate-300">Different participants bring different forms of value. ACEPA connects those forms of value around structured opportunities so value can move in both directions: participants contribute, and eligible participants receive the defined benefit for what they provide.</p>
             </div>
           </div>
         </div>
@@ -169,7 +169,7 @@ export default function HowItWorksPage() {
           <p className="text-xs font-bold tracking-[0.22em] text-purple-300">CLEAR PARTICIPATION</p>
           <h2 className="mt-4 text-4xl font-bold tracking-[-0.04em] sm:text-6xl">Understand the opportunity before you participate.</h2>
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-            ACEPA is designed so opportunities can communicate what is needed, who is involved, what participants can do, the applicable terms, and the expected progress or outcome. For regulated activities such as investments, additional eligibility, verification, legal, and compliance requirements may apply.
+            ACEPA is designed so opportunities can communicate what is needed, who is involved, what participants can do, what they can earn or receive, the applicable terms, and the expected progress or outcome. The goal is not participation for free: eligible participants should understand the value exchange before they commit. For regulated activities such as investments, additional eligibility, verification, legal, and compliance requirements may apply.
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Link href="/discover" className="rounded-xl bg-purple-600 px-7 py-4 text-sm font-semibold text-white transition hover:bg-purple-500">Start exploring →</Link>
