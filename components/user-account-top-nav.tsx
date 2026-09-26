@@ -53,7 +53,7 @@ export default function UserAccountTopNav({ searchValue="", onSearchChange }: { 
     <div className="mx-auto flex min-h-20 max-w-[1500px] items-center gap-5 px-5 lg:px-8">
       <Link href="/dashboard" className="shrink-0 text-lg font-black tracking-[-0.05em] text-slate-950 lg:hidden">ACEPA</Link>
       <div className="ml-auto flex min-w-0 flex-1 items-center gap-2 lg:gap-4">
-        <div className="min-w-0 max-w-md flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4"><input aria-label="Search opportunities" value={searchValue} onChange={e=>onSearchChange?.(e.target.value)} placeholder="Search opportunities, companies or locations" className="h-10 w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"/></div>
+        <div className="min-w-0 max-w-md flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4"><input name="acepa-global-search" type="search" autoComplete="off" aria-autocomplete="none" aria-label="Search opportunities" value={searchValue} onChange={e=>onSearchChange?.(e.target.value)} placeholder="Search opportunities, companies or locations" className="h-10 w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"/></div>
         <nav className="ml-auto flex items-center gap-4">
           <Link href="/dashboard" className="whitespace-nowrap text-sm font-bold text-slate-950 transition hover:text-purple-600">Dashboard</Link>
           <Link href="/activity" className="whitespace-nowrap text-sm font-bold text-slate-950 transition hover:text-purple-600">Activities</Link>
