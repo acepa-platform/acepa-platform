@@ -77,7 +77,7 @@ export default function GetStartedPage() {
           </Link>
           <div className="text-sm text-slate-500">
             Already have an account?{" "}
-            <Link href="/" className="font-bold text-slate-950 hover:text-purple-600">
+            <Link href="/sign-in" className="font-bold text-slate-950 hover:text-purple-600">
               Sign in
             </Link>
           </div>
@@ -268,7 +268,7 @@ export default function GetStartedPage() {
 
             <div className="mt-5 border-t border-slate-100 pt-5 text-center text-sm text-slate-500">
               Already have an ACEPA account?{" "}
-              <Link href="/" className="font-bold text-slate-950 hover:text-purple-600">Sign in</Link>
+              <Link href="/sign-in" className="font-bold text-slate-950 hover:text-purple-600">Sign in</Link>
             </div>
           </div>
         </div>
