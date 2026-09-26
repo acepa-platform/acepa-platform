@@ -797,6 +797,7 @@ export default function SettingsPage() {
     </div>
   );
 
+  const accountContent = (
     <div className="space-y-6">
       <div>
         <p className="text-lg font-black">{activeAccount}</p>
