@@ -339,15 +339,9 @@ export default function OpportunityDetailsPage({ params }: { params: Promise<{ i
   const opportunity = opportunityMap[id as keyof typeof opportunityMap];
   const [notice, setNotice] = useState("");
   const [saved, setSaved] = useState(false);
-  const [interested, setInterested] = useState(false);
 
   const type = opportunity?.type as OpportunityType | undefined;
   const actionLabel = type ? actionLabels[type] : "Participate";
-
-  function handlePrimaryAction() {
-    setInterested((current) => !current);
-    setNotice(interested ? "Demo participation interest withdrawn. The live workflow will connect here later." : "Demo participation recorded. The live workflow will connect here later.");
-  }
 
   return (
     <UserAccountShell>
