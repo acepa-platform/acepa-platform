@@ -4,16 +4,166 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import UserAccountShell from "@/components/user-account-shell";
+import { UserAccountActions } from "@/components/user-account-top-nav";
 
-export default function SettingsPage(){
- const router=useRouter(); const[email,setEmail]=useState(""); const[appearance,setAppearance]=useState("system"); const[systemDark,setSystemDark]=useState(false); const[emailNotifications,setEmailNotifications]=useState(true); const[opportunityNotifications,setOpportunityNotifications]=useState(true); const[activityNotifications,setActivityNotifications]=useState(true); const[marketingNotifications,setMarketingNotifications]=useState(false); const[saving,setSaving]=useState(false); const[message,setMessage]=useState("");
- useEffect(()=>{loadSettings(); const media=window.matchMedia("(prefers-color-scheme: dark)"); const sync=()=>setSystemDark(media.matches); sync(); media.addEventListener("change",sync); return()=>media.removeEventListener("change",sync)},[]);
- async function loadSettings(){const supabase=createClient();const{data:{user}}=await supabase.auth.getUser();if(!user){router.replace("/sign-in?next=/settings");return}setEmail(user.email??"");const{data}=await supabase.from("user_preferences").select("*").eq("user_id",user.id).maybeSingle();if(data){setAppearance(data.appearance); localStorage.setItem("acepa-appearance", data.appearance); window.dispatchEvent(new CustomEvent("acepa-appearance-change", { detail: data.appearance }));setEmailNotifications(data.email_notifications);setOpportunityNotifications(data.opportunity_notifications);setActivityNotifications(data.activity_notifications);setMarketingNotifications(data.marketing_notifications)}}
- const dark=appearance==="dark" || (appearance==="system" && systemDark); const surface=dark?"bg-slate-950 text-slate-100":"bg-[#f7f8fc] text-slate-950"; const card=dark?"border-slate-800 bg-slate-900":"border-slate-200 bg-white"; const muted=dark?"text-slate-400":"text-slate-500"; const divider=dark?"divide-slate-800":"divide-slate-100"; const inputHover=dark?"hover:bg-slate-800":"hover:bg-slate-50"; const selected=dark?"border-purple-400 bg-purple-950/50 text-purple-300":"border-purple-500 bg-purple-50 text-purple-700"; const buttonDark=dark?"bg-white text-slate-950 hover:bg-purple-300":"bg-slate-950 text-white hover:bg-purple-700"; async function save(){setSaving(true);setMessage("");const supabase=createClient();const{data:{user}}=await supabase.auth.getUser();if(!user){router.replace("/sign-in?next=/settings");return}const{error}=await supabase.from("user_preferences").upsert({user_id:user.id,appearance,email_notifications:emailNotifications,opportunity_notifications:opportunityNotifications,activity_notifications:activityNotifications,marketing_notifications:marketingNotifications});if (!error) { localStorage.setItem("acepa-appearance", appearance); window.dispatchEvent(new CustomEvent("acepa-appearance-change", { detail: appearance })); } setMessage(error?error.message:"Settings saved successfully.");setSaving(false)}
- return <main className={"min-h-screen "+surface}><header className={"border-b "+(dark?"border-slate-800 bg-slate-900":"border-slate-200 bg-white")}><div className="mx-auto flex h-20 max-w-5xl items-center justify-between px-5 sm:px-8"><Link href="/dashboard" className="flex items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className={"h-12 w-auto object-contain "+(dark?"":"brightness-0")}/></Link><Link href="/profile" className={"rounded-xl px-4 py-2 text-sm font-bold "+buttonDark}>Profile</Link></div></header>
- <div className="mx-auto max-w-5xl px-5 py-8 sm:px-8 lg:py-10"><p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-600">Account</p><h1 className="mt-2 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Settings</h1><p className={"mt-2 text-sm "+muted}>Manage your ACEPA preferences and account experience.</p>
- <div className="mt-8 space-y-6"><section className={"rounded-3xl border p-6 shadow-sm sm:p-8 "+card}><h2 className="text-xl font-black">Account information</h2><p className={"mt-2 text-sm "+muted}>Your sign-in email is currently <span className={dark?"font-semibold text-slate-200":"font-semibold text-slate-700"}>{email}</span>.</p><div className="mt-5 flex flex-wrap gap-3"><Link href="/forgot-password" className={"rounded-xl border px-4 py-3 text-sm font-bold "+(dark?"border-slate-700 text-slate-200 hover:bg-slate-800":"border-slate-200 text-slate-700 hover:bg-slate-50")}>Change password</Link><span className={"rounded-xl px-4 py-3 text-sm font-bold "+(dark?"bg-slate-800 text-slate-400":"bg-slate-50 text-slate-500")}>Verification status: Not yet verified</span></div></section>
- <section className={"rounded-3xl border p-6 shadow-sm sm:p-8 "+card}><h2 className="text-xl font-black">Appearance</h2><p className={"mt-2 text-sm "+muted}>Choose how ACEPA should look on your devices.</p><div className="mt-5 grid gap-3 sm:grid-cols-3">{["light","dark","system"].map(item=><button key={item} onClick={()=>{setAppearance(item); localStorage.setItem("acepa-appearance", item); window.dispatchEvent(new CustomEvent("acepa-appearance-change", { detail: item }));}} className={"rounded-2xl border px-4 py-4 text-left text-sm font-bold capitalize transition "+(appearance===item?selected:(dark?"border-slate-700 hover:bg-slate-800":"border-slate-200 hover:bg-slate-50"))}>{item==="system"?"Automatic / System":item}</button>)}</div></section>
- <section className={"rounded-3xl border p-6 shadow-sm sm:p-8 "+card}><h2 className="text-xl font-black">Notifications</h2><div className={"mt-5 divide-y "+divider}>{[["Email notifications","Receive important ACEPA account messages by email",emailNotifications,setEmailNotifications],["Opportunity notifications","Get updates about opportunities relevant to you",opportunityNotifications,setOpportunityNotifications],["Activity notifications","Get updates about your participations and activities",activityNotifications,setActivityNotifications],["Product and marketing","Receive occasional ACEPA product and marketing updates",marketingNotifications,setMarketingNotifications]].map(([title,description,value,setValue])=><div key={title as string} className="flex items-center justify-between gap-5 py-4"><div><p className="text-sm font-bold">{title as string}</p><p className={"mt-1 text-xs leading-5 "+muted}>{description as string}</p></div><button onClick={()=> (setValue as (v:boolean)=>void)(!(value as boolean))} className={"relative h-7 w-12 shrink-0 rounded-full transition "+(value?(dark?"bg-purple-500":"bg-slate-950"):(dark?"bg-slate-700":"bg-slate-200"))} aria-label={"Toggle "+title}><span className={"absolute top-1 h-5 w-5 rounded-full bg-white shadow transition "+(value?"left-6":"left-1")}/></button></div>)}</div></section>
- {message&&<p className={"rounded-2xl px-5 py-4 text-sm font-semibold shadow-sm "+(dark?"bg-slate-900 text-slate-200":"bg-white text-slate-700")}>{message}</p>}<div className="flex justify-end"><button onClick={save} disabled={saving} className={"rounded-xl px-6 py-3 text-sm font-bold disabled:opacity-60 "+buttonDark}>{saving?"Saving...":"Save settings"}</button></div></div></div></main>;
+const tabs = ["Profile", "Account", "Security", "Notifications", "Privacy", "Payment Methods", "API & Integrations"];
+const profileItems = ["Profile Information", "Business Information", "Address", "Social Links", "Identity Verification", "Profile Completion"];
+
+export default function SettingsPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [appearance, setAppearance] = useState("system");
+  const [activeTab, setActiveTab] = useState("Profile");
+  const [activeProfile, setActiveProfile] = useState("Profile Information");
+  const [systemDark, setSystemDark] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const sync = () => setSystemDark(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    loadSettings();
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
+  async function loadSettings() {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      router.replace("/sign-in?next=/settings");
+      return;
+    }
+    setEmail(user.email ?? "");
+    const { data } = await supabase.from("user_preferences").select("appearance").eq("user_id", user.id).maybeSingle();
+    if (data?.appearance) {
+      setAppearance(data.appearance);
+      localStorage.setItem("acepa-appearance", data.appearance);
+      window.dispatchEvent(new CustomEvent("acepa-appearance-change", { detail: data.appearance }));
+    }
+  }
+
+  const dark = appearance === "dark" || (appearance === "system" && systemDark);
+  const surface = dark ? "bg-slate-950 text-slate-100" : "bg-[#f7f8fc] text-slate-950";
+  const card = dark ? "border-slate-800 bg-slate-900" : "border-slate-200 bg-white";
+  const muted = dark ? "text-slate-400" : "text-slate-500";
+  const soft = dark ? "border-slate-800 bg-slate-900" : "border-slate-200 bg-white";
+
+  async function saveAppearance() {
+    setSaving(true);
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { error } = await supabase.from("user_preferences").upsert({ user_id: user.id, appearance });
+    if (!error) {
+      localStorage.setItem("acepa-appearance", appearance);
+      window.dispatchEvent(new CustomEvent("acepa-appearance-change", { detail: appearance }));
+    }
+    setMessage(error ? error.message : "Settings saved successfully.");
+    setSaving(false);
+  }
+
+  const profileContent = (
+    <div className="space-y-6">
+      <div>
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-purple-600">Profile</p>
+        <h2 className="mt-2 text-2xl font-black tracking-tight">{activeProfile}</h2>
+        <p className={"mt-2 text-sm " + muted}>Manage your {activeProfile.toLowerCase()} settings.</p>
+      </div>
+      {activeProfile === "Profile Information" ? (
+        <>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {[
+              ["Full name", "Your full name"],
+              ["Username", "Your ACEPA username"],
+              ["Bio", "Tell people about yourself"],
+              ["Date of birth", "Your date of birth"],
+              ["Email", email || "Your account email"],
+              ["Phone number", "Add your phone number"]
+            ].map(([label, value]) => (
+              <div key={label}>
+                <label className="text-sm font-bold">{label}</label>
+                <div className={"mt-2 rounded-xl border px-4 py-3 text-sm " + soft + " " + muted}>{value}</div>
+              </div>
+            ))}
+          </div>
+          <div className={"rounded-2xl border p-5 " + soft}>
+            <p className="font-bold">Profile photo</p>
+            <p className={"mt-1 text-sm " + muted}>Change or remove the image used on your ACEPA profile.</p>
+            <button className="mt-4 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white hover:bg-purple-700">Change image</button>
+          </div>
+          <button className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700">Save changes</button>
+        </>
+      ) : (
+        <div className={"rounded-2xl border p-6 " + soft}>
+          <p className="font-bold">{activeProfile}</p>
+          <p className={"mt-2 text-sm " + muted}>This section is ready for its detailed controls and verification workflows.</p>
+        </div>
+      )}
+    </div>
+  );
+
+  const genericContent = (
+    <div>
+      <p className="text-xs font-bold uppercase tracking-[0.16em] text-purple-600">Settings</p>
+      <h2 className="mt-2 text-2xl font-black tracking-tight">{activeTab}</h2>
+      <p className={"mt-2 text-sm " + muted}>Manage your {activeTab.toLowerCase()} preferences and controls.</p>
+      <div className={"mt-6 rounded-2xl border p-6 " + soft}>
+        {activeTab === "Account" && <><p className="font-bold">Account email</p><p className={"mt-2 text-sm " + muted}>{email}</p></>}
+        {activeTab === "Security" && <div className="grid gap-3 sm:grid-cols-2"><Link href="/forgot-password" className={"rounded-xl border p-4 text-sm font-bold " + soft}>Change password</Link><button className={"rounded-xl border p-4 text-left text-sm font-bold " + soft}>Two-factor authentication</button><button className={"rounded-xl border p-4 text-left text-sm font-bold " + soft}>Login sessions</button><button className={"rounded-xl border p-4 text-left text-sm font-bold " + soft}>Download my data</button></div>}
+        {activeTab === "Notifications" && <p className="font-bold">Notification preferences</p>}
+        {activeTab === "Privacy" && <p className="font-bold">Privacy and data controls</p>}
+        {activeTab === "Payment Methods" && <p className="font-bold">Payment methods and preferences</p>}
+        {activeTab === "API & Integrations" && <p className="font-bold">API keys and connected integrations</p>}
+      </div>
+    </div>
+  );
+
+  return (
+    <UserAccountShell>
+      <main className={"min-h-screen " + surface}>
+        <header className={"sticky top-0 z-30 border-b " + (dark ? "border-slate-800 bg-slate-950/95" : "border-slate-200 bg-white/95") + " backdrop-blur-md"}>
+          <div className="mx-auto flex min-h-20 max-w-[1500px] items-center gap-5 px-5 lg:px-8">
+            <Link href="/dashboard" className="flex shrink-0 items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA" className={"h-11 w-auto object-contain " + (dark ? "" : "brightness-0")} /></Link>
+            <div className="min-w-0"><p className="text-lg font-black">Settings</p><p className={"hidden text-xs sm:block " + muted}>Manage your account, preferences and security settings</p></div>
+            <div className="ml-auto"><UserAccountActions /></div>
+          </div>
+        </header>
+
+        <div className="mx-auto max-w-[1500px] px-5 py-6 lg:px-8">
+          <div className={"overflow-x-auto border-b " + (dark ? "border-slate-800" : "border-slate-200")}>
+            <nav className="flex min-w-max items-center gap-1">
+              {tabs.map(tab => <button key={tab} onClick={() => setActiveTab(tab)} className={"border-b-2 px-4 py-3 text-sm font-bold transition " + (activeTab === tab ? "border-purple-600 text-purple-600" : "border-transparent " + muted)}>{tab}</button>)}
+            </nav>
+          </div>
+
+          <div className="mt-8 grid gap-6 xl:grid-cols-[220px_minmax(0,1fr)_310px]">
+            <aside className={"rounded-3xl border p-3 " + card}>
+              <p className="px-3 py-3 text-xs font-black uppercase tracking-[0.16em] text-purple-600">{activeTab === "Profile" ? "Profile contents" : "Settings"}</p>
+              {activeTab === "Profile" ? profileItems.map(item => <button key={item} onClick={() => setActiveProfile(item)} className={"w-full rounded-xl px-3 py-3 text-left text-sm font-semibold transition " + (activeProfile === item ? "bg-slate-950 text-white" : muted)}>{item}</button>) : <p className={"px-3 py-3 text-sm " + muted}>Use the controls in the middle panel.</p>}
+            </aside>
+
+            <section className={"rounded-3xl border p-6 shadow-sm sm:p-8 " + card}>{activeTab === "Profile" ? profileContent : genericContent}</section>
+
+            <aside className="space-y-6">
+              <section className={"rounded-3xl border p-6 shadow-sm " + card}>
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-purple-600">Account overview</p>
+                <h3 className="mt-2 text-lg font-black">Your account</h3>
+                <div className="mt-5 space-y-4 text-sm"><div><p className={muted}>Security</p><p className="font-bold">Account protected</p></div><div><p className={muted}>Last login</p><p className="font-bold">Current session</p></div><div><p className={muted}>Access</p><p className="font-bold">Web browser</p></div></div>
+                <button className="mt-5 text-sm font-bold text-purple-600">View security activities →</button>
+              </section>
+              <section className={"rounded-3xl border p-6 shadow-sm " + card}><p className="text-xs font-bold uppercase tracking-[0.16em] text-purple-600">Quick actions</p><div className="mt-4 space-y-2">{["Change password","Enable two-factor authentication","Login sessions","Download my data","Delete account"].map(action => <button key={action} className={"w-full rounded-xl border px-4 py-3 text-left text-sm font-semibold " + soft}>{action}</button>)}</div></section>
+              <section className={"rounded-3xl border p-6 shadow-sm " + card}><p className="text-xs font-bold uppercase tracking-[0.16em] text-purple-600">Your devices</p><div className={"mt-4 rounded-2xl border p-4 text-sm " + soft}><p className="font-bold">Current web session</p><p className={"mt-1 " + muted}>Browser · Active now</p></div><button className="mt-4 text-sm font-bold text-purple-600">Manage sessions →</button></section>
+            </aside>
+          </div>
+
+          <section className={"mt-8 rounded-3xl border p-6 shadow-sm sm:p-8 " + card}><h2 className="text-lg font-black">Your security matters</h2><p className={"mt-2 max-w-2xl text-sm leading-6 " + muted}>We use industry-standard security practices to help keep your account and data safe.</p><button className="mt-4 rounded-xl border border-purple-200 px-4 py-2.5 text-sm font-bold text-purple-700 hover:bg-purple-50">Learn more →</button></section>
+          {message && <p className={"mt-5 rounded-2xl border p-4 text-sm font-semibold " + card}>{message}</p>}
+          {activeTab === "Account" && <section className={"mt-8 rounded-3xl border p-6 " + card}><h2 className="text-lg font-black">Appearance</h2><p className={"mt-2 text-sm " + muted}>Choose how ACEPA should look.</p><div className="mt-4 flex flex-wrap gap-2">{["light","dark","system"].map(item => <button key={item} onClick={() => setAppearance(item)} className={"rounded-xl border px-4 py-2.5 text-sm font-bold " + (appearance === item ? "border-purple-500 bg-purple-50 text-purple-700" : soft)}>{item === "system" ? "Automatic / System" : item}</button>)}</div><button onClick={saveAppearance} disabled={saving} className="mt-4 rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white disabled:opacity-60">{saving ? "Saving..." : "Save appearance"}</button></section>}
+        </div>
+      </main>
+    </UserAccountShell>
+  );
 }
