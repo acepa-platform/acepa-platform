@@ -8,7 +8,7 @@ import UserAccountShell from "@/components/user-account-shell";
 import { UserAccountActions } from "@/components/user-account-top-nav";
 
 const tabs = ["Profile", "Account", "Security", "Notifications", "Privacy", "Payment Methods", "API & Integrations"];
-const profileItems = ["Profile Information", "Business Information", "Address", "Social Links", "Identity Verification"];
+const profileItems = ["Profile Information", "Business Information", "Address", "Social Links", "Authentication"];
 
 type Profile = {
   full_name: string;
@@ -39,7 +39,9 @@ export default function SettingsPage() {
   const [appearance, setAppearance] = useState("system");
   const [activeTab, setActiveTab] = useState("Profile");
   const [activeProfile, setActiveProfile] = useState("Profile Information");
+  const [activeAccount, setActiveAccount] = useState("Account Information");
   const [activeSecurity, setActiveSecurity] = useState("Password & Login");
+  const [activeGeneric, setActiveGeneric] = useState("");
   const [mfaFactors, setMfaFactors] = useState<Array<{ id: string; friendly_name?: string | null; status?: string; factor_type?: string }>>([]);
   const [mfaFactorId, setMfaFactorId] = useState("");
   const [mfaQrCode, setMfaQrCode] = useState("");
@@ -420,13 +422,16 @@ export default function SettingsPage() {
   const accountContent = (
     <div className="space-y-6">
       <div>
-        <p className="text-lg font-black">Account</p>
-        <p className={"mt-1 text-sm " + muted}>Manage your account information and preferences.</p>
+        <p className="text-lg font-black">{activeAccount}</p>
+        <p className={"mt-1 text-sm " + muted}>Manage your {activeAccount.toLowerCase()} settings.</p>
       </div>
-      <div className={"rounded-2xl border p-5 " + soft}>
-        <p className="text-sm font-black">Account Email</p>
-        <p className={"mt-2 text-sm " + muted}>{email}</p>
-      </div>
+      {activeAccount === "Account Information" ? (
+        <div className={"rounded-2xl border p-5 " + soft}>
+          <p className="text-sm font-black">Account Email</p>
+          <p className={"mt-2 text-sm " + muted}>{email}</p>
+          <p className={"mt-4 text-xs leading-5 " + muted}>Your sign-in email is managed through your ACEPA authentication account.</p>
+        </div>
+      ) : activeAccount === "Appearance" ? (
       <div className={"rounded-2xl border p-5 " + soft}>
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-purple-600">Appearance</p>
         <h3 className="mt-2 text-xl font-black">Choose your appearance</h3>
@@ -448,30 +453,34 @@ export default function SettingsPage() {
           {saving ? "Saving..." : "Save Appearance"}
         </button>
       </div>
+      ) : (
+        <div className={"rounded-2xl border p-5 " + soft}>
+          <p className="text-sm font-black">Login & Sessions</p>
+          <p className={"mt-2 text-sm leading-6 " + muted}>Review and manage your active login sessions from Security.</p>
+          <button onClick={() => { setActiveTab("Security"); setActiveSecurity("Sessions"); }} className="mt-5 rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700">Open Login Sessions</button>
+        </div>
+      )}
     </div>
   );
+
+  const genericItems = activeTab === "Notifications"
+    ? ["Email Notifications", "Opportunity Notifications", "Activity Notifications", "Marketing Notifications"]
+    : activeTab === "Privacy"
+      ? ["Privacy Controls", "Data & Privacy"]
+      : activeTab === "Payment Methods"
+        ? ["Payment Methods", "Payout Preferences"]
+        : ["API Keys", "Connected Integrations"];
 
   const genericTabContent = (
     <div className="space-y-6">
       <div>
-        <p className="text-lg font-black">{activeTab}</p>
-        <p className={"mt-1 text-sm " + muted}>Manage your {activeTab.toLowerCase()} preferences and controls.</p>
+        <p className="text-lg font-black">{activeGeneric || genericItems[0]}</p>
+        <p className={"mt-1 text-sm " + muted}>Manage your {(activeGeneric || genericItems[0]).toLowerCase()} settings.</p>
       </div>
-      <div className={"grid gap-3 sm:grid-cols-2 " + soft}>
-        {(activeTab === "Security"
-          ? ["Change Password", "Two-Factor Authentication", "Login Sessions", "Download My Data"]
-          : activeTab === "Notifications"
-            ? ["Email Notifications", "Opportunity Notifications", "Activity Notifications", "Marketing Notifications"]
-            : activeTab === "Privacy"
-              ? ["Profile Visibility", "Data & Privacy", "Blocked Accounts", "Download Your Data"]
-              : activeTab === "Payment Methods"
-                ? ["Payment Methods", "Payout Preferences", "Billing Information", "Transaction History"]
-                : ["API Keys", "Connected Integrations"]).map((item) => (
-                  <button key={item} className={"rounded-2xl border p-5 text-left text-sm font-bold " + card}>
-                    <MiniIcon>›</MiniIcon>
-                    <span className="ml-3">{item}</span>
-                  </button>
-                ))}
+      <div className={"rounded-2xl border p-6 " + soft}>
+        <p className="text-sm font-black">{activeGeneric || genericItems[0]}</p>
+        <p className={"mt-2 text-sm leading-6 " + muted}>This section is ready for its detailed ACEPA controls. Select another item from the left to move to that settings page.</p>
+        <button onClick={() => setMessage((activeGeneric || genericItems[0]) + " is selected and ready for configuration.")} className="mt-5 rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Edit Settings</button>
       </div>
     </div>
   );
@@ -490,7 +499,7 @@ export default function SettingsPage() {
               ? ["Payment Methods", "Payout Preferences"]
               : ["API Keys", "Connected Integrations"];
 
-  const selectedLeft = activeTab === "Profile" ? activeProfile : leftItems[0];
+  const selectedLeft = activeTab === "Profile" ? activeProfile : activeTab === "Account" ? activeAccount : activeTab === "Security" ? activeSecurity : (activeGeneric || leftItems[0]);
 
   const securityContent = activeSecurity === "Password & Login" ? (
     <div className="space-y-6">
@@ -667,7 +676,7 @@ export default function SettingsPage() {
           <div className={"overflow-x-auto border-b " + (dark ? "border-slate-800" : "border-slate-200")}>
             <nav className="flex min-w-max items-center gap-1">
               {filteredTabs.map((tab) => (
-                <button key={tab} onClick={() => setActiveTab(tab)} className={"border-b-2 px-4 py-3 text-sm font-bold transition " + (activeTab === tab ? "border-purple-600 text-purple-600" : "border-transparent " + muted)}>
+                <button key={tab} onClick={() => { setActiveTab(tab); if (tab !== "Profile" && tab !== "Account" && tab !== "Security") setActiveGeneric(""); }} className={"border-b-2 px-4 py-3 text-sm font-bold transition " + (activeTab === tab ? "border-purple-600 text-purple-600" : "border-transparent " + muted)}>
                   {tab}
                 </button>
               ))}
@@ -684,7 +693,12 @@ export default function SettingsPage() {
                     return (
                       <button
                         key={item}
-                        onClick={() => activeTab === "Profile" ? setActiveProfile(item) : activeTab === "Security" && setActiveSecurity(item)}
+                        onClick={() => {
+                          if (activeTab === "Profile") setActiveProfile(item);
+                          else if (activeTab === "Account") setActiveAccount(item);
+                          else if (activeTab === "Security") setActiveSecurity(item);
+                          else setActiveGeneric(item);
+                        }}
                         className={"flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition " + (selected ? "bg-purple-50 text-purple-700 dark:bg-purple-950/40" : muted)}
                       >
                         <span className="text-base">{["♙", "▣", "⌖", "↗", "✓", "◉"][index % 6]}</span>
