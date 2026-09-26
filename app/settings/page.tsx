@@ -190,7 +190,7 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="space-y-5">
         {[
           ["Full Name", "full_name", profile.full_name],
           ["Username", "username", profile.username],
