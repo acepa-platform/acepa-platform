@@ -538,9 +538,9 @@ export default function SettingsPage() {
             <div>
               <p className="text-sm font-black">1. Scan the QR code</p>
               <p className={"mt-2 text-sm leading-6 " + muted}>Open your authenticator app and scan the QR code. If scanning is unavailable, enter this setup key manually.</p>
-              <div className="mt-3 rounded-xl border px-4 py-3 font-mono text-sm break-all " + field>{mfaSecret}</div>
+              <div className={"mt-3 rounded-xl border px-4 py-3 font-mono text-sm break-all " + field}>{mfaSecret}</div>
               <label className="mt-5 block text-sm font-bold">2. Enter the 6-digit code</label>
-              <input value={mfaCode} onChange={(event) => setMfaCode(event.target.value.replace(/\\D/g, "").slice(0, 6))} inputMode="numeric" autoComplete="one-time-code" placeholder="123456" className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm tracking-[0.3em] outline-none focus:border-purple-500 " + field} />
+              <input value={mfaCode} onChange={(event) => setMfaCode(event.target.value.replace(/\D/g, "").slice(0, 6))} inputMode="numeric" autoComplete="one-time-code" placeholder="123456" className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm tracking-[0.3em] outline-none focus:border-purple-500 " + field} />
               <div className="mt-4 flex flex-wrap gap-3">
                 <button onClick={verifyMfaSetup} disabled={saving} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700 disabled:opacity-60">{saving ? "Verifying..." : "Verify & Enable"}</button>
                 <button onClick={() => { setMfaSetup(false); setMfaQrCode(""); setMfaSecret(""); setMfaCode(""); }} className={"rounded-xl border px-5 py-3 text-sm font-bold " + (dark ? "border-slate-700 text-slate-200" : "border-slate-300 text-slate-700")}>Cancel</button>
