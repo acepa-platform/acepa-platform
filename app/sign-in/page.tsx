@@ -36,7 +36,7 @@ export default function SignInPage() {
     <main className="min-h-screen bg-slate-50 text-slate-950">
       <header className="border-b border-slate-200 bg-white/95">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
-          <Link href="/" className="text-xl font-black tracking-[-0.05em]">ACEPA</Link>
+          <Link href="/" className="flex items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-14 w-auto object-contain brightness-0" /></Link>
           <Link href="/get-started" className="text-sm font-semibold text-slate-700 transition hover:text-purple-600">Create account →</Link>
         </div>
       </header>
