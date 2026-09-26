@@ -28,7 +28,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
         .eq("user_id", user.id)
         .maybeSingle();
 
-      const appearance = data?.appearance || saved || "system";
+      const appearance = saved || data?.appearance || "system";
       localStorage.setItem("acepa-appearance", appearance);
       applyTheme(appearance);
 
