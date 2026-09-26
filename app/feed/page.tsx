@@ -73,6 +73,8 @@ export default function FeedPage() {
   const [loading, setLoading] = useState(true);
   const [actionId, setActionId] = useState("");
   const [message, setMessage] = useState("");
+  const [demoLiked, setDemoLiked] = useState(false);
+  const [demoLikeCount, setDemoLikeCount] = useState(24);
 
   useEffect(() => {
     loadFeed();
@@ -308,7 +310,20 @@ export default function FeedPage() {
               ) : showDemoPost ? (
                 <div className="mt-5 space-y-4">
                   <article className="overflow-hidden rounded-3xl border border-purple-100 bg-white shadow-sm">
-                    <a href="/feed/demo" className="grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                    <div
+                      onClick={() => {
+                        window.location.href = "/feed/demo";
+                      }}
+                      role="link"
+                      tabIndex={0}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          window.location.href = "/feed/demo";
+                        }
+                      }}
+                      className="grid cursor-pointer lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
+                    >
                       <div className="relative min-h-[210px] overflow-hidden bg-slate-950 p-4 sm:min-h-[235px]">
                         <div className="relative flex h-full min-h-[178px] flex-col justify-between overflow-hidden rounded-[22px] bg-gradient-to-br from-purple-700 via-indigo-700 to-slate-950 p-5 sm:min-h-[203px]">
                           <div className="flex items-center justify-between">
@@ -336,14 +351,37 @@ export default function FeedPage() {
 
                         <p className="mt-5 line-clamp-3 text-sm leading-6 text-slate-600">A polished company post can lead with the visual while keeping the Feed compact. Click to open the full post page with the complete story, company details and discussion.</p>
 
-                        <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4 text-xs font-bold text-slate-500">
-                          <span>♡ Like · 24</span>
-                          <span>◌ Comment · 6</span>
-                          <span>↗ Share</span>
-                          <span className="ml-auto text-purple-700">View full post →</span>
-                        </div>
+                        <p className="mt-3 text-xs font-bold text-purple-700">View full post →</p>
                       </div>
-                    </a>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 px-5 py-4 sm:px-6">
+                      <button
+                        onClick={() => {
+                          setDemoLiked((current) => !current);
+                          setDemoLikeCount((current) => current + (demoLiked ? -1 : 1));
+                        }}
+                        className={"rounded-xl px-3 py-2 text-xs font-bold transition " + (demoLiked ? "bg-purple-50 text-purple-700" : "bg-slate-50 text-slate-500 hover:bg-slate-100")}
+                      >
+                        {demoLiked ? "♥ Liked" : "♡ Like"} · {demoLikeCount}
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          window.location.href = "/feed/demo#discussion";
+                        }}
+                        className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-500 transition hover:bg-slate-100"
+                      >
+                        ◌ Comment · 6
+                      </button>
+
+                      <button
+                        onClick={() => sharePost("demo")}
+                        className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-500 transition hover:bg-slate-100"
+                      >
+                        ↗ Share
+                      </button>
+                    </div>
                   </article>
 
                   <div className="rounded-3xl border border-dashed border-slate-300 bg-white/85 p-7 text-center backdrop-blur">
