@@ -108,7 +108,7 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <button type="button" aria-label="Search" className="hidden cursor-pointer rounded-xl p-2.5 text-slate-900 transition hover:bg-slate-100 hover:text-purple-600 sm:flex">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="h-5 w-5"><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" /></svg>
-            </button>
+            </Link>
             <a href="#signin" className="hidden rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:text-purple-500 sm:block">Sign in</a>
             <a href="#get-started" className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-purple-200">Get started</a>
           </div>
