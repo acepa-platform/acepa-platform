@@ -23,7 +23,14 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  await supabase.auth.getClaims()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/sign-in'
+    redirectUrl.searchParams.set('next', request.nextUrl.pathname)
+    return NextResponse.redirect(redirectUrl)
+  }
 
   return supabaseResponse
 }
