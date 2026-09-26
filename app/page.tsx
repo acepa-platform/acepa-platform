@@ -147,7 +147,7 @@ export default function Home() {
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="h-5 w-5"><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" /></svg>
             </Link>
             <button type="button" onClick={() => setIsSignInOpen(true)} className="hidden rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:text-purple-500 sm:block">Sign in</button>
-            <a href="#get-started" className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-purple-200">Get started</a>
+            <Link href="/get-started" className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-purple-200">Get started</Link>
           </div>
         </div>
       </header>
