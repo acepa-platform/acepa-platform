@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import UserAccountShell from "@/components/user-account-shell";
 import { UserAccountActions } from "@/components/user-account-top-nav";
+import { demoOpportunityActivity } from "@/lib/demo-opportunity-activity";
 
 type Participation = {
   id: string;
@@ -55,6 +56,7 @@ export default function ActivityPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
   const [error, setError] = useState("");
+  const [demoMode, setDemoMode] = useState(false);
 
   useEffect(() => {
     loadActivity();
@@ -81,9 +83,14 @@ export default function ActivityPage() {
 
     if (queryError) {
       setError("We could not load your opportunity activity right now.");
-      setItems([]);
+      setItems(demoOpportunityActivity);
+      setDemoMode(true);
+    } else if (!data || data.length === 0) {
+      setItems(demoOpportunityActivity);
+      setDemoMode(true);
     } else {
       setItems((data || []) as Participation[]);
+      setDemoMode(false);
     }
 
     setLoading(false);
@@ -116,6 +123,12 @@ export default function ActivityPage() {
               Your applications, investment requests, collaborations, partnerships, expert applications and other opportunity activity will appear here.
             </p>
           </section>
+
+          {demoMode && (
+            <div className="mt-5 rounded-2xl border border-purple-100 bg-purple-50 px-4 py-3 text-sm font-semibold text-purple-800">
+              Demo activity history · These sample records are here so you can inspect the user Activity interface. Real submissions will replace this view automatically.
+            </div>
+          )}
 
           <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
             {categories.map((category) => (
@@ -155,14 +168,22 @@ export default function ActivityPage() {
               </Link>
             </div>
           ) : (
-            <div className="mt-6 space-y-3">
+            <div className="mt-6 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+              <div className="hidden grid-cols-[minmax(280px,1.7fr)_150px_160px_150px_110px] gap-4 border-b border-slate-100 bg-slate-50 px-5 py-3 text-[10px] font-black uppercase tracking-[0.12em] text-slate-400 lg:grid">
+                <span>Opportunity</span>
+                <span>Category</span>
+                <span>Status</span>
+                <span>Submitted</span>
+                <span></span>
+              </div>
+              <div className="divide-y divide-slate-100">
               {filteredItems.map((item) => (
                 <Link
                   key={item.id}
                   href={"/activity/" + item.id}
-                  className="group block rounded-3xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-purple-200 hover:shadow-lg sm:p-6"
+                  className="group block px-5 py-5 transition hover:bg-slate-50 sm:px-6"
                 >
-                  <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="grid gap-4 lg:grid-cols-[minmax(280px,1.7fr)_150px_160px_150px_110px] lg:items-center">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="rounded-full bg-purple-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-purple-700">{item.category}</span>
@@ -179,7 +200,24 @@ export default function ActivityPage() {
                       </p>
                     </div>
 
-                    <div className="grid shrink-0 gap-2 sm:grid-cols-3 lg:min-w-[330px]">
+                    <div className="hidden lg:block">
+                      <span className="rounded-full bg-purple-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-purple-700">{item.category}</span>
+                    </div>
+
+                    <div className="hidden lg:block">
+                      <span className={"rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] " + statusClasses(item.status)}>
+                        {statusLabels[item.status] || item.status}
+                      </span>
+                    </div>
+
+                    <div className="hidden lg:block">
+                      <p className="text-xs font-semibold text-slate-500">
+                        {new Date(item.submitted_at).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-3 lg:justify-end">
+                      <div className="grid flex-1 gap-2 sm:grid-cols-3 lg:hidden">
                       {item.amount !== null && (
                         <div className="rounded-2xl bg-slate-50 p-3">
                           <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Amount</p>
@@ -190,14 +228,17 @@ export default function ActivityPage() {
                         <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Payment</p>
                         <p className="mt-1 text-sm font-black text-slate-800">{paymentLabel(item.payment_status)}</p>
                       </div>
-                      <div className="flex items-center justify-between rounded-2xl bg-slate-950 p-3 text-white">
-                        <span className="text-xs font-bold">View record</span>
+                      </div>
+                      <div className="flex items-center justify-between rounded-2xl bg-slate-950 p-3 text-white lg:rounded-xl lg:px-4">
+                        <span className="text-xs font-bold lg:hidden">View record</span>
+                        <span className="hidden text-xs font-bold lg:inline">Open</span>
                         <span aria-hidden="true">→</span>
                       </div>
                     </div>
                   </div>
                 </Link>
               ))}
+              </div>
             </div>
           )}
         </div>
