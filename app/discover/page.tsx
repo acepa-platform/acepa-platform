@@ -2,8 +2,22 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+
+import { createClient } from "@/lib/supabase/client";
+import UserAccountTopNav from "@/components/user-account-top-nav";
+
+type Opportunity = { id:string; title:string; slug:string; company_name:string; location:string|null; summary:string; primary_image_url:string|null; amount_text:string|null; category_id:string; opportunity_categories?:{name:string;slug:string}|null };
+type Profile = { full_name:string|null; username:string|null; avatar_url:string|null };
+
+const categories = [["All","all"],["Investment","investment"],["Innovation","innovation"],["Marketing","marketing"],["Business","business"],["Collaboration","collaboration"],["Experts","experts"],["Careers & Jobs","careers-jobs"]];
+
+use client";
+
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import UserAccountTopNav from "@/components/user-account-top-nav";
 
 type Opportunity = { id:string; title:string; slug:string; company_name:string; location:string|null; summary:string; primary_image_url:string|null; amount_text:string|null; category_id:string; opportunity_categories?:{name:string;slug:string}|null };
 type Profile = { full_name:string|null; username:string|null; avatar_url:string|null };
@@ -46,34 +60,7 @@ export default function DiscoverPage() {
   async function signOut(){ await supabase.auth.signOut(); router.push("/"); router.refresh(); }
 
   return <main className="min-h-screen bg-slate-50 text-slate-950">
-    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
-      <div className="mx-auto flex min-h-20 max-w-[1500px] items-center gap-5 px-5 lg:px-8">
-        <Link href="/dashboard" className="flex shrink-0 items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-11 w-auto object-contain brightness-0" /></Link>
-        <div className="ml-auto flex min-w-0 flex-1 items-center gap-2 lg:gap-4">
-          <div className="min-w-0 max-w-md flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 md:flex"><input aria-label="Search opportunities" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search opportunities, companies or locations" className="h-10 w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"/></div>
-          <nav className="ml-auto flex items-center gap-4">
-            <Link href="/dashboard" className="whitespace-nowrap text-sm font-bold text-slate-950 transition hover:text-purple-600">Dashboard</Link>
-            <Link href="/activity" className="whitespace-nowrap text-sm font-bold text-slate-950 transition hover:text-purple-600">Activities</Link>
-          </nav>
-          <div className="flex shrink-0 items-center gap-2">
-            <Link href="/messages" title="Messages" aria-label="Messages" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="message"/></Link>
-            <Link href="/notifications" title="Notifications" aria-label="Notifications" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="notification"/></Link>
-            <Link href="/wallet" title="Wallet" aria-label="Wallet" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="wallet"/></Link>
-            <div className="relative">
-              <button type="button" title="Profile" aria-label="Profile" onClick={()=>setProfileOpen(v=>!v)} className="flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-2 text-slate-700 transition hover:border-purple-200 hover:bg-purple-50">
-                {profile?.avatar_url?<img src={profile.avatar_url} alt="" className="h-8 w-8 rounded-lg object-cover"/>:<span className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 text-xs font-black text-purple-700">{initials}</span>}
-                <span className="hidden max-w-24 truncate text-sm font-bold xl:block">{displayName}</span>
-              </button>
-              {profileOpen&&<div className="absolute right-0 top-12 z-50 w-52 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
-                <Link href="/profile" onClick={()=>setProfileOpen(false)} className="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-slate-50">Profile</Link>
-                <Link href="/settings" onClick={()=>setProfileOpen(false)} className="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-slate-50">Settings</Link>
-                <button type="button" onClick={signOut} className="w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-red-600 hover:bg-red-50">Sign out</button>
-              </div>}
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
+    <UserAccountTopNav searchValue={search} onSearchChange={setSearch}/>
 
     <section className="relative overflow-hidden bg-slate-950 px-6 py-9 text-white lg:px-8 lg:py-11">
       <div className="absolute -right-20 -top-24 h-56 w-56 rounded-full bg-purple-600/15 blur-3xl"/>
