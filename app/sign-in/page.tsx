@@ -46,20 +46,28 @@ export default function SignInPage() {
       </header>
 
       <section className="mx-auto grid min-h-[calc(100vh-81px)] max-w-7xl items-center gap-12 px-6 py-12 lg:grid-cols-[1fr_480px] lg:px-10 lg:py-16">
-        <div className="hidden lg:block">
-          <p className="text-xs font-bold tracking-[0.22em] text-purple-600">WELCOME BACK</p>
-          <h1 className="mt-5 max-w-2xl text-5xl font-black tracking-[-0.05em] text-slate-950 xl:text-6xl">
-            Continue where opportunity meets progress.
-          </h1>
-          <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
-            Sign in to discover opportunities, manage your participation, track progress, and access the value you have created across ACEPA.
-          </p>
-          <div className="mt-10 grid max-w-xl grid-cols-3 gap-3">
-            {["Discover", "Participate", "Track"].map((item) => (
-              <div key={item} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                <p className="text-sm font-bold text-slate-950">{item}</p>
-              </div>
-            ))}
+        <div className="relative hidden min-h-[620px] overflow-hidden rounded-[2rem] lg:block">
+          <img
+            src="https://images.unsplash.com/photo-1635766854982-fc151c6e9278?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=85&w=1600"
+            alt="Professional using a laptop in a modern workspace"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-8 xl:p-10">
+            <p className="text-xs font-bold tracking-[0.22em] text-white/75">WELCOME BACK</p>
+            <h1 className="mt-4 max-w-xl text-4xl font-black leading-tight tracking-[-0.05em] text-white xl:text-5xl">
+              Continue where opportunity meets progress.
+            </h1>
+            <p className="mt-5 max-w-lg text-base leading-7 text-white/80">
+              Sign in to discover opportunities, manage your participation, track progress, and access the value you have created across ACEPA.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-2">
+              {["Discover", "Participate", "Track"].map((item) => (
+                <span key={item} className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white backdrop-blur-sm">
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
