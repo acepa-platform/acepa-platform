@@ -189,6 +189,26 @@ export default function FeedPage() {
     setActionId("");
   }
 
+  async function sharePost(postId: string) {
+    setMessage("");
+    const url = window.location.origin + "/feed#post-" + postId;
+    const title = "ACEPA Feed";
+    const text = "Take a look at this company update on ACEPA.";
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, text, url });
+        return;
+      }
+
+      await navigator.clipboard.writeText(url);
+      setMessage("Post link copied to your clipboard.");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      setMessage("Unable to share this post right now.");
+    }
+  }
+
   async function addComment(post: FeedPost) {
     const content = (commentDrafts[post.id] ?? "").trim();
     if (!content || !userId || actionId) return;
@@ -287,40 +307,67 @@ export default function FeedPage() {
                 </div>
               ) : showDemoPost ? (
                 <div className="mt-5 space-y-5">
-                  <article className="overflow-hidden rounded-3xl border border-purple-100 bg-white shadow-[0_18px_55px_rgba(76,29,149,0.10)]">
+                  <article id="post-demo" className="overflow-hidden rounded-3xl border border-purple-100 bg-white shadow-[0_18px_55px_rgba(76,29,149,0.10)]">
                     <div className="flex items-center justify-between border-b border-purple-100 bg-purple-50/70 px-5 py-3 sm:px-6">
                       <p className="text-[11px] font-black uppercase tracking-[0.18em] text-purple-700">Demo preview</p>
                       <span className="rounded-full border border-purple-200 bg-white px-3 py-1 text-[10px] font-bold text-purple-700">Company post</span>
                     </div>
 
-                    <div className="relative overflow-hidden bg-slate-950 px-6 py-8 sm:px-8 sm:py-10">
-                      <div className="absolute -right-14 -top-16 h-44 w-44 rounded-full bg-purple-500/30 blur-2xl" />
-                      <div className="absolute -bottom-16 -left-10 h-36 w-36 rounded-full bg-fuchsia-500/20 blur-2xl" />
-                      <div className="relative flex min-h-[190px] flex-col justify-end overflow-hidden rounded-[26px] border border-white/10 bg-gradient-to-br from-purple-700 via-indigo-700 to-slate-950 p-6 sm:min-h-[230px] sm:p-8">
-                        <div className="absolute right-5 top-5 rounded-2xl border border-white/15 bg-white/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/80 backdrop-blur">ACEPA</div>
-                        <div className="absolute -right-8 bottom-[-58px] h-48 w-48 rotate-12 rounded-[42px] border border-white/10 bg-white/5" />
-                        <div className="absolute right-20 top-14 h-20 w-20 rounded-full border border-white/10 bg-white/5" />
-                        <p className="relative z-10 text-[11px] font-bold uppercase tracking-[0.2em] text-white/65">Opportunity insight</p>
-                        <p className="relative z-10 mt-2 max-w-xl text-2xl font-black tracking-[-0.04em] text-white sm:text-3xl">A polished company visual can introduce an opportunity before anyone opens the details.</p>
-                      </div>
-                    </div>
-
-                    <div className="p-5 sm:p-6">
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-950 text-sm font-black text-white">NV</div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <p className="text-sm font-black">Nexa Ventures</p>
-                            <span className="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700">Verified company</span>
+                    <div className="grid lg:grid-cols-[minmax(0,1.06fr)_minmax(0,0.94fr)]">
+                      <div className="relative min-h-[320px] overflow-hidden bg-slate-950 p-5 sm:min-h-[390px] sm:p-6">
+                        <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-purple-500/30 blur-3xl" />
+                        <div className="absolute -bottom-12 -left-12 h-40 w-40 rounded-full bg-fuchsia-500/20 blur-3xl" />
+                        <div className="relative flex h-full min-h-[280px] flex-col justify-between overflow-hidden rounded-[26px] border border-white/10 bg-gradient-to-br from-purple-700 via-indigo-700 to-slate-950 p-6 sm:min-h-[338px] sm:p-7">
+                          <div className="flex items-center justify-between">
+                            <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/80 backdrop-blur">Opportunity visual</span>
+                            <span className="rounded-2xl border border-white/15 bg-white/10 px-3 py-2 text-[10px] font-black tracking-[0.16em] text-white/80 backdrop-blur">ACEPA</span>
                           </div>
-                          <p className="mt-1 text-xs text-slate-400">Opportunity Insight · Demo</p>
-                          <p className="mt-5 text-sm leading-7 text-slate-700">This is how a real company update can look inside ACEPA Feed. The company shares a short insight, adds a strong visual, and members can like or comment from here.</p>
+                          <div>
+                            <div className="mb-5 grid h-24 w-24 place-items-center rounded-[28px] border border-white/15 bg-white/10 text-4xl font-black text-white shadow-2xl backdrop-blur">✦</div>
+                            <p className="max-w-md text-3xl font-black tracking-[-0.05em] text-white sm:text-4xl">Build visibility. Discover opportunity. Make progress.</p>
+                            <p className="mt-3 max-w-sm text-sm leading-6 text-white/65">A company can combine a strong visual with a focused message, then direct members to the full opportunity.</p>
+                          </div>
+                          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">
+                            <span>Image / Video</span><span>•</span><span>Company media</span>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="mt-5 flex items-center gap-2 border-t border-slate-100 pt-4">
-                        <span className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-500">♡ Like · 24</span>
-                        <span className="rounded-xl px-3 py-2 text-xs font-bold text-slate-500">◌ Comment · 6</span>
+                      <div className="flex flex-col p-5 sm:p-6 lg:p-7">
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-slate-950 text-sm font-black text-white shadow-sm">NV</div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <p className="text-sm font-black">Nexa Ventures</p>
+                              <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700">Verified company</span>
+                            </div>
+                            <p className="mt-1 text-xs text-slate-400">Opportunity Insight · Demo preview</p>
+                          </div>
+                          <button className="rounded-xl px-2.5 py-2 text-xs font-bold text-slate-400 hover:bg-slate-50 hover:text-slate-700" aria-label="More post options">•••</button>
+                        </div>
+
+                        <div className="mt-6 border-t border-slate-100 pt-5">
+                          <p className="text-base font-black leading-6 tracking-[-0.02em]">A polished company post can lead with the visual, while the right side carries the story and the company details.</p>
+                          <p className="mt-4 text-sm leading-7 text-slate-600">This layout keeps the Feed compact without losing the important context: who posted, what the company is saying, and how members can respond.</p>
+                        </div>
+
+                        <div className="mt-6 rounded-2xl bg-slate-50 p-4">
+                          <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">Company details</p>
+                          <div className="mt-3 grid grid-cols-2 gap-3">
+                            <div><p className="text-[10px] font-bold text-slate-400">Industry</p><p className="mt-1 text-xs font-bold text-slate-700">Business &amp; Investment</p></div>
+                            <div><p className="text-[10px] font-bold text-slate-400">Location</p><p className="mt-1 text-xs font-bold text-slate-700">Lagos, Nigeria</p></div>
+                            <div><p className="text-[10px] font-bold text-slate-400">Company profile</p><p className="mt-1 text-xs font-bold text-purple-700">View company →</p></div>
+                            <div><p className="text-[10px] font-bold text-slate-400">Opportunity</p><p className="mt-1 text-xs font-bold text-purple-700">View details →</p></div>
+                          </div>
+                        </div>
+
+                        <div className="mt-auto pt-6">
+                          <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4">
+                            <span className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-500">♡ Like · 24</span>
+                            <span className="rounded-xl px-3 py-2 text-xs font-bold text-slate-500">◌ Comment · 6</span>
+                            <span className="rounded-xl px-3 py-2 text-xs font-bold text-slate-500">↗ Share</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </article>
@@ -348,52 +395,90 @@ export default function FeedPage() {
                     const liked = likedPostIds.has(post.id);
 
                     return (
-                      <article key={post.id} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                        <div className="flex items-start gap-3">
-                          <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-950 text-sm font-black text-white">
-                            {post.author_avatar_url ? (
-                              <img src={post.author_avatar_url} alt="" className="h-full w-full object-cover" />
-                            ) : (
-                              initials(post.author_name)
-                            )}
+                      <article id={"post-" + post.id} key={post.id} className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+                        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
+                          <div className="relative min-h-[270px] overflow-hidden bg-slate-950 p-4 sm:min-h-[330px] sm:p-5">
+                            <div className="flex h-full min-h-[235px] flex-col justify-end overflow-hidden rounded-[24px] border border-white/10 bg-gradient-to-br from-purple-700 via-indigo-700 to-slate-950 p-6">
+                              <div className="mb-auto flex items-center justify-between">
+                                <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-white/75 backdrop-blur">{post.post_type === "opportunity_insight" ? "Opportunity insight" : post.post_type === "business_update" ? "Business update" : "Company update"}</span>
+                                <span className="rounded-xl border border-white/15 bg-white/10 px-2.5 py-2 text-[10px] font-black tracking-[0.14em] text-white/70">ACEPA</span>
+                              </div>
+                              <div>
+                                <p className="max-w-lg text-2xl font-black tracking-[-0.04em] text-white">Company media area</p>
+                                <p className="mt-2 max-w-md text-xs leading-5 text-white/60">Actual company image or video will appear here when media is attached to the post.</p>
+                              </div>
+                            </div>
                           </div>
 
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-black">{post.author_name}</p>
-                            <p className="mt-1 text-xs text-slate-400">
-                              {post.post_type === "opportunity_insight"
-                                ? "Opportunity Insight"
-                                : post.post_type === "business_update"
-                                  ? "Business Update"
-                                  : "General Update"}{" "}
-                              · {timeAgo(post.created_at)}
-                            </p>
-                            <p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-slate-700">{post.content}</p>
+                          <div className="flex flex-col p-5 sm:p-6">
+                            <div className="flex items-start gap-3">
+                              <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-950 text-sm font-black text-white">
+                                {post.author_avatar_url ? (
+                                  <img src={post.author_avatar_url} alt="" className="h-full w-full object-cover" />
+                                ) : (
+                                  initials(post.author_name)
+                                )}
+                              </div>
+
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-black">{post.author_name}</p>
+                                <p className="mt-1 text-xs text-slate-400">
+                                  {post.post_type === "opportunity_insight"
+                                    ? "Opportunity Insight"
+                                    : post.post_type === "business_update"
+                                      ? "Business Update"
+                                      : "General Update"}{" "}
+                                  · {timeAgo(post.created_at)}
+                                </p>
+                              </div>
+                              <button className="rounded-xl px-2.5 py-2 text-xs font-bold text-slate-400 hover:bg-slate-50 hover:text-slate-700" aria-label="More post options">•••</button>
+                            </div>
+
+                            <div className="mt-5 border-t border-slate-100 pt-5">
+                              <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700">{post.content}</p>
+                            </div>
+
+                            <div className="mt-5 rounded-2xl bg-slate-50 p-4">
+                              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">Company details</p>
+                              <div className="mt-3 grid grid-cols-2 gap-3">
+                                <div><p className="text-[10px] font-bold text-slate-400">Profile</p><p className="mt-1 text-xs font-bold text-purple-700">View company →</p></div>
+                                <div><p className="text-[10px] font-bold text-slate-400">Post type</p><p className="mt-1 text-xs font-bold text-slate-700">{post.post_type === "opportunity_insight" ? "Opportunity" : post.post_type === "business_update" ? "Business" : "Update"}</p></div>
+                              </div>
+                            </div>
+
+                            <div className="mt-auto pt-5">
+                              <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4">
+                                <button
+                                  onClick={() => toggleLike(post)}
+                                  disabled={actionId === post.id}
+                                  className={"rounded-xl px-3 py-2 text-xs font-bold transition " + (liked ? "bg-purple-50 text-purple-700" : "text-slate-500 hover:bg-slate-50")}
+                                >
+                                  {liked ? "♥ Liked" : "♡ Like"} · {likeCounts[post.id] ?? 0}
+                                </button>
+
+                                <button
+                                  onClick={() =>
+                                    setOpenComments((current) => {
+                                      const next = new Set(current);
+                                      if (next.has(post.id)) next.delete(post.id);
+                                      else next.add(post.id);
+                                      return next;
+                                    })
+                                  }
+                                  className="rounded-xl px-3 py-2 text-xs font-bold text-slate-500 transition hover:bg-slate-50"
+                                >
+                                  ◌ Comment · {commentCounts[post.id] ?? 0}
+                                </button>
+
+                                <button
+                                  onClick={() => sharePost(post.id)}
+                                  className="rounded-xl px-3 py-2 text-xs font-bold text-slate-500 transition hover:bg-slate-50"
+                                >
+                                  ↗ Share
+                                </button>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-
-                        <div className="mt-5 flex items-center gap-2 border-t border-slate-100 pt-4">
-                          <button
-                            onClick={() => toggleLike(post)}
-                            disabled={actionId === post.id}
-                            className={"rounded-xl px-3 py-2 text-xs font-bold transition " + (liked ? "bg-purple-50 text-purple-700" : "text-slate-500 hover:bg-slate-50")}
-                          >
-                            {liked ? "♥ Liked" : "♡ Like"} · {likeCounts[post.id] ?? 0}
-                          </button>
-
-                          <button
-                            onClick={() =>
-                              setOpenComments((current) => {
-                                const next = new Set(current);
-                                if (next.has(post.id)) next.delete(post.id);
-                                else next.add(post.id);
-                                return next;
-                              })
-                            }
-                            className="rounded-xl px-3 py-2 text-xs font-bold text-slate-500 transition hover:bg-slate-50"
-                          >
-                            ◌ Comment · {commentCounts[post.id] ?? 0}
-                          </button>
                         </div>
 
                         {openComments.has(post.id) && (
