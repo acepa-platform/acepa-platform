@@ -49,11 +49,11 @@ export default function DiscoverPage() {
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
       <div className="mx-auto flex min-h-20 max-w-[1500px] items-center gap-5 px-5 lg:px-8">
         <Link href="/dashboard" className="flex shrink-0 items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-11 w-auto object-contain brightness-0" /></Link>
-        <nav className="hidden items-center gap-5 xl:flex">
-          {["Dashboard","Opportunities","Activities"].map(label=><Link key={label} href={label==="Dashboard"?"/dashboard":label==="Opportunities"?"/opportunities":"/activity"} className="text-sm font-semibold text-slate-600 transition hover:text-purple-600">{label}</Link>)}
-        </nav>
-        <div className="ml-auto flex min-w-0 flex-1 items-center justify-end gap-2 lg:gap-3">
-          <div className="hidden max-w-md flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 md:flex"><input aria-label="Search opportunities" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search opportunities, companies or locations" className="h-10 w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"/></div>
+        <div className="ml-auto flex min-w-0 flex-1 items-center gap-2 lg:gap-4">
+          <div className="hidden min-w-0 max-w-md flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 md:flex"><input aria-label="Search opportunities" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search opportunities, companies or locations" className="h-10 w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"/></div>
+          <nav className="hidden items-center gap-5 xl:flex">
+            {["Dashboard","Opportunities","Activities"].map(label=><Link key={label} href={label==="Dashboard"?"/dashboard":label==="Opportunities"?"/opportunities":"/activity"} className="text-sm font-bold text-slate-950 transition hover:text-purple-600">{label}</Link>)}
+          </nav>
           <Link href="/wallet" title="Wallet" aria-label="Wallet" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="wallet"/></Link>
           <Link href="/notifications" title="Notifications" aria-label="Notifications" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="notification"/></Link>
           <Link href="/messages" title="Messages" aria-label="Messages" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="message"/></Link>
