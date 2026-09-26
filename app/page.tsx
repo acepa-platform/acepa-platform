@@ -38,6 +38,7 @@ const impactMetrics = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   const [heroIndex, setHeroIndex] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
@@ -69,8 +70,9 @@ export default function Home() {
       return;
     }
 
-    setSignInMessage("Signed in successfully. Your ACEPA account is ready.");
+    setIsSignInOpen(false);
     setSignInLoading(false);
+    router.push("/dashboard");
   }
 
   function closeSignIn() {
