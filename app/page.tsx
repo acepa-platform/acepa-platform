@@ -5,14 +5,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-const heroImages = [
-  "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1800&q=90",
-  "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1800&q=90",
-  "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1800&q=90",
-  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1800&q=90",
-  "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1800&q=90",
-  "https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=1800&q=90",
-];
+const heroVideo = "https://videos.pexels.com/video-files/8201419/8201419-uhd_3840_2160_25fps.mp4";
 
 const roles = [
   { title: "Investors", text: "Discover and support high-potential businesses and projects while earning returns from your investments.", icon: "▥" },
@@ -40,7 +33,6 @@ const impactMetrics = [
 
 export default function Home() {
   const router = useRouter();
-  const [heroIndex, setHeroIndex] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -81,11 +73,6 @@ export default function Home() {
     setSignInError("");
     setSignInMessage("");
   }
-
-  useEffect(() => {
-    const timer = setInterval(() => setHeroIndex((current) => (current + 1) % heroImages.length), 6000);
-    return () => clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -206,7 +193,17 @@ export default function Home() {
       )}
 
       <section id="home" className="relative min-h-[680px] overflow-hidden bg-white">
-        <img src={heroImages[heroIndex]} alt="Modern city skyline and waterfront" className="absolute inset-0 h-full w-full object-cover object-center" />
+        <video
+          className="absolute inset-0 h-full w-full object-cover object-center"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        >
+          <source src={heroVideo} type="video/mp4" />
+        </video>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white 0%, from-white 7%, via-white/88 18%, via-white/60 28%, via-white/32 38%, via-white/12 50%, via-white/3 62%, to-transparent 72%" />
         <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-center px-6 pt-32 pb-16 lg:px-10 lg:pt-24 lg:pb-20">
           <div className="max-w-2xl">
