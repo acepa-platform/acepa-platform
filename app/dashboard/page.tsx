@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-const navItems = [
+const mobileNavItems = [
   { label: "Home", href: "/dashboard", icon: "⌂" },
   { label: "Discover", href: "/discover", icon: "◈" },
   { label: "Feed", href: "#", icon: "◉" },
@@ -13,6 +13,63 @@ const navItems = [
   { label: "Wallet", href: "#", icon: "▣" },
   { label: "Activity", href: "#", icon: "◷" },
   { label: "Profile", href: "/profile", icon: "○" },
+];
+
+const desktopNavSections = [
+  {
+    title: "Main",
+    items: [
+      { label: "Home", href: "/dashboard", icon: "⌂" },
+      { label: "Discover", href: "/discover", icon: "◈" },
+      { label: "Feed", href: "#", icon: "◉" },
+      { label: "Opportunities", href: "#", icon: "✦" },
+    ],
+  },
+  {
+    title: "My ACEPA",
+    items: [
+      { label: "My Activity", href: "#", icon: "◷" },
+      { label: "My Wallet", href: "#", icon: "▣" },
+      { label: "My Investments", href: "#", icon: "$" },
+      { label: "My Earnings", href: "#", icon: "↗" },
+      { label: "Saved", href: "#", icon: "♡" },
+      { label: "Watchlist", href: "#", icon: "◉" },
+      { label: "Upcoming Projects", href: "#", icon: "◫" },
+    ],
+  },
+  {
+    title: "Explore",
+    items: [
+      { label: "Investments", href: "#", icon: "$" },
+      { label: "Campaigns", href: "#", icon: "✦" },
+      { label: "Innovations", href: "#", icon: "✧" },
+      { label: "Collaborations", href: "#", icon: "∞" },
+      { label: "Careers & Jobs", href: "#", icon: "▤" },
+    ],
+  },
+  {
+    title: "Business",
+    items: [
+      { label: "Business Hub", href: "#", icon: "⌂" },
+      { label: "Proposal Hub", href: "#", icon: "◇" },
+    ],
+  },
+  {
+    title: "Tools & Learning",
+    items: [
+      { label: "AI Assistant", href: "#", icon: "✦" },
+      { label: "Learning Center", href: "#", icon: "▥" },
+    ],
+  },
+  {
+    title: "Account & Support",
+    items: [
+      { label: "Profile", href: "/profile", icon: "○" },
+      { label: "Notifications", href: "#", icon: "♢" },
+      { label: "Settings", href: "/settings", icon: "⚙" },
+      { label: "Support", href: "#", icon: "?" },
+    ],
+  },
 ];
 
 const opportunityCards = [
@@ -37,10 +94,10 @@ export default function DashboardPage() {
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-slate-200 bg-white lg:flex lg:flex-col">
         <div className="flex h-20 items-center border-b border-slate-100 px-7"><Link href="/dashboard" className="flex items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-12 w-auto object-contain brightness-0 dark:brightness-100" /></Link></div>
-        <div className="px-4 py-6"><p className="px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Workspace</p><nav className="mt-3 space-y-1">{navItems.map((item, index) => <Link key={item.label} href={item.href} className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${index === 0 ? "bg-slate-950 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50 hover:text-slate-950"}`}><span className="flex h-7 w-7 items-center justify-center rounded-lg text-base">{item.icon}</span>{item.label}</Link>)}</nav></div>
+        <div className="flex-1 overflow-y-auto px-4 py-6"><nav className="space-y-7">{desktopNavSections.map((section, sectionIndex) => <div key={section.title}><p className="px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{section.title}</p><div className="mt-3 space-y-1">{section.items.map((item, itemIndex) => <Link key={item.label} href={item.href} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition ${sectionIndex === 0 && itemIndex === 0 ? "bg-slate-950 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50 hover:text-slate-950"}`}><span className="flex h-7 w-7 items-center justify-center rounded-lg text-base">{item.icon}</span>{item.label}</Link>)}</div></div>)}</nav></div>
         <div className="mt-auto p-4"><div className="rounded-2xl bg-slate-950 p-5 text-white"><p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/50">Your ACEPA journey</p><p className="mt-3 text-sm font-semibold leading-6">Discover opportunities and turn participation into progress.</p><Link href="/discover" className="mt-4 inline-flex rounded-lg bg-white px-3 py-2 text-xs font-bold text-slate-950 transition hover:bg-purple-50">Explore now →</Link></div></div>
       </aside>
-      {mobileOpen && <div className="fixed inset-0 z-50 lg:hidden"><button aria-label="Close menu" className="absolute inset-0 bg-slate-950/40" onClick={() => setMobileOpen(false)} /><aside className="relative flex h-full w-72 flex-col bg-white shadow-2xl"><div className="flex h-20 items-center justify-between border-b border-slate-100 px-6"><Link href="/dashboard" className="flex items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-12 w-auto object-contain brightness-0 dark:brightness-100" /></Link><button onClick={() => setMobileOpen(false)} className="rounded-lg px-3 py-2 text-sm font-bold text-slate-500">Close</button></div><nav className="space-y-1 p-4">{navItems.map((item, index) => <Link key={item.label} href={item.href} onClick={() => setMobileOpen(false)} className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold ${index === 0 ? "bg-slate-950 text-white" : "text-slate-600 hover:bg-slate-50"}`}><span className="w-7 text-center">{item.icon}</span>{item.label}</Link>)}</nav><div className="mt-auto p-4"><button onClick={handleSignOut} disabled={signingOut} className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-700 disabled:opacity-60">{signingOut ? "Signing out..." : "Sign out"}</button></div></aside></div>}
+      {mobileOpen && <div className="fixed inset-0 z-50 lg:hidden"><button aria-label="Close menu" className="absolute inset-0 bg-slate-950/40" onClick={() => setMobileOpen(false)} /><aside className="relative flex h-full w-72 flex-col bg-white shadow-2xl"><div className="flex h-20 items-center justify-between border-b border-slate-100 px-6"><Link href="/dashboard" className="flex items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-12 w-auto object-contain brightness-0 dark:brightness-100" /></Link><button onClick={() => setMobileOpen(false)} className="rounded-lg px-3 py-2 text-sm font-bold text-slate-500">Close</button></div><nav className="space-y-1 p-4">{mobileNavItems.map((item, index) => <Link key={item.label} href={item.href} onClick={() => setMobileOpen(false)} className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold ${index === 0 ? "bg-slate-950 text-white" : "text-slate-600 hover:bg-slate-50"}`}><span className="w-7 text-center">{item.icon}</span>{item.label}</Link>)}</nav><div className="mt-auto p-4"><button onClick={handleSignOut} disabled={signingOut} className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-700 disabled:opacity-60">{signingOut ? "Signing out..." : "Sign out"}</button></div></aside></div>}
       <div className="lg:pl-64">
         <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl"><div className="flex h-20 items-center justify-between px-5 sm:px-8 lg:px-10"><button onClick={() => setMobileOpen(true)} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold lg:hidden" aria-label="Open menu">☰</button><div className="hidden lg:block"><p className="text-xs font-semibold text-slate-400">ACEPA WORKSPACE</p><p className="mt-1 text-black text-sm font-bold">Personal dashboard</p></div><div className="flex items-center gap-3"><button className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-200"><span className="text-lg">♢</span><span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-purple-600" /></button><Link href="/profile" className="hidden rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:text-purple-600 sm:block">Profile</Link><button onClick={handleSignOut} disabled={signingOut} className="flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-2 pr-3 disabled:opacity-60"><span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-950 text-xs font-bold text-white">K</span><span className="hidden text-sm font-bold text-slate-700 sm:block">{signingOut ? "Signing out..." : "Sign out"}</span></button></div></div></header>
         <div className="mx-auto max-w-[1500px] px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
