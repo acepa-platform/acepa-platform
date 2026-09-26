@@ -649,7 +649,15 @@ export default function SettingsPage() {
             </div>
             <div className={"ml-auto hidden h-11 w-72 items-center gap-2 rounded-xl border px-3 md:flex " + soft}>
               <span className="text-base text-slate-400">⌕</span>
-              <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search anything..." className={"w-full bg-transparent text-sm outline-none placeholder:text-slate-400 " + (dark ? "text-slate-100" : "text-slate-700")} />
+              <input
+  name="settings-search"
+  type="search"
+  autoComplete="off"
+  value={search}
+  onChange={(event) => setSearch(event.target.value)}
+  placeholder="Search anything..."
+  className={"w-full bg-transparent text-sm outline-none placeholder:text-slate-400 " + (dark ? "text-slate-100" : "text-slate-700")}
+/>
             </div>
             <UserAccountActions />
           </div>
