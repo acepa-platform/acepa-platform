@@ -51,7 +51,7 @@ export function UserAccountActions() {
 export default function UserAccountTopNav({ searchValue="", onSearchChange }: { searchValue?: string; onSearchChange?: (value:string)=>void }) {
   return <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
     <div className="mx-auto flex min-h-20 max-w-[1500px] items-center gap-5 px-5 lg:px-8">
-      <Link href="/dashboard" className="flex shrink-0 items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-11 w-auto object-contain brightness-0"/></Link>
+      <Link href="/dashboard" className="shrink-0 text-lg font-black tracking-[-0.05em] text-slate-950 lg:hidden">ACEPA</Link>
       <div className="ml-auto flex min-w-0 flex-1 items-center gap-2 lg:gap-4">
         <div className="min-w-0 max-w-md flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4"><input aria-label="Search opportunities" value={searchValue} onChange={e=>onSearchChange?.(e.target.value)} placeholder="Search opportunities, companies or locations" className="h-10 w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"/></div>
         <nav className="ml-auto flex items-center gap-4">
