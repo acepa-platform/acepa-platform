@@ -40,6 +40,12 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("Profile");
   const [activeProfile, setActiveProfile] = useState("Profile Information");
   const [activeSecurity, setActiveSecurity] = useState("Password & Login");
+  const [mfaFactors, setMfaFactors] = useState<Array<{ id: string; friendly_name?: string | null; status?: string; factor_type?: string }>>([]);
+  const [mfaFactorId, setMfaFactorId] = useState("");
+  const [mfaQrCode, setMfaQrCode] = useState("");
+  const [mfaSecret, setMfaSecret] = useState("");
+  const [mfaCode, setMfaCode] = useState("");
+  const [mfaSetup, setMfaSetup] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -87,6 +93,10 @@ export default function SettingsPage() {
     localStorage.setItem("acepa-appearance", nextAppearance);
     window.dispatchEvent(new CustomEvent("acepa-appearance-change", { detail: nextAppearance }));
   }
+
+  useEffect(() => {
+    if (activeTab === "Security" && activeSecurity === "Two-Factor Authentication") loadMfaFactors();
+  }, [activeTab, activeSecurity]);
 
   const dark = appearance === "dark" || (appearance === "system" && systemDark);
   const surface = dark ? "bg-slate-950 text-slate-100" : "bg-[#f7f8fc] text-slate-950";
@@ -157,6 +167,80 @@ export default function SettingsPage() {
     setAppearance(value);
     localStorage.setItem("acepa-appearance", value);
     window.dispatchEvent(new CustomEvent("acepa-appearance-change", { detail: value }));
+  }
+
+  async function loadMfaFactors() {
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.mfa.listFactors();
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+    const factors = [...(data?.totp ?? []), ...(data?.phone ?? [])].filter((factor) => factor.status === "verified");
+    setMfaFactors(factors);
+  }
+
+  async function startMfaSetup() {
+    setSaving(true);
+    setMessage("");
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.mfa.enroll({
+      factorType: "totp",
+      friendlyName: "ACEPA Authenticator",
+    });
+    if (error) {
+      setMessage(error.message);
+      setSaving(false);
+      return;
+    }
+    setMfaFactorId(data.id);
+    setMfaQrCode(data.totp.qr_code);
+    setMfaSecret(data.totp.secret);
+    setMfaCode("");
+    setMfaSetup(true);
+    setMessage("Scan the QR code with your authenticator app, then enter the 6-digit code.");
+    setSaving(false);
+  }
+
+  async function verifyMfaSetup() {
+    if (!mfaFactorId || mfaCode.trim().length !== 6) {
+      setMessage("Enter the 6-digit code from your authenticator app.");
+      return;
+    }
+    setSaving(true);
+    setMessage("");
+    const supabase = createClient();
+    const { error } = await supabase.auth.mfa.challengeAndVerify({
+      factorId: mfaFactorId,
+      code: mfaCode.trim(),
+    });
+    if (error) {
+      setMessage(error.message);
+      setSaving(false);
+      return;
+    }
+    setMfaSetup(false);
+    setMfaQrCode("");
+    setMfaSecret("");
+    setMfaCode("");
+    setMessage("Two-factor authentication is now enabled.");
+    await loadMfaFactors();
+    setSaving(false);
+  }
+
+  async function disableMfa(factorId: string) {
+    setSaving(true);
+    setMessage("");
+    const supabase = createClient();
+    const { error } = await supabase.auth.mfa.unenroll({ factorId });
+    if (error) {
+      setMessage(error.message);
+      setSaving(false);
+      return;
+    }
+    setMfaFactors((current) => current.filter((factor) => factor.id !== factorId));
+    setMessage("Two-factor authentication has been disabled.");
+    setSaving(false);
   }
 
   async function changePassword() {
@@ -422,6 +506,64 @@ export default function SettingsPage() {
       <div className={"rounded-2xl border p-5 " + soft}>
         <p className="text-sm font-black">Login protection</p>
         <p className={"mt-2 text-sm leading-6 " + muted}>Two-factor authentication and session controls will be connected here as the ACEPA security system expands.</p>
+      </div>
+    </div>
+  ) : activeSecurity === "Two-Factor Authentication" ? (
+    <div className="space-y-6">
+      <div>
+        <p className="text-lg font-black">Two-Factor Authentication</p>
+        <p className={"mt-1 text-sm " + muted}>Add an authenticator app as a second step when signing in to ACEPA.</p>
+      </div>
+
+      <div className={"rounded-2xl border p-5 " + soft}>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-black">Authenticator app</p>
+            <p className={"mt-1 text-sm " + muted}>Use Google Authenticator, 1Password, Authy, Apple Passwords, or another TOTP authenticator.</p>
+          </div>
+          <span className={"rounded-full px-3 py-1 text-xs font-bold " + (mfaFactors.length ? "bg-emerald-50 text-emerald-600" : "bg-slate-100 text-slate-500")}>{mfaFactors.length ? "Enabled" : "Not enabled"}</span>
+        </div>
+
+        {!mfaSetup && mfaFactors.length === 0 && (
+          <button onClick={startMfaSetup} disabled={saving} className="mt-5 rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700 disabled:opacity-60">
+            {saving ? "Starting..." : "Enable Two-Factor Authentication"}
+          </button>
+        )}
+
+        {mfaSetup && (
+          <div className="mt-6 grid gap-6 md:grid-cols-[220px_minmax(0,1fr)]">
+            <div className="rounded-2xl border bg-white p-4 dark:bg-white">
+              <img src={"data:image/svg+xml;utf8," + encodeURIComponent(mfaQrCode)} alt="Scan this QR code with your authenticator app" className="h-full w-full" />
+            </div>
+            <div>
+              <p className="text-sm font-black">1. Scan the QR code</p>
+              <p className={"mt-2 text-sm leading-6 " + muted}>Open your authenticator app and scan the QR code. If scanning is unavailable, enter this setup key manually.</p>
+              <div className="mt-3 rounded-xl border px-4 py-3 font-mono text-sm break-all " + field>{mfaSecret}</div>
+              <label className="mt-5 block text-sm font-bold">2. Enter the 6-digit code</label>
+              <input value={mfaCode} onChange={(event) => setMfaCode(event.target.value.replace(/\\D/g, "").slice(0, 6))} inputMode="numeric" autoComplete="one-time-code" placeholder="123456" className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm tracking-[0.3em] outline-none focus:border-purple-500 " + field} />
+              <div className="mt-4 flex flex-wrap gap-3">
+                <button onClick={verifyMfaSetup} disabled={saving} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700 disabled:opacity-60">{saving ? "Verifying..." : "Verify & Enable"}</button>
+                <button onClick={() => { setMfaSetup(false); setMfaQrCode(""); setMfaSecret(""); setMfaCode(""); }} className={"rounded-xl border px-5 py-3 text-sm font-bold " + (dark ? "border-slate-700 text-slate-200" : "border-slate-300 text-slate-700")}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {mfaFactors.length > 0 && !mfaSetup && (
+          <div className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+            <p className="text-sm font-bold text-emerald-700">Your authenticator is active.</p>
+            <p className="mt-1 text-xs leading-5 text-emerald-700/80">A verification code will be required after your password when you sign in.</p>
+            {mfaFactors.map((factor) => (
+              <div key={factor.id} className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-emerald-200 pt-4">
+                <div>
+                  <p className="text-sm font-bold text-emerald-800">{factor.friendly_name || "Authenticator app"}</p>
+                  <p className="text-xs text-emerald-700/70">TOTP authenticator</p>
+                </div>
+                <button onClick={() => disableMfa(factor.id)} disabled={saving} className="rounded-xl border border-red-200 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 disabled:opacity-60">Disable</button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   ) : (
