@@ -53,6 +53,8 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [search, setSearch] = useState("");
+  const [sessionInfo, setSessionInfo] = useState({ email: "", lastSignIn: "", expiresAt: "", browser: "" });
+  const [sessionLoading, setSessionLoading] = useState(false);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -96,6 +98,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (activeTab === "Security" && activeSecurity === "Two-Factor Authentication") loadMfaFactors();
+    if (activeTab === "Security" && activeSecurity === "Sessions") loadSessionInfo();
   }, [activeTab, activeSecurity]);
 
   const dark = appearance === "dark" || (appearance === "system" && systemDark);
@@ -241,6 +244,32 @@ export default function SettingsPage() {
     setMfaFactors((current) => current.filter((factor) => factor.id !== factorId));
     setMessage("Two-factor authentication has been disabled.");
     setSaving(false);
+  }
+
+  async function loadSessionInfo() {
+    setSessionLoading(true);
+    const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { setSessionLoading(false); return; }
+    const userAgent = typeof navigator !== "undefined" ? navigator.userAgent : "";
+    const browser = userAgent.includes("Edg/") ? "Microsoft Edge" : userAgent.includes("Chrome/") ? "Google Chrome" : userAgent.includes("Firefox/") ? "Mozilla Firefox" : userAgent.includes("Safari/") ? "Safari" : "Web browser";
+    setSessionInfo({
+      email: session.user.email ?? "",
+      lastSignIn: session.user.last_sign_in_at ? new Date(session.user.last_sign_in_at).toLocaleString() : "Not available",
+      expiresAt: session.expires_at ? new Date(session.expires_at * 1000).toLocaleString() : "Not available",
+      browser,
+    });
+    setSessionLoading(false);
+  }
+
+  async function signOutOtherSessions() {
+    setSessionLoading(true);
+    setMessage("");
+    const supabase = createClient();
+    const { error } = await supabase.auth.signOut({ scope: "others" });
+    setMessage(error ? error.message : "All other ACEPA login sessions have been signed out.");
+    await loadSessionInfo();
+    setSessionLoading(false);
   }
 
   async function changePassword() {
@@ -566,16 +595,38 @@ export default function SettingsPage() {
         )}
       </div>
     </div>
+  ) : activeSecurity === "Sessions" ? (
+    <div className="space-y-6">
+      <div>
+        <p className="text-lg font-black">Login Sessions</p>
+        <p className={"mt-1 text-sm " + muted}>Review your current ACEPA login session and sign out other active sessions.</p>
+      </div>
+      <div className={"rounded-2xl border p-5 " + soft}>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div><p className="text-sm font-black">Current session</p><p className={"mt-1 text-sm " + muted}>This is the session you are using right now.</p></div>
+          <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-600">Active now</span>
+        </div>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          {[["Account", sessionInfo.email || email],["Browser", sessionInfo.browser || "Web browser"],["Last sign-in", sessionInfo.lastSignIn || "Loading..."],["Session expires", sessionInfo.expiresAt || "Loading..."]].map(([label, value]) => (
+            <div key={label} className={"rounded-xl border p-4 " + card}><p className={"text-xs font-bold uppercase tracking-wide " + muted}>{label}</p><p className="mt-2 break-words text-sm font-semibold">{value}</p></div>
+          ))}
+        </div>
+        <button onClick={signOutOtherSessions} disabled={sessionLoading} className="mt-5 rounded-xl border border-red-200 px-5 py-3 text-sm font-bold text-red-600 hover:bg-red-50 disabled:opacity-60">{sessionLoading ? "Signing out..." : "Sign Out Other Sessions"}</button>
+        <p className={"mt-3 text-xs leading-5 " + muted}>Your current session stays active while other sessions are signed out.</p>
+      </div>
+      <div className={"rounded-2xl border p-5 " + soft}>
+        <p className="text-sm font-black">Session security</p>
+        <p className={"mt-2 text-sm leading-6 " + muted}>If you think someone else has accessed your account, change your password and sign out other sessions. Two-factor authentication adds another verification step for new sign-ins.</p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <button onClick={() => setActiveSecurity("Password & Login")} className="rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Change Password</button>
+          <button onClick={() => setActiveSecurity("Two-Factor Authentication")} className="rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Manage 2FA</button>
+        </div>
+      </div>
+    </div>
   ) : (
     <div className="space-y-5">
-      <div>
-        <p className="text-lg font-black">{activeSecurity}</p>
-        <p className={"mt-1 text-sm " + muted}>Manage your {activeSecurity.toLowerCase()} settings.</p>
-      </div>
-      <div className={"rounded-2xl border p-6 " + soft}>
-        <p className="font-bold">{activeSecurity}</p>
-        <p className={"mt-2 text-sm leading-6 " + muted}>This security control is reserved for the next ACEPA security build.</p>
-      </div>
+      <div><p className="text-lg font-black">{activeSecurity}</p><p className={"mt-1 text-sm " + muted}>Manage your {activeSecurity.toLowerCase()} settings.</p></div>
+      <div className={"rounded-2xl border p-6 " + soft}><p className="font-bold">{activeSecurity}</p><p className={"mt-2 text-sm leading-6 " + muted}>This security control is reserved for the next ACEPA security build.</p></div>
     </div>
   );
 
