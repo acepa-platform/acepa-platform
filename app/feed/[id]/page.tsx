@@ -435,7 +435,7 @@ export default function FeedPostDetailsPage({ params }: { params: Promise<{ id: 
                 </div>
               </article>
 
-              <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+              <section id="discussion" className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-600">Discussion</p>
