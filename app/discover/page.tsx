@@ -2,17 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type Opportunity = { id:string; title:string; slug:string; company_name:string; location:string|null; summary:string; primary_image_url:string|null; amount_text:string|null; category_id:string; opportunity_categories?:{name:string;slug:string}|null };
+type Profile = { full_name:string|null; username:string|null; avatar_url:string|null };
 
 const categories = [["All","all"],["Investment","investment"],["Innovation","innovation"],["Marketing","marketing"],["Business","business"],["Collaboration","collaboration"],["Experts","experts"],["Careers & Jobs","careers-jobs"]];
 
-function TopIcon({ type }: { type: "activity"|"wallet"|"investment"|"message"|"notification" }) {
+function TopIcon({ type }: { type: "wallet"|"message"|"notification" }) {
   const paths = {
-    activity:<path d="M3 12h4l2-6 4.5 12 2-6H21" />,
     wallet:<><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 9h15.5a2.5 2.5 0 0 1 0 5H17"/><circle cx="17" cy="11.5" r=".8" fill="currentColor" stroke="none"/></>,
-    investment:<><path d="M5 19V9M12 19V5M19 19v-8M3 19h18"/></>,
     message:<><path d="M5 5h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H10l-5 3v-5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h6"/></>,
     notification:<><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></>
   };
@@ -21,26 +21,55 @@ function TopIcon({ type }: { type: "activity"|"wallet"|"investment"|"message"|"n
 
 export default function DiscoverPage() {
   const supabase = createClient();
+  const router = useRouter();
   const [opportunities,setOpportunities]=useState<Opportunity[]>([]);
   const [category,setCategory]=useState("all");
   const [search,setSearch]=useState("");
   const [loading,setLoading]=useState(true);
+  const [profile,setProfile]=useState<Profile|null>(null);
+  const [profileOpen,setProfileOpen]=useState(false);
 
-  useEffect(()=>{ async function load(){ setLoading(true); const {data}=await supabase.from("opportunities").select("id,title,slug,company_name,location,summary,primary_image_url,amount_text,category_id,opportunity_categories(name,slug)").eq("status","published").order("published_at",{ascending:false}); setOpportunities((data??[]) as Opportunity[]); setLoading(false); } load(); },[supabase]);
+  useEffect(()=>{ async function load(){ 
+    setLoading(true);
+    const {data}=await supabase.from("opportunities").select("id,title,slug,company_name,location,summary,primary_image_url,amount_text,category_id,opportunity_categories(name,slug)").eq("status","published").order("published_at",{ascending:false});
+    setOpportunities((data??[]) as Opportunity[]);
+    const {data:{user}}=await supabase.auth.getUser();
+    if(user){ const {data:profileData}=await supabase.from("profiles").select("full_name,username,avatar_url").eq("id",user.id).maybeSingle(); setProfile(profileData as Profile|null); }
+    setLoading(false);
+  } load(); },[supabase]);
 
   const filtered=useMemo(()=>opportunities.filter(item=>{const categoryMatch=category==="all"||item.opportunity_categories?.slug===category; const q=search.trim().toLowerCase(); const searchMatch=!q||[item.title,item.company_name,item.location??"",item.summary].some(v=>v.toLowerCase().includes(q)); return categoryMatch&&searchMatch;}),[opportunities,category,search]);
+
+  const displayName=profile?.full_name||profile?.username||"Profile";
+  const initials=displayName.trim().split(/\s+/).map(part=>part[0]).join("").slice(0,2).toUpperCase()||"K";
+
+  async function signOut(){ await supabase.auth.signOut(); router.push("/"); router.refresh(); }
 
   return <main className="min-h-screen bg-slate-50 text-slate-950">
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
       <div className="mx-auto flex min-h-20 max-w-[1500px] items-center gap-5 px-5 lg:px-8">
         <Link href="/dashboard" className="flex shrink-0 items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-11 w-auto object-contain brightness-0" /></Link>
         <nav className="hidden items-center gap-5 xl:flex">
-          {["Explore","Projects","Campaigns","Innovation","Collaboration","Dashboard"].map((label,i)=><Link key={label} href={label==="Dashboard"?"/dashboard":"#"} className="text-sm font-semibold text-slate-600 transition hover:text-purple-600">{label}</Link>)}
+          {["Dashboard","Opportunities","Activities"].map(label=><Link key={label} href={label==="Dashboard"?"/dashboard":label==="Opportunities"?"/opportunities":"/activity"} className="text-sm font-semibold text-slate-600 transition hover:text-purple-600">{label}</Link>)}
         </nav>
         <div className="ml-auto flex min-w-0 flex-1 items-center justify-end gap-2 lg:gap-3">
-          <div className="hidden max-w-md flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 md:flex"><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search opportunities, companies or locations" className="h-10 w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"/></div>
-          {(["activity","wallet","investment","message","notification"] as const).map(type=><button key={type} title={type[0].toUpperCase()+type.slice(1)} className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type={type}/></button>)}
-          <Link href="/profile" className="flex h-10 shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-white px-2.5 pr-3 text-sm font-bold text-slate-700 transition hover:border-purple-200 hover:text-purple-600"><span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-950 text-xs text-white">K</span><span className="hidden 2xl:block">Profile</span></Link>
+          <div className="hidden max-w-md flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 md:flex"><input aria-label="Search opportunities" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search opportunities, companies or locations" className="h-10 w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"/></div>
+          <Link href="/wallet" title="Wallet" aria-label="Wallet" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="wallet"/></Link>
+          <Link href="/notifications" title="Notifications" aria-label="Notifications" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="notification"/></Link>
+          <Link href="/messages" title="Messages" aria-label="Messages" className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 lg:flex"><TopIcon type="message"/></Link>
+          <div className="relative">
+            <button type="button" onClick={()=>setProfileOpen(open=>!open)} aria-expanded={profileOpen} className="flex h-10 shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-white px-2.5 pr-3 text-sm font-bold text-slate-700 transition hover:border-purple-200 hover:text-purple-600">
+              {profile?.avatar_url?<img src={profile.avatar_url} alt="" className="h-7 w-7 rounded-lg object-cover"/>:<span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-950 text-[11px] text-white">{initials}</span>}
+              <span className="hidden 2xl:block max-w-28 truncate">{displayName}</span>
+              <span className="text-xs text-slate-400">⌄</span>
+            </button>
+            {profileOpen&&<div className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
+              <div className="border-b border-slate-100 px-3 py-2.5"><p className="truncate text-sm font-bold text-slate-900">{displayName}</p>{profile?.username&&<p className="truncate text-xs text-slate-500">@{profile.username}</p>}</div>
+              <Link href="/profile" onClick={()=>setProfileOpen(false)} className="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Profile</Link>
+              <Link href="/settings" onClick={()=>setProfileOpen(false)} className="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Settings</Link>
+              <button type="button" onClick={signOut} className="w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-red-600 hover:bg-red-50">Sign out</button>
+            </div>}
+          </div>
         </div>
       </div>
     </header>
