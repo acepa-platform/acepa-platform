@@ -241,6 +241,12 @@ export default function Home() {
                 <img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-20 w-auto object-contain brightness-0" />
               </a>
               <p className="mt-5 text-base leading-7 text-slate-600">A global investment and business development platform connecting people, capital, ideas, businesses, and opportunities to create meaningful progress.</p>
+              <div className="mt-6">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Follow ACEPA</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {["X", "LinkedIn", "Instagram", "YouTube", "TikTok"].map((item) => <a key={item} href="#" aria-label={item} className="flex h-10 min-w-10 items-center justify-center rounded-xl border border-purple-100 bg-white px-3 text-xs font-bold text-slate-700 transition hover:border-purple-300 hover:bg-purple-600 hover:text-white">{item}</a>)}
+                </div>
+              </div>
               <p className="mt-4 text-sm leading-6 text-slate-500">Connecting people to opportunity. Connecting capital to potential. Connecting ideas to progress.</p>
             </div>
             <div>
@@ -265,10 +271,10 @@ export default function Home() {
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-600">Stay connected</p>
               <h3 className="mt-3 text-2xl font-bold tracking-tight">Stay informed about ACEPA.</h3>
               <p className="mt-3 text-sm leading-6 text-slate-600">Stay tuned for updates about new opportunities, platform news, insights, and important developments across the ACEPA ecosystem.</p>
-              <a href="#" className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-purple-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-purple-700">Get ACEPA updates →</a>
+              <a href="#subscribe" className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-purple-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-purple-700">Get ACEPA updates →</a>
             </div>
           </div>
-          <div className="mt-14 border-t border-purple-200 pt-7">
+          <div id="subscribe" className="mt-10 border-t border-purple-200 pt-7">
             <div className="flex flex-col gap-5 text-sm text-slate-500 lg:flex-row lg:items-center lg:justify-between">
               <p>© 2026 ACEPA Investment &amp; Business Development Platform. All rights reserved.</p>
               <div className="flex flex-wrap gap-x-6 gap-y-2">
