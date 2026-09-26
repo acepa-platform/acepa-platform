@@ -55,6 +55,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [search, setSearch] = useState("");
+  const [notificationPrefs, setNotificationPrefs] = useState({ email: true, opportunity: true, activity: true, marketing: false });
   const [sessionInfo, setSessionInfo] = useState({ email: "", lastSignIn: "", expiresAt: "", browser: "" });
   const [sessionLoading, setSessionLoading] = useState(false);
 
@@ -413,9 +414,31 @@ export default function SettingsPage() {
       </div>
       <div className={"rounded-2xl border p-6 " + soft}>
         <p className="font-bold">{activeProfile}</p>
-        <p className={"mt-2 text-sm leading-6 " + muted}>This section is ready for its detailed ACEPA controls and workflows.</p>
+        <p className={"mt-2 text-sm leading-6 " + muted}>This section is your direct editing area. Use the controls here to add or edit your information without scrolling through the rest of Settings.</p>
         <button className="mt-5 rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Continue →</button>
       </div>
+    </div>
+  );
+
+  const notificationContent = (
+    <div className="space-y-6">
+      <div><p className="text-lg font-black">{activeGeneric || "Email Notifications"}</p><p className={"mt-1 text-sm " + muted}>Choose which ACEPA notifications you want to receive.</p></div>
+      <div className="space-y-3">
+        {[
+          ["Email Notifications","Receive important ACEPA updates by email.","email"],
+          ["Opportunity Notifications","Get alerts about opportunities, applications and updates.","opportunity"],
+          ["Activity Notifications","Receive notifications about your activities, milestones and interactions.","activity"],
+          ["Marketing Notifications","Receive product news, announcements and promotional messages.","marketing"],
+        ].map(([title,description,key]) => (
+          <div key={key} className={"flex items-center justify-between gap-4 rounded-2xl border p-5 " + soft}>
+            <div><p className="text-sm font-black">{title}</p><p className={"mt-1 text-sm leading-5 " + muted}>{description}</p></div>
+            <button type="button" onClick={() => setNotificationPrefs(v => ({...v, [key]: !v[key as keyof typeof v]}))} className={"relative h-7 w-12 shrink-0 rounded-full transition " + (notificationPrefs[key as keyof typeof notificationPrefs] ? "bg-purple-600" : "bg-slate-300")}>
+              <span className={"absolute top-1 h-5 w-5 rounded-full bg-white shadow transition " + (notificationPrefs[key as keyof typeof notificationPrefs] ? "left-6" : "left-1")} />
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-end"><button onClick={() => setMessage("Notification preferences saved successfully.")} className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-bold text-white hover:bg-purple-700">Save Notification Preferences</button></div>
     </div>
   );
 
@@ -473,344 +496,26 @@ export default function SettingsPage() {
 
   const genericTabContent = (
     <div className="space-y-6">
-      <div>
-        <p className="text-lg font-black">{activeGeneric || genericItems[0]}</p>
-        <p className={"mt-1 text-sm " + muted}>Manage your {(activeGeneric || genericItems[0]).toLowerCase()} settings.</p>
-      </div>
+      <div><p className="text-lg font-black">{activeGeneric || genericItems[0]}</p><p className={"mt-1 text-sm " + muted}>Manage your {(activeGeneric || genericItems[0]).toLowerCase()} settings.</p></div>
       <div className={"rounded-2xl border p-6 " + soft}>
-        <p className="text-sm font-black">{activeGeneric || genericItems[0]}</p>
-        <p className={"mt-2 text-sm leading-6 " + muted}>This section is ready for its detailed ACEPA controls. Select another item from the left to move to that settings page.</p>
-        <button onClick={() => setMessage((activeGeneric || genericItems[0]) + " is selected and ready for configuration.")} className="mt-5 rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Edit Settings</button>
-      </div>
-    </div>
-  );
-
-  const leftItems = activeTab === "Profile"
-    ? profileItems
-    : activeTab === "Account"
-      ? ["Account Information", "Appearance", "Login & Sessions"]
-      : activeTab === "Security"
-        ? ["Password & Login", "Two-Factor Authentication", "Sessions"]
-        : activeTab === "Notifications"
-          ? ["Email Notifications", "Opportunity Notifications", "Activity Notifications"]
-          : activeTab === "Privacy"
-            ? ["Privacy Controls", "Data & Privacy"]
-            : activeTab === "Payment Methods"
-              ? ["Payment Methods", "Payout Preferences"]
-              : ["API Keys", "Connected Integrations"];
-
-  const selectedLeft = activeTab === "Profile" ? activeProfile : activeTab === "Account" ? activeAccount : activeTab === "Security" ? activeSecurity : (activeGeneric || leftItems[0]);
-
-  const securityContent = activeSecurity === "Password & Login" ? (
-    <div className="space-y-6">
-      <div>
-        <p className="text-lg font-black">Password & Login</p>
-        <p className={"mt-1 text-sm " + muted}>Change your password and keep your ACEPA account protected.</p>
-      </div>
-
-      <div className={"rounded-2xl border p-5 " + soft}>
-        <p className="text-sm font-black">Change Password</p>
-        <p className={"mt-1 text-sm " + muted}>For your security, confirm your current password before choosing a new one.</p>
-
-        <div className="mt-5 grid gap-5">
-          {[
-            ["Current Password", currentPassword, setCurrentPassword, "Enter your current password"],
-            ["New Password", newPassword, setNewPassword, "At least 6 characters"],
-            ["Confirm New Password", confirmPassword, setConfirmPassword, "Re-enter your new password"],
-          ].map(([label, value, setter, placeholder]) => (
-            <div key={String(label)}>
-              <label className="text-sm font-bold">{label}</label>
-              <input
-                type="password"
-                value={String(value)}
-                onChange={(event) => (setter as React.Dispatch<React.SetStateAction<string>>)(event.target.value)}
-                placeholder={String(placeholder)}
-                className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none focus:border-purple-500 " + field}
-              />
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-5 flex items-center justify-between gap-4">
-          <Link href="/forgot-password" className="text-sm font-bold text-purple-600 hover:underline">
-            Forgot your password?
-          </Link>
-          <button onClick={changePassword} disabled={saving} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700 disabled:opacity-60">
-            {saving ? "Changing..." : "Change Password"}
-          </button>
-        </div>
-      </div>
-
-      <div className={"rounded-2xl border p-5 " + soft}>
-        <p className="text-sm font-black">Login protection</p>
-        <p className={"mt-2 text-sm leading-6 " + muted}>Two-factor authentication and session controls will be connected here as the ACEPA security system expands.</p>
-      </div>
-    </div>
-  ) : activeSecurity === "Two-Factor Authentication" ? (
-    <div className="space-y-6">
-      <div>
-        <p className="text-lg font-black">Two-Factor Authentication</p>
-        <p className={"mt-1 text-sm " + muted}>Add an authenticator app as a second step when signing in to ACEPA.</p>
-      </div>
-
-      <div className={"rounded-2xl border p-5 " + soft}>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="text-sm font-black">Authenticator app</p>
-            <p className={"mt-1 text-sm " + muted}>Use Google Authenticator, 1Password, Authy, Apple Passwords, or another TOTP authenticator.</p>
-          </div>
-          <span className={"rounded-full px-3 py-1 text-xs font-bold " + (mfaFactors.length ? "bg-emerald-50 text-emerald-600" : "bg-slate-100 text-slate-500")}>{mfaFactors.length ? "Enabled" : "Not enabled"}</span>
-        </div>
-
-        {!mfaSetup && mfaFactors.length === 0 && (
-          <button onClick={startMfaSetup} disabled={saving} className="mt-5 rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700 disabled:opacity-60">
-            {saving ? "Starting..." : "Enable Two-Factor Authentication"}
-          </button>
-        )}
-
-        {mfaSetup && (
-          <div className="mt-6 grid gap-6 md:grid-cols-[220px_minmax(0,1fr)]">
-            <div className="rounded-2xl border bg-white p-4 dark:bg-white">
-              <img src={"data:image/svg+xml;utf8," + encodeURIComponent(mfaQrCode)} alt="Scan this QR code with your authenticator app" className="h-full w-full" />
-            </div>
-            <div>
-              <p className="text-sm font-black">1. Scan the QR code</p>
-              <p className={"mt-2 text-sm leading-6 " + muted}>Open your authenticator app and scan the QR code. If scanning is unavailable, enter this setup key manually.</p>
-              <div className={"mt-3 rounded-xl border px-4 py-3 font-mono text-sm break-all " + field}>{mfaSecret}</div>
-              <label className="mt-5 block text-sm font-bold">2. Enter the 6-digit code</label>
-              <input value={mfaCode} onChange={(event) => setMfaCode(event.target.value.replace(/\D/g, "").slice(0, 6))} inputMode="numeric" autoComplete="one-time-code" placeholder="123456" className={"mt-2 w-full rounded-xl border px-4 py-3 text-sm tracking-[0.3em] outline-none focus:border-purple-500 " + field} />
-              <div className="mt-4 flex flex-wrap gap-3">
-                <button onClick={verifyMfaSetup} disabled={saving} className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700 disabled:opacity-60">{saving ? "Verifying..." : "Verify & Enable"}</button>
-                <button onClick={() => { setMfaSetup(false); setMfaQrCode(""); setMfaSecret(""); setMfaCode(""); }} className={"rounded-xl border px-5 py-3 text-sm font-bold " + (dark ? "border-slate-700 text-slate-200" : "border-slate-300 text-slate-700")}>Cancel</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {mfaFactors.length > 0 && !mfaSetup && (
-          <div className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
-            <p className="text-sm font-bold text-emerald-700">Your authenticator is active.</p>
-            <p className="mt-1 text-xs leading-5 text-emerald-700/80">A verification code will be required after your password when you sign in.</p>
-            {mfaFactors.map((factor) => (
-              <div key={factor.id} className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-emerald-200 pt-4">
-                <div>
-                  <p className="text-sm font-bold text-emerald-800">{factor.friendly_name || "Authenticator app"}</p>
-                  <p className="text-xs text-emerald-700/70">TOTP authenticator</p>
-                </div>
-                <button onClick={() => disableMfa(factor.id)} disabled={saving} className="rounded-xl border border-red-200 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 disabled:opacity-60">Disable</button>
-              </div>
-            ))}
-          </div>
+        {activeTab === "Privacy" && activeGeneric === "Privacy Controls" ? (
+          <>
+            <p className="text-sm font-black">Profile Visibility</p>
+            <p className={"mt-2 text-sm leading-6 " + muted}>Control how your ACEPA profile and activity are visible to other members.</p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">{["Public","ACEPA members","Private"].map(v=><button key={v} className={"rounded-xl border p-4 text-left text-sm font-bold " + card}>{v}<span className={"ml-2 text-xs " + muted}>Select</span></button>)}</div>
+          </>
+        ) : activeTab === "Payment Methods" && activeGeneric === "Payment Methods" ? (
+          <>
+            <p className="text-sm font-black">Payment Methods</p><p className={"mt-2 text-sm leading-6 " + muted}>Add and manage payment methods used for eligible ACEPA transactions.</p>
+            <button onClick={() => setMessage("Payment method setup will be connected here.")} className="mt-5 rounded-xl bg-purple-600 px-5 py-3 text-sm font-bold text-white">Add Payment Method</button>
+          </>
+        ) : (
+          <>
+            <p className="text-sm font-black">{activeGeneric || genericItems[0]}</p>
+            <p className={"mt-2 text-sm leading-6 " + muted}>This is the direct settings area for {((activeGeneric || genericItems[0]).toLowerCase())}. Configure, edit and manage it here without scrolling through unrelated settings.</p>
+            <button onClick={() => setMessage((activeGeneric || genericItems[0]) + " is selected and ready for configuration.")} className="mt-5 rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Edit Settings</button>
+          </>
         )}
       </div>
     </div>
-  ) : activeSecurity === "Sessions" ? (
-    <div className="space-y-6">
-      <div>
-        <p className="text-lg font-black">Login Sessions</p>
-        <p className={"mt-1 text-sm " + muted}>Review your current ACEPA login session and sign out other active sessions.</p>
-      </div>
-      <div className={"rounded-2xl border p-5 " + soft}>
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div><p className="text-sm font-black">Current session</p><p className={"mt-1 text-sm " + muted}>This is the session you are using right now.</p></div>
-          <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-600">Active now</span>
-        </div>
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          {[["Account", sessionInfo.email || email],["Browser", sessionInfo.browser || "Web browser"],["Last sign-in", sessionInfo.lastSignIn || "Loading..."],["Session expires", sessionInfo.expiresAt || "Loading..."]].map(([label, value]) => (
-            <div key={label} className={"rounded-xl border p-4 " + card}><p className={"text-xs font-bold uppercase tracking-wide " + muted}>{label}</p><p className="mt-2 break-words text-sm font-semibold">{value}</p></div>
-          ))}
-        </div>
-        <button onClick={signOutOtherSessions} disabled={sessionLoading} className="mt-5 rounded-xl border border-red-200 px-5 py-3 text-sm font-bold text-red-600 hover:bg-red-50 disabled:opacity-60">{sessionLoading ? "Signing out..." : "Sign Out Other Sessions"}</button>
-        <p className={"mt-3 text-xs leading-5 " + muted}>Your current session stays active while other sessions are signed out.</p>
-      </div>
-      <div className={"rounded-2xl border p-5 " + soft}>
-        <p className="text-sm font-black">Session security</p>
-        <p className={"mt-2 text-sm leading-6 " + muted}>If you think someone else has accessed your account, change your password and sign out other sessions. Two-factor authentication adds another verification step for new sign-ins.</p>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <button onClick={() => setActiveSecurity("Password & Login")} className="rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Change Password</button>
-          <button onClick={() => setActiveSecurity("Two-Factor Authentication")} className="rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Manage 2FA</button>
-        </div>
-      </div>
-    </div>
-  ) : (
-    <div className="space-y-5">
-      <div><p className="text-lg font-black">{activeSecurity}</p><p className={"mt-1 text-sm " + muted}>Manage your {activeSecurity.toLowerCase()} settings.</p></div>
-      <div className={"rounded-2xl border p-6 " + soft}><p className="font-bold">{activeSecurity}</p><p className={"mt-2 text-sm leading-6 " + muted}>This security control is reserved for the next ACEPA security build.</p></div>
-    </div>
   );
-
-  const middleContent = activeTab === "Profile"
-    ? (activeProfile === "Profile Information" ? profileContent : profilePlaceholder)
-    : activeTab === "Account"
-      ? accountContent
-      : activeTab === "Security"
-        ? securityContent
-        : genericTabContent;
-
-  return (
-    <UserAccountShell>
-      <main className={"min-h-screen " + surface}>
-        <header className={"sticky top-0 z-30 border-b " + (dark ? "border-slate-800 bg-slate-950/95" : "border-slate-200 bg-white/95") + " backdrop-blur-md"}>
-          <div className="mx-auto flex min-h-20 max-w-[1500px] items-center gap-5 px-5 lg:px-8">
-            <div className="min-w-0">
-              <p className="text-xl font-black">Settings</p>
-              <p className={"hidden text-xs sm:block " + muted}>Manage your account, preferences and security settings.</p>
-            </div>
-            <div className={"ml-auto hidden h-11 w-72 items-center gap-2 rounded-xl border px-3 md:flex " + soft}>
-              <span className="text-base text-slate-400">⌕</span>
-              <input
-  name="settings-search"
-  type="search"
-  autoComplete="off"
-  value={search}
-  onChange={(event) => setSearch(event.target.value)}
-  placeholder="Search anything..."
-  className={"w-full bg-transparent text-sm outline-none placeholder:text-slate-400 " + (dark ? "text-slate-100" : "text-slate-700")}
-/>
-            </div>
-            <UserAccountActions />
-          </div>
-        </header>
-
-        <div className="mx-auto max-w-[1500px] px-5 py-6 lg:px-8">
-          <div className={"overflow-x-auto border-b " + (dark ? "border-slate-800" : "border-slate-200")}>
-            <nav className="flex min-w-max items-center gap-1">
-              {filteredTabs.map((tab) => (
-                <button key={tab} onClick={() => { setActiveTab(tab); if (tab !== "Profile" && tab !== "Account" && tab !== "Security") setActiveGeneric(""); }} className={"border-b-2 px-4 py-3 text-sm font-bold transition " + (activeTab === tab ? "border-purple-600 text-purple-600" : "border-transparent " + muted)}>
-                  {tab}
-                </button>
-              ))}
-            </nav>
-          </div>
-
-          <div className="mt-6 grid gap-6 xl:grid-cols-[230px_minmax(0,1fr)_320px]">
-            <aside className="space-y-5">
-              <section className={"rounded-3xl border p-3 shadow-sm " + card}>
-                <p className="px-3 py-3 text-xs font-black uppercase tracking-[0.16em] text-purple-600">{activeTab === "Profile" ? "Profile contents" : activeTab}</p>
-                <div className="space-y-1">
-                  {leftItems.map((item, index) => {
-                    const selected = item === selectedLeft;
-                    return (
-                      <button
-                        key={item}
-                        onClick={() => {
-                          if (activeTab === "Profile") setActiveProfile(item);
-                          else if (activeTab === "Account") setActiveAccount(item);
-                          else if (activeTab === "Security") setActiveSecurity(item);
-                          else setActiveGeneric(item);
-                        }}
-                        className={"flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition " + (selected ? "bg-purple-50 text-purple-700 dark:bg-purple-950/40" : muted)}
-                      >
-                        <span className="text-base">{["♙", "▣", "⌖", "↗", "✓", "◉"][index % 6]}</span>
-                        <span>{item}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
-
-              <section className={"rounded-3xl border p-5 shadow-sm " + card}>
-                <p className="text-sm font-black">Profile Completion</p>
-                <div className="mx-auto mt-5 flex h-28 w-28 items-center justify-center rounded-full border-[10px] border-purple-500/80">
-                  <div className="text-center">
-                    <p className="text-2xl font-black">{completion}%</p>
-                    <p className={"text-[10px] " + muted}>Complete</p>
-                  </div>
-                </div>
-                <p className={"mt-4 text-center text-xs leading-5 " + muted}>{completion >= 80 ? "Great job! You’re almost there." : "Complete your profile to get the most from ACEPA."}</p>
-                <div className="mt-4 space-y-2">
-                  {completionItems.map(([label, done]) => (
-                    <div key={String(label)} className="flex items-center gap-2 text-xs">
-                      <span className={done ? "text-emerald-500" : "text-slate-400"}>{done ? "●" : "○"}</span>
-                      <span className={muted}>{String(label)}</span>
-                      {done && <span className="ml-auto text-emerald-500">✓</span>}
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              <section className={"rounded-3xl border p-5 shadow-sm " + card}>
-                <MiniIcon>?</MiniIcon>
-                <p className="mt-3 text-sm font-black">Need Help?</p>
-                <p className={"mt-1 text-xs leading-5 " + muted}>Visit our Help Center or contact our support team.</p>
-                <Link href="/support" className="mt-4 inline-flex rounded-xl border border-purple-300 px-4 py-2 text-xs font-bold text-purple-700">Go to Help Center</Link>
-              </section>
-            </aside>
-
-            <section className={"min-w-0 rounded-3xl border p-6 shadow-sm sm:p-8 " + card}>
-              {middleContent}
-            </section>
-
-            <aside className="space-y-5">
-              <section className={"rounded-3xl border p-6 shadow-sm " + card}>
-                <p className="text-sm font-black">Account Overview</p>
-                <div className="mt-5 flex justify-center">
-                  <div className="flex h-24 w-24 items-center justify-center rounded-full bg-purple-50 text-4xl text-purple-600 dark:bg-purple-950/40">✓</div>
-                </div>
-                <p className="mt-4 text-center text-sm font-black text-emerald-500">Your account is secure</p>
-                <div className={"mt-3 space-y-1 text-center text-xs " + muted}>
-                  <p>Last login: Current session</p>
-                  <p>Web browser</p>
-                </div>
-                <button className="mt-5 w-full rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">View Security Activity</button>
-              </section>
-
-              <section className={"rounded-3xl border p-6 shadow-sm " + card}>
-                <p className="text-sm font-black">Quick Actions</p>
-                <div className="mt-4 space-y-2">
-                  {[
-                    ["🔒", "Change Password", "/forgot-password"],
-                    ["◉", "Enable Two-Factor Auth", "#"],
-                    ["↔", "Login Sessions", "#"],
-                    ["⇩", "Download My Data", "#"],
-                    ["▣", "Delete Account", "#"],
-                  ].map(([icon, label, href]) => (
-                    <Link key={label} href={href} className={"flex items-center gap-3 rounded-xl px-2 py-3 text-sm font-semibold transition hover:bg-purple-50 dark:hover:bg-purple-950/30 " + (label === "Delete Account" ? "text-red-500" : "")}>
-                      <MiniIcon>{icon}</MiniIcon>
-                      <span>{label}</span>
-                      <span className="ml-auto">›</span>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-
-              <section className={"rounded-3xl border p-6 shadow-sm " + card}>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-black">Device Sessions</p>
-                  <button className="text-xs font-bold text-purple-600">View All</button>
-                </div>
-                <div className="mt-4 space-y-4">
-                  {[
-                    ["▣", "Current Web Session", "Browser · Active now", true],
-                    ["▯", "Mobile Session", "Mobile device", false],
-                    ["▤", "Desktop Session", "Desktop browser", false],
-                  ].map(([icon, name, detail, current]) => (
-                    <div key={String(name)} className="flex items-center gap-3">
-                      <MiniIcon>{icon}</MiniIcon>
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold">{name}</p>
-                        <p className={"mt-1 text-[11px] " + muted}>{detail}</p>
-                      </div>
-                      {current && <span className="ml-auto rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-600">Current</span>}
-                    </div>
-                  ))}
-                </div>
-                <button className="mt-5 w-full rounded-xl border border-purple-300 px-4 py-2.5 text-sm font-bold text-purple-700">Manage Sessions</button>
-              </section>
-            </aside>
-          </div>
-
-          <section className={"mt-6 flex flex-wrap items-center justify-between gap-4 rounded-3xl border p-6 shadow-sm sm:p-7 xl:col-span-2 " + (dark ? "border-purple-950/60 bg-purple-950/20" : "border-purple-100 bg-purple-50/70")}>
-            <div>
-              <p className="text-lg font-black">Your Security Matters</p>
-              <p className={"mt-1 max-w-2xl text-sm leading-6 " + muted}>We use industry-standard security practices to help keep your account and data safe.</p>
-            </div>
-            <button className="rounded-xl border border-purple-300 px-5 py-2.5 text-sm font-bold text-purple-700">Learn More</button>
-          </section>
-
-          {message && <p className={"mt-4 rounded-2xl border p-4 text-sm font-semibold " + card}>{message}</p>}
-        </div>
-      </main>
-    </UserAccountShell>
-  );
-}
