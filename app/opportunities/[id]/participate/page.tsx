@@ -1,8 +1,9 @@
 "use client";
 
-import { use, useMemo, useState, type FormEvent } from "react";
+import { use, useEffect, useMemo, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 import UserAccountShell from "@/components/user-account-shell";
 import { UserAccountActions } from "@/components/user-account-top-nav";
 
@@ -136,6 +137,7 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
 
   const [step, setStep] = useState<"form" | "review" | "confirm" | "complete">("form");
   const [notice, setNotice] = useState("");
+  const [profileLoading, setProfileLoading] = useState(true);
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -168,6 +170,34 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
   const [education, setEducation] = useState("");
   const [workExperience, setWorkExperience] = useState("");
   const [coverNote, setCoverNote] = useState("");
+
+  useEffect(() => {
+    loadProfile();
+  }, [id]);
+
+  async function loadProfile() {
+    setProfileLoading(true);
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      router.push("/sign-in?next=/opportunities/" + id + "/participate");
+      return;
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name,phone_number")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    setFullName(profile?.full_name || user.email?.split("@")[0] || "ACEPA Member");
+    setEmail(user.email || "");
+    setPhone(profile?.phone_number || "");
+    setProfileLoading(false);
+  }
 
   const type = opportunity?.type as OpportunityType | undefined;
   const actionLabel = type ? actionLabels[type] : "Participate";
@@ -229,6 +259,11 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
   function continueToReview(event: FormEvent) {
     event.preventDefault();
     setNotice("");
+
+    if (profileLoading) {
+      setNotice("Your ACEPA profile is still loading. Please try again in a moment.");
+      return;
+    }
 
     if (!formValid) {
       setNotice(
@@ -313,14 +348,20 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
 
             {step === "form" && (
               <form onSubmit={continueToReview} className="p-6 sm:p-8">
-                <section>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-600">Applicant details</p>
-                  <h2 className="mt-2 text-xl font-black">Tell us about yourself</h2>
-                  <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                    <Field label="Full name" value={fullName} onChange={setFullName} placeholder="Your full name" />
-                    <Field label="Email address" value={email} onChange={setEmail} type="email" placeholder="you@example.com" />
-                    <Field label="Phone number" value={phone} onChange={setPhone} placeholder="+234..." required={false} />
-                  </div>
+                <section className="rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-600">Your ACEPA profile</p>
+                  <h2 className="mt-2 text-xl font-black">Your account details are already on your profile</h2>
+                  <p className="mt-2 text-sm leading-6 text-slate-500">There is no need to enter your personal information again. ACEPA will use the details already attached to your account.</p>
+
+                  {profileLoading ? (
+                    <div className="mt-5 rounded-2xl bg-white p-4 text-sm font-semibold text-slate-500">Loading your profile details...</div>
+                  ) : (
+                    <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                      <ReviewItem label="Full name" value={fullName} />
+                      <ReviewItem label="Email" value={email} />
+                      <ReviewItem label="Phone" value={phone || "Not added to profile"} />
+                    </div>
+                  )}
                 </section>
 
                 {opportunity.type === "Investment" && (
@@ -432,7 +473,7 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
 
                 <div className="mt-8 flex flex-col-reverse gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:justify-between">
                   <button type="button" onClick={() => router.push("/opportunities/" + id)} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-600 hover:border-purple-200 hover:text-purple-700">Cancel</button>
-                  <button type="submit" className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700">Review submission →</button>
+                  <button type="submit" disabled={profileLoading} className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50">Review submission →</button>
                 </div>
               </form>
             )}
