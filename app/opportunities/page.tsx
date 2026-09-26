@@ -68,6 +68,18 @@ const opportunities: Opportunity[] = [
     tags: ["Distribution", "Partnership", "Commerce"],
   },
   {
+    id: "regional-collaboration-lab",
+    type: "Collaboration",
+    title: "Regional Collaboration Lab",
+    company: "Nexa Business Network",
+    location: "Lagos / Remote",
+    summary: "Bring skills, networks and resources together to develop practical business initiatives across multiple markets.",
+    amount: "Strategic partnership",
+    status: "Open",
+    closing: "Nov 21, 2026",
+    tags: ["Collaboration", "Strategy", "Growth"],
+  },
+  {
     id: "founder-advisory-network",
     type: "Experts",
     title: "Founder Advisory Network",
