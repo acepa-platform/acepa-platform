@@ -75,6 +75,9 @@ export default function FeedPage() {
   const [message, setMessage] = useState("");
   const [demoLiked, setDemoLiked] = useState(false);
   const [demoLikeCount, setDemoLikeCount] = useState(24);
+  const [demoComments, setDemoComments] = useState<string[]>([]);
+  const [demoCommentDraft, setDemoCommentDraft] = useState("");
+  const [demoCommentsOpen, setDemoCommentsOpen] = useState(false);
 
   useEffect(() => {
     loadFeed();
@@ -367,21 +370,72 @@ export default function FeedPage() {
                       </button>
 
                       <button
-                        onClick={() => {
-                          window.location.href = "/feed/demo#discussion";
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setDemoCommentsOpen((current) => !current);
                         }}
-                        className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-500 transition hover:bg-slate-100"
+                        className={"rounded-xl px-3 py-2 text-xs font-bold transition " + (demoCommentsOpen ? "bg-purple-50 text-purple-700" : "bg-slate-50 text-slate-500 hover:bg-slate-100")}
                       >
-                        ◌ Comment · 6
+                        ◌ Comment · {6 + demoComments.length}
                       </button>
 
                       <button
-                        onClick={() => sharePost("demo")}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          sharePost("demo");
+                        }}
                         className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-500 transition hover:bg-slate-100"
                       >
                         ↗ Share
                       </button>
                     </div>
+
+                    {demoCommentsOpen && (
+                      <div className="border-t border-slate-100 bg-slate-50/70 px-5 py-4 sm:px-6">
+                        {demoComments.length > 0 && (
+                          <div className="mb-4 space-y-3">
+                            {demoComments.map((comment, index) => (
+                              <div key={index} className="rounded-2xl bg-white px-4 py-3 text-xs leading-5 text-slate-600">
+                                <span className="font-black text-slate-800">You</span>
+                                <span className="mx-2 text-slate-300">·</span>
+                                {comment}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        <div className="flex gap-2">
+                          <input
+                            value={demoCommentDraft}
+                            onChange={(event) => setDemoCommentDraft(event.target.value)}
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter" && !event.shiftKey) {
+                                event.preventDefault();
+                                const value = demoCommentDraft.trim();
+                                if (!value) return;
+                                setDemoComments((current) => [...current, value]);
+                                setDemoCommentDraft("");
+                              }
+                            }}
+                            maxLength={2000}
+                            placeholder="Write a comment directly from the Feed..."
+                            className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs outline-none focus:border-purple-500"
+                          />
+                          <button
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              const value = demoCommentDraft.trim();
+                              if (!value) return;
+                              setDemoComments((current) => [...current, value]);
+                              setDemoCommentDraft("");
+                            }}
+                            className="rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white hover:bg-purple-700"
+                          >
+                            Send
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </article>
 
                   <div className="rounded-3xl border border-dashed border-slate-300 bg-white/85 p-7 text-center backdrop-blur">
