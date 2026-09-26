@@ -172,12 +172,14 @@ export default function OpportunityParticipationPage({ params }: { params: Promi
   const type = opportunity?.type as OpportunityType | undefined;
   const actionLabel = type ? actionLabels[type] : "Participate";
   const numericAmount = Number(investmentAmount);
+  const investmentMinimum = type === "Investment" ? 500 : 0;
+  const investmentMaximum = type === "Investment" ? 250000 : Number.MAX_SAFE_INTEGER;
 
   const investmentAmountValid =
     type !== "Investment" ||
     (Number.isFinite(numericAmount) &&
-      numericAmount >= (opportunity?.minimum ?? 0) &&
-      numericAmount <= (opportunity?.maximum ?? Number.MAX_SAFE_INTEGER));
+      numericAmount >= investmentMinimum &&
+      numericAmount <= investmentMaximum);
 
   const formValid = useMemo(() => {
     if (!opportunity || !fullName.trim() || !email.trim()) return false;
