@@ -173,7 +173,7 @@ export default function WalletPage() {
             <>
               <section className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {[
-                  ["Available", "${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}", "Ready for eligible use"],
+                  ["Available balance", "$" + balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }), "Ready for eligible use"],
                   ["Reserved", "$0.00", "Currently reserved"],
                   ["Earned", "$320.00", "Recorded ACEPA earnings"],
                   ["Pending", "$180.00", "Awaiting payout"],
