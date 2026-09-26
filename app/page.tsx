@@ -192,29 +192,31 @@ export default function Home() {
         </div>
       )}
 
-      <section id="home" className="relative min-h-[680px] overflow-hidden bg-white">
+      <section id="home" className="relative min-h-[760px] overflow-hidden bg-slate-950">
         <video
           className="absolute inset-0 h-full w-full object-cover object-center"
           autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           aria-hidden="true"
         >
           <source src={heroVideo} type="video/mp4" />
         </video>
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white 0%, from-white 7%, via-white/88 18%, via-white/60 28%, via-white/32 38%, via-white/12 50%, via-white/3 62%, to-transparent 72%" />
-        <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-center px-6 pt-32 pb-16 lg:px-10 lg:pt-24 lg:pb-20">
-          <div className="max-w-2xl">
-            <div className="inline-flex rounded-full border border-purple-200 bg-purple-50 px-4 py-2 text-xs font-semibold tracking-[0.18em] text-purple-700">INVESTMENT &amp; BUSINESS DEVELOPMENT PLATFORM</div>
-            <h1 className="mt-6 text-4xl font-bold leading-[0.96] tracking-[-0.04em] text-slate-950 sm:text-6xl lg:text-6xl">Connecting People.<br />Creating Opportunities.<br /><span className="bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-700 bg-clip-text text-transparent">Building Progress.</span></h1>
-            <p className="mt-6 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">ACEPA connects investors, innovators, companies, experts, and marketers to turn ideas into businesses, opportunities, and sustainable growth.</p>
+        <div className="pointer-events-none absolute inset-0 bg-slate-950/35" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/58 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-slate-950/10" />
+        <div className="relative mx-auto flex min-h-[760px] max-w-7xl items-center px-6 pt-28 pb-16 lg:px-10 lg:pt-24 lg:pb-20">
+          <div className="max-w-2xl rounded-[2rem] border border-white/10 bg-slate-950/20 p-7 backdrop-blur-[2px] sm:p-9">
+            <div className="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold tracking-[0.18em] text-white backdrop-blur-md">INVESTMENT &amp; BUSINESS DEVELOPMENT PLATFORM</div>
+            <h1 className="mt-6 text-4xl font-bold leading-[0.96] tracking-[-0.04em] text-white sm:text-6xl lg:text-6xl">Connecting People.<br />Creating Opportunities.<br /><span className="text-purple-300">Building Progress.</span></h1>
+            <p className="mt-6 max-w-xl text-base leading-8 text-white/85 sm:text-lg">ACEPA connects investors, innovators, companies, experts, and marketers to turn ideas into businesses, opportunities, and sustainable growth.</p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <a href="#opportunities" className="rounded-xl bg-purple-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-purple-200 transition hover:bg-purple-700">Explore opportunities →</a>
-              <a href="#" className="rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-slate-900 transition hover:border-purple-300 hover:text-purple-600">Join ACEPA</a>
+              <a href="#opportunities" className="rounded-xl bg-purple-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-purple-950/30 transition hover:bg-purple-700">Explore opportunities →</a>
+              <a href="#" className="rounded-xl border border-white/25 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition hover:border-white/40 hover:bg-white/15">Join ACEPA</a>
             </div>
-            <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium text-slate-500"><span>Invest</span><span>Innovate</span><span>Collaborate</span><span>Develop</span><span>Grow</span></div>
+            <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium text-white/75"><span>Invest</span><span>Innovate</span><span>Collaborate</span><span>Develop</span><span>Grow</span></div>
           </div>
         </div>
       </section>
