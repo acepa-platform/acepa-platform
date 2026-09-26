@@ -46,7 +46,7 @@ export default function ProfilePage() {
 
   return <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
     <header className="border-b border-slate-200 bg-white"><div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-5 sm:px-8">
-      <Link href="/dashboard" className="flex items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-12 w-auto object-contain brightness-0"/></Link>
+      <Link href="/dashboard" className="flex items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA — People, Opportunities, Progress" className="h-12 w-auto object-contain brightness-0 dark:brightness-100"/></Link>
       <div className="flex items-center gap-3"><Link href="/settings" className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50">Settings</Link><Link href="/dashboard" className="rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white hover:bg-purple-700">Dashboard</Link></div>
     </div></header>
     <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-10">
