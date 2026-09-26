@@ -20,6 +20,7 @@ const sections = [
   {
     title: "My ACEPA",
     items: [
+      { label: "My Participations", href: "/participations", icon: "activity" },
       { label: "My Investments", href: "/investments", icon: "investment" },
       { label: "My Earnings", href: "/earnings", icon: "earnings" },
       { label: "Saved", href: "/saved", icon: "saved" },
