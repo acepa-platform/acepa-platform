@@ -134,8 +134,8 @@ export default function GetStartedPage() {
             </div>
           </div>
 
-          <div className="flex items-start bg-white p-6 sm:p-9 lg:p-12">
-            <div className="w-full max-w-xl lg:mx-auto lg:pt-2">
+          <div className="flex items-start bg-slate-50 p-4 sm:p-6 lg:p-8">
+            <div className="w-full max-w-xl rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:p-8 lg:p-10 lg:mx-auto lg:pt-8">
               <div>
                 <p className="text-xs font-bold tracking-[0.2em] text-purple-600">CREATE YOUR ACCOUNT</p>
                 <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Get started</h2>
