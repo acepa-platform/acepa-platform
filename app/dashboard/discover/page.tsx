@@ -61,8 +61,8 @@ function dateLabel(value: string | null) {
 function Metric({ label, value }: { label: string; value: string | number | null | undefined }) {
   return (
     <div className="min-w-0">
-      <p className="text-[8px] font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p>
-      <p className="mt-0.5 truncate text-[10px] font-bold text-slate-800">{value ?? "Not provided"}</p>
+      <p className="text-[7px] font-bold uppercase tracking-[0.1em] text-slate-400">{label}</p>
+      <p className="mt-0.5 truncate text-[9px] font-bold text-slate-800">{value ?? "Not provided"}</p>
     </div>
   );
 }
@@ -78,9 +78,9 @@ function OpportunityCard({ item }: { item: Opportunity }) {
   return (
     <Link
       href={`/discover/opportunities/${item.slug}?from=dashboard-discover`}
-      className="group mx-auto flex aspect-square w-full max-w-[285px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-xl"
+      className="group mx-auto flex aspect-square w-full max-w-[220px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-xl"
     >
-      <div className="relative h-[38%] shrink-0 overflow-hidden bg-slate-900">
+      <div className="relative h-[34%] shrink-0 overflow-hidden bg-slate-900">
         {item.primary_image_url && (
           <img
             src={item.primary_image_url}
@@ -94,12 +94,12 @@ function OpportunityCard({ item }: { item: Opportunity }) {
         </span>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col p-3">
+      <div className="flex min-h-0 flex-1 flex-col p-2.5">
         <div className="min-w-0">
-          <h3 className="line-clamp-2 text-[13px] font-black leading-4 tracking-tight text-slate-950">
+          <h3 className="line-clamp-2 text-[11px] font-black leading-3.5 tracking-tight text-slate-950">
             {item.title}
           </h3>
-          <p className="mt-1 flex items-center gap-1 truncate text-[10px] font-bold text-slate-600">
+          <p className="mt-1 flex items-center gap-1 truncate text-[9px] font-bold text-slate-600">
             <span className="truncate">{item.company_name}</span>
             {item.company_verified && (
               <span className="inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[8px] font-black text-white">
@@ -107,13 +107,13 @@ function OpportunityCard({ item }: { item: Opportunity }) {
               </span>
             )}
           </p>
-          <p className="mt-0.5 truncate text-[9px] text-slate-400">
+          <p className="mt-0.5 truncate text-[8px] text-slate-400">
             {item.location ?? "Global"}{item.industry ? ` · ${item.industry}` : ""}
           </p>
         </div>
 
         {category === "investment" ? (
-          <div className="mt-2 space-y-1.5">
+          <div className="mt-1.5 space-y-1">
             <div className="flex items-center justify-between gap-2">
               <Metric label="Funding goal" value={money(item.funding_goal) ?? item.amount_text} />
               <Metric label="Participants" value={item.participant_count} />
@@ -134,7 +134,7 @@ function OpportunityCard({ item }: { item: Opportunity }) {
             </div>
           </div>
         ) : category === "collaboration" ? (
-          <div className="mt-2 grid grid-cols-2 gap-2">
+          <div className="mt-1.5 grid grid-cols-2 gap-1.5">
             <Metric label="Industry" value={item.industry} />
             <Metric label="Reward" value={item.reward_text} />
             <Metric label="Payment" value={item.payment_schedule} />
@@ -179,11 +179,11 @@ function OpportunityCard({ item }: { item: Opportunity }) {
           </div>
         )}
 
-        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-2">
-          <span className="text-[8px] font-bold uppercase tracking-[0.12em] text-slate-400">
+        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-1.5">
+          <span className="text-[7px] font-bold uppercase tracking-[0.1em] text-slate-400">
             ACEPA Opportunity
           </span>
-          <span className="text-[9px] font-black text-purple-600">View details →</span>
+          <span className="text-[8px] font-black text-purple-600">View details →</span>
         </div>
       </div>
     </Link>
@@ -203,7 +203,7 @@ export default function DiscoverPage() {
       const { data } = await supabase
         .from("opportunities")
         .select(
-          "id,title,slug,company_name,location,summary,primary_image_url,amount_text,category_id,company_verified,industry,funding_goal,funding_raised,company_contribution_percent,participant_count,proposal_count,reward_text,payment_schedule,deadline,return_text,employment_type,opportunity_categories(name,slug)"
+          "id,title,slug,company_name,location,summary,primary_image_url,amount_text,category_id,company_verified,industry,funding_goal,funding_raised,company_contribution_percent,public_contribution_percent,participant_count,proposal_count,reward_text,payment_schedule,deadline,return_text,employment_type,opportunity_categories(name,slug)"
         )
         .eq("status", "published")
         .order("published_at", { ascending: false });
