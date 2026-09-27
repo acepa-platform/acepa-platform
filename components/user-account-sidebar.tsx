@@ -11,7 +11,6 @@ const sections = [
       { label: "Home", href: "/dashboard", icon: "home" },
       { label: "Discover", href: "/dashboard/discover", icon: "discover" },
       { label: "Feed", href: "/feed", icon: "feed" },
-      { label: "Opportunities", href: "/opportunities", icon: "spark" },
       { label: "Wallet", href: "/wallet", icon: "wallet" },
       { label: "Activity", href: "/activity", icon: "activity" },
       { label: "Profile", href: "/profile", icon: "profile" },
