@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { notFound, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import UserAccountShell from "@/components/user-account-shell";
 import { UserAccountActions } from "@/components/user-account-top-nav";
 import { createClient } from "@/lib/supabase/client";
@@ -69,7 +69,7 @@ export default function CategoryDiscoveryPage() {
     return result;
   }, [items, query, filter, sort]);
 
-  if (!config) notFound();
+  if (!config) return null;
 
   return (
     <UserAccountShell>
