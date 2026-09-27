@@ -4,8 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import ParticipateButton from "@/components/opportunities/participate-button";
 import { getDemoOpportunity } from "@/lib/demo-opportunities";
 
-export default async function OpportunityPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function OpportunityPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ from?: string }> }) {
   const { slug } = await params;
+  const { from } = await searchParams;
   const supabase = await createClient();
   const { data: live } = await supabase
     .from("opportunities")
@@ -35,6 +36,8 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
     : demo!;
 
   const isDemo = Boolean(demo);
+  const backHref = from === "dashboard-discover" ? "/dashboard/discover" : "/discover/" + (live?.opportunity_categories?.[0]?.slug ?? demo?.category_slug ?? "");
+  const backLabel = from === "dashboard-discover" ? "Back to Discover" : `Back to ${opportunity.category}`;
 
   return (
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
@@ -43,8 +46,8 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
           <Link href="/dashboard" className="flex items-center">
             <img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA" className="h-12 w-auto object-contain brightness-0" />
           </Link>
-          <Link href={"/discover/" + (live?.opportunity_categories?.[0]?.slug ?? demo?.category_slug ?? "")} className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700 hover:border-purple-200 hover:text-purple-600">
-            ← Back to {opportunity.category}
+          <Link href={backHref} className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700 hover:border-purple-200 hover:text-purple-600">
+            ← {backLabel}
           </Link>
         </div>
       </header>
