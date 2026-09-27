@@ -57,15 +57,15 @@ function OpportunityCard({ item, category }: { item: Opportunity; category: stri
         </p>
         <p className="mt-0.5 truncate text-[8px] text-slate-400">{item.location ?? "Global"}{item.industry ? " · " + item.industry : ""}</p>
 
-        <div className="mt-1.5 min-h-0">
+        <div className="mt-2 min-h-0 space-y-1">
           {category === "investment" ? (
             <div className="space-y-1.5">
               <div className="grid grid-cols-2 gap-2"><Metric label="Funding Goal" value={money(item.funding_goal) ?? item.amount_text} /><Metric label="Participants" value={item.participant_count} /></div>
               <div><div className="mb-1 flex justify-between text-[8px] font-bold text-slate-500"><span>Funding Progress</span><span>{progress === null ? "Not provided" : progress.toFixed(0) + "%"}</span></div><div className="h-1.5 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-purple-600" style={{ width: (progress ?? 0) + "%" }} /></div></div>
-              <div className="grid grid-cols-3 gap-2"><Metric label="Company" value={item.company_contribution_percent === null ? null : item.company_contribution_percent + "%"} /><Metric label="Public" value={item.public_contribution_percent === null ? null : item.public_contribution_percent + "%"} /><Metric label="Returns" value={item.return_text} /></div>
+              <div className="grid grid-cols-3 gap-x-3 gap-y-2"><Metric label="Company" value={item.company_contribution_percent === null ? null : item.company_contribution_percent + "%"} /><Metric label="Public" value={item.public_contribution_percent === null ? null : item.public_contribution_percent + "%"} /><Metric label="Returns" value={item.return_text} /></div>
             </div>
           ) : category === "collaboration" ? (
-            <div className="grid grid-cols-2 gap-1.5"><Metric label="Industry" value={item.industry} /><Metric label="Reward" value={item.reward_text} /><Metric label="Payment" value={item.payment_schedule} /><Metric label="Deadline" value={dateLabel(item.deadline)} /><Metric label="Proposals" value={item.proposal_count} /><Metric label="Participants" value={item.participant_count} /></div>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-2"><Metric label="Industry" value={item.industry} /><Metric label="Reward" value={item.reward_text} /><Metric label="Payment" value={item.payment_schedule} /><Metric label="Deadline" value={dateLabel(item.deadline)} /><Metric label="Proposals" value={item.proposal_count} /><Metric label="Participants" value={item.participant_count} /></div>
           ) : category === "innovation" ? (
             <div className="grid grid-cols-2 gap-1.5"><Metric label="Industry" value={item.industry} /><Metric label="Reward" value={item.reward_text} /><Metric label="Deadline" value={dateLabel(item.deadline)} /><Metric label="Submissions" value={item.proposal_count} /></div>
           ) : category === "marketing" ? (
@@ -77,7 +77,7 @@ function OpportunityCard({ item, category }: { item: Opportunity; category: stri
           )}
         </div>
 
-        <p className="mt-1.5 line-clamp-2 text-[8px] leading-3.5 text-slate-500">{item.summary || item.description || "Review the opportunity details, requirements and terms before participating."}</p>
+        <p className="mt-2 line-clamp-3 text-[8px] leading-4 text-slate-500">{item.summary || item.description || "Review the opportunity details, requirements and terms before participating."}</p>
         <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-1.5">
           <span className="text-[7px] font-bold uppercase tracking-[0.1em] text-slate-400">ACEPA Opportunity</span>
           <span className="text-[8px] font-black text-purple-600">{configAction(category)} →</span>
