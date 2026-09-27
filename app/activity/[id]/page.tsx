@@ -6,7 +6,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import UserAccountShell from "@/components/user-account-shell";
 import { UserAccountActions } from "@/components/user-account-top-nav";
-import { demoOpportunityActivity } from "@/lib/demo-opportunity-activity";
 
 type Participation = {
   id: string;
@@ -54,7 +53,6 @@ export default function ActivityDetailPage({ params }: { params: Promise<{ id: s
   const [item, setItem] = useState<Participation | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [demoMode, setDemoMode] = useState(false);
 
   useEffect(() => {
     loadRecord();
@@ -80,17 +78,10 @@ export default function ActivityDetailPage({ params }: { params: Promise<{ id: s
       .maybeSingle();
 
     if (error || !data) {
-      const demoItem = demoOpportunityActivity.find((entry) => entry.id === id);
-      if (demoItem) {
-        setItem(demoItem as Participation);
-        setDemoMode(true);
-      } else {
-        setNotFound(true);
-        setItem(null);
-      }
+      setNotFound(true);
+      setItem(null);
     } else {
       setItem(data as Participation);
-      setDemoMode(false);
     }
 
     setLoading(false);
@@ -142,7 +133,7 @@ export default function ActivityDetailPage({ params }: { params: Promise<{ id: s
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-purple-400/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-purple-200">{item.category}</span>
               <span className="rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white/70">{formatLabel(item.status)}</span>
-              {demoMode && <span className="rounded-full bg-amber-400/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-amber-200">Demo record</span>}
+              
             </div>
             <h1 className="mt-4 text-3xl font-black tracking-[-0.04em]">{item.opportunity_title}</h1>
             <p className="mt-2 text-sm text-white/60">{item.company_name} · {item.action}</p>
@@ -213,7 +204,7 @@ export default function ActivityDetailPage({ params }: { params: Promise<{ id: s
           </section>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Link href={"/opportunities/" + item.opportunity_slug} className="rounded-xl bg-slate-950 px-5 py-3 text-center text-sm font-bold text-white hover:bg-purple-700">View opportunity</Link>
+            <Link href={"/discover/opportunities/" + item.opportunity_slug} className="rounded-xl bg-slate-950 px-5 py-3 text-center text-sm font-bold text-white hover:bg-purple-700">View opportunity</Link>
             <Link href="/activity" className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-center text-sm font-bold text-slate-700 hover:border-purple-200 hover:text-purple-700">Back to activity</Link>
           </div>
         </div>
