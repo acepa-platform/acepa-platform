@@ -101,7 +101,7 @@ export default function DiscoverPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1500px] px-5 py-8 lg:px-8">
+      <section className="mx-auto w-full px-5 py-8 lg:px-8">
         <div className="flex flex-wrap gap-2">
           {categories.map(([label, slug]) => (
             <button
