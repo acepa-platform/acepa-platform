@@ -151,7 +151,7 @@ export default function DiscoverPage() {
                 href={`/discover/opportunities/${item.slug}?from=dashboard-discover`}
                 className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-lg"
               >
-                <div className="relative h-36 overflow-hidden bg-slate-900">
+                <div className="relative h-28 overflow-hidden bg-slate-900">
                   {item.primary_image_url && (
                     <img
                       src={item.primary_image_url}
@@ -160,14 +160,14 @@ export default function DiscoverPage() {
                     />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
-                  <span className="absolute bottom-4 left-4 rounded-full bg-white/95 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-900">
+                  <span className="absolute bottom-3 left-3 rounded-full bg-white/95 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-900">
                     {item.opportunity_categories?.[0]?.name ?? "Opportunity"}
                   </span>
                 </div>
 
-                <div className="p-4">
+                <div className="p-3.5">
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-base font-bold leading-5 tracking-tight">
+                    <h3 className="text-sm font-bold leading-5 tracking-tight">
                       {item.title}
                     </h3>
                     {item.amount_text && (
@@ -179,10 +179,10 @@ export default function DiscoverPage() {
                   <p className="mt-1 text-sm font-semibold text-slate-600">
                     {item.company_name}
                   </p>
-                  <p className="mt-2 text-xs leading-5 text-slate-500">
+                  <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-slate-500">
                     {item.summary}
                   </p>
-                  <div className="mt-3 flex items-center justify-between text-[11px] font-semibold text-slate-400">
+                  <div className="mt-2.5 flex items-center justify-between text-[10px] font-semibold text-slate-400">
                     <span>{item.location ?? "Global"}</span>
                     <span className="text-purple-600">Explore →</span>
                   </div>
