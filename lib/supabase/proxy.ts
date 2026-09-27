@@ -23,7 +23,8 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { claims } } = await supabase.auth.getClaims()
+  const user = claims?.sub
 
   if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
     const redirectUrl = request.nextUrl.clone()
