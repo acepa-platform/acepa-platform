@@ -45,15 +45,15 @@ function dateLabel(value: string | null | undefined) {
     : null;
 }
 
-function hasSection(sections: DetailSection[], words: string[]) {
-  return sections.some((section) => words.some((word) => section.title.toLowerCase().includes(word)));
+function hasSection(sections: DetailSection[], title: string) {
+  return sections.some((section) => section.title.toLowerCase().includes(title.toLowerCase()));
 }
 
 function ensureSections(sections: DetailSection[], categorySlug: string): DetailSection[] {
   const result = [...sections];
 
   const add = (title: string, body: string, items?: string[]) => {
-    if (!hasSection(result, title.toLowerCase().split(" "))) result.push({ title, body, items });
+    if (!hasSection(result, title)) result.push({ title, body, items });
   };
 
   if (categorySlug === "investment") {
