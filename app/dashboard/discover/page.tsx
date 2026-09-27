@@ -22,6 +22,7 @@ type Opportunity = {
   funding_goal: number | null;
   funding_raised: number | null;
   company_contribution_percent: number | null;
+  public_contribution_percent: number | null;
   participant_count: number;
   proposal_count: number;
   reward_text: string | null;
@@ -128,7 +129,7 @@ function OpportunityCard({ item }: { item: Opportunity }) {
             </div>
             <div className="grid grid-cols-3 gap-2">
               <Metric label="Company" value={item.company_contribution_percent === null ? null : `${item.company_contribution_percent}%`} />
-              <Metric label="Public" value={item.funding_goal && item.funding_raised !== null ? `${Math.max(0, 100 - (item.company_contribution_percent ?? 0))}% target` : null} />
+              <Metric label="Public" value={item.public_contribution_percent === null ? null : `${item.public_contribution_percent}%`} />
               <Metric label="Returns" value={item.return_text} />
             </div>
           </div>
