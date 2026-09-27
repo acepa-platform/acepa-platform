@@ -147,7 +147,7 @@ export default function OpportunitiesPage() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1240px] px-4 py-7 sm:px-6 lg:px-8 lg:py-10">
+        <div className="mx-auto w-full px-4 py-7 sm:px-6 lg:px-8 lg:py-10">
           <section className="relative overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white shadow-xl sm:p-8 lg:p-10">
             <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-purple-500/25 blur-3xl" />
             <div className="absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-fuchsia-500/15 blur-3xl" />
