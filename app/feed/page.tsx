@@ -277,7 +277,7 @@ export default function FeedPage() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1180px] px-4 py-7 sm:px-6 lg:px-8 lg:py-10">
+        <div className="mx-auto w-full px-4 py-7 sm:px-6 lg:px-8 lg:py-10">
           <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_310px]">
             <section>
               <div className="mb-6">
