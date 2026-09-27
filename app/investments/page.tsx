@@ -28,7 +28,7 @@ export default function InvestmentsPage() {
     <UserAccountShell>
       <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
         <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl"><div className="flex h-20 items-center justify-between px-5 sm:px-8 lg:px-10"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-600">My ACEPA</p><h1 className="mt-1 text-lg font-black">My Investments</h1></div><UserAccountActions /></div></header>
-        <div className="mx-auto max-w-[1180px] px-4 py-8 sm:px-6 lg:py-10">
+        <div className="mx-auto w-full px-4 py-8 sm:px-6 lg:py-10">
           <section className="rounded-[2rem] bg-slate-950 p-6 text-white sm:p-8">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-purple-300">Demo portfolio</p>
             <h2 className="mt-2 text-3xl font-black tracking-[-0.04em]">See your investments, value and progress in one place.</h2>
