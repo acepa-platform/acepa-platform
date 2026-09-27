@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import UserAccountShell from "@/components/user-account-shell";
 import { UserAccountActions } from "@/components/user-account-top-nav";
-import { demoOpportunityActivity } from "@/lib/demo-opportunity-activity";
 
 type Participation = {
   id: string;
@@ -57,7 +56,6 @@ export default function ParticipationsPage() {
   const [category, setCategory] = useState("All");
   const [status, setStatus] = useState("All");
   const [error, setError] = useState("");
-  const [demoMode, setDemoMode] = useState(false);
 
   useEffect(() => {
     loadParticipations();
@@ -86,14 +84,11 @@ export default function ParticipationsPage() {
 
     if (queryError) {
       setError("We could not load your live participations right now.");
-      setItems(demoOpportunityActivity as Participation[]);
-      setDemoMode(true);
+      setItems([]);
     } else if (!data || data.length === 0) {
-      setItems(demoOpportunityActivity as Participation[]);
-      setDemoMode(true);
+      setItems([]);
     } else {
       setItems((data || []) as Participation[]);
-      setDemoMode(false);
     }
 
     setLoading(false);
@@ -150,7 +145,7 @@ export default function ParticipationsPage() {
             </p>
           </section>
 
-          {demoMode && (
+          {false && (
             <div className="mt-5 rounded-2xl border border-purple-100 bg-purple-50 px-4 py-3 text-sm font-semibold text-purple-800">
               Demo participation history · These sample records are shown until you have live participation records.
             </div>
