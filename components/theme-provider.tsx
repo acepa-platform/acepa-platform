@@ -16,8 +16,19 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
     const load = async () => {
       const saved = localStorage.getItem("acepa-appearance");
-      const isPublicHomepage = pathname === "/";
-      if (isPublicHomepage) {
+      const isPublicPage =
+        pathname === "/" ||
+        pathname === "/about" ||
+        pathname === "/companies" ||
+        pathname === "/how-it-works" ||
+        pathname === "/get-started" ||
+        pathname === "/sign-in" ||
+        pathname === "/forgot-password" ||
+        pathname === "/update-password" ||
+        pathname === "/search" ||
+        pathname === "/opportunities" ||
+        pathname.startsWith("/discover");
+      if (isPublicPage) {
         applyTheme("light");
         return;
       }
