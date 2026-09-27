@@ -17,7 +17,7 @@ type Opportunity = {
   primary_image_url: string | null;
   amount_text: string | null;
   category_id: string;
-  opportunity_categories?: { name: string; slug: string } | null;
+  opportunity_categories?: { name: string; slug: string }[] | null;
 };
 
 const categories = [
@@ -61,7 +61,7 @@ export default function DiscoverPage() {
       opportunities.filter((item) => {
         const categoryMatch =
           category === "all" ||
-          item.opportunity_categories?.slug === category;
+          item.opportunity_categories?.[0]?.slug === category;
         const q = search.trim().toLowerCase();
         const searchMatch =
           !q ||
@@ -161,7 +161,7 @@ export default function DiscoverPage() {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
                   <span className="absolute bottom-4 left-4 rounded-full bg-white/95 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-900">
-                    {item.opportunity_categories?.name ?? "Opportunity"}
+                    {item.opportunity_categories?.[0]?.name ?? "Opportunity"}
                   </span>
                 </div>
 
