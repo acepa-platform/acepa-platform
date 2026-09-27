@@ -31,11 +31,12 @@ const sections = [
   {
     title: "Explore",
     items: [
-      { label: "Investments", href: "/dashboard/discover?category=investment", icon: "investment" },
-      { label: "Campaigns", href: "/dashboard/discover?category=marketing", icon: "spark" },
-      { label: "Innovations", href: "/dashboard/discover?category=innovation", icon: "innovation" },
-      { label: "Collaborations", href: "/dashboard/discover?category=collaboration", icon: "collaboration" },
-      { label: "Careers & Jobs", href: "/dashboard/discover?category=careers-jobs", icon: "jobs" },
+      { label: "Investment", href: "/discover/investment", icon: "investment" },
+      { label: "Innovation", href: "/discover/innovation", icon: "innovation" },
+      { label: "Marketing", href: "/discover/marketing", icon: "spark" },
+      { label: "Collaboration", href: "/discover/collaboration", icon: "collaboration" },
+      { label: "Experts", href: "/discover/experts", icon: "support" },
+      { label: "Careers & Jobs", href: "/discover/careers-jobs", icon: "jobs" },
     ],
   },
   {
