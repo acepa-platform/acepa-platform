@@ -81,14 +81,30 @@ export default async function OpportunityPage({ params, searchParams }: { params
                 <p className="mt-4 text-sm leading-7 text-slate-600">{opportunity.description}</p>
               </section>
 
-              <div className="mt-7 grid gap-4 sm:grid-cols-2">
-                {opportunity.sections.map((section) => (
-                  <section key={section.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                    <h3 className="text-sm font-black">{section.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">{section.body}</p>
-                    {section.items && <ul className="mt-3 space-y-2">{section.items.map((item) => <li key={item} className="text-xs font-semibold text-slate-600">• {item}</li>)}</ul>}
-                  </section>
-                ))}
+              <div className="mt-7 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-600">Full opportunity details</p>
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  {[[
+                    "Industry", live?.industry],
+                    ["Funding Goal", live?.funding_goal != null ? "$" + Number(live.funding_goal).toLocaleString("en-US") : null],
+                    ["Funding Raised", live?.funding_raised != null ? "$" + Number(live.funding_raised).toLocaleString("en-US") : null],
+                    ["Company Contribution", live?.company_contribution_percent != null ? live.company_contribution_percent + "%" : null],
+                    ["Public Contribution", live?.public_contribution_percent != null ? live.public_contribution_percent + "%" : null],
+                    ["Participants", live?.participant_count],
+                    ["Proposals / Submissions", live?.proposal_count],
+                    ["Reward", live?.reward_text],
+                    ["Payment", live?.payment_schedule],
+                    ["Deadline", live?.deadline ? new Date(live.deadline).toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" }) : null],
+                    ["Returns", live?.return_text],
+                    ["Employment Type", live?.employment_type],
+                    ["Company Verification", live?.company_verified ? "Verified company" : "Not verified"],
+                  ].map(([label, value]) => (
+                    <div key={label} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p>
+                      <p className="mt-1.5 text-sm font-bold leading-5 text-slate-800">{value ?? "Not provided"}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {!isDemo && (
