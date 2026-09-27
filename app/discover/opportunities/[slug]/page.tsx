@@ -49,7 +49,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
         </div>
       </header>
 
-      <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
+      <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-7">
         {isDemo && (
           <div className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-800">
             Demo opportunity — this clickable listing is here so we can test the ACEPA experience before real company listings are live.
@@ -57,7 +57,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
         )}
 
         <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
-          <div className="relative h-72 bg-slate-950 sm:h-[430px]">
+          <div className="relative h-72 bg-slate-950 sm:h-[340px]">
             {opportunity.primary_image_url && <img src={opportunity.primary_image_url} alt="" className="h-full w-full object-cover" />}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
             <div className="absolute bottom-7 left-6 right-6 text-white sm:bottom-10 sm:left-10">
@@ -70,7 +70,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
             </div>
           </div>
 
-          <div className="grid gap-8 p-6 sm:p-10 lg:grid-cols-[minmax(0,1fr)_330px]">
+          <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_300px]">
             <article>
               <section>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-600">Overview</p>
@@ -78,9 +78,9 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
                 <p className="mt-4 text-sm leading-7 text-slate-600">{opportunity.description}</p>
               </section>
 
-              <div className="mt-8 grid gap-5 sm:grid-cols-2">
+              <div className="mt-7 grid gap-4 sm:grid-cols-2">
                 {opportunity.sections.map((section) => (
-                  <section key={section.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                  <section key={section.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                     <h3 className="text-sm font-black">{section.title}</h3>
                     <p className="mt-2 text-sm leading-6 text-slate-600">{section.body}</p>
                     {section.items && <ul className="mt-3 space-y-2">{section.items.map((item) => <li key={item} className="text-xs font-semibold text-slate-600">• {item}</li>)}</ul>}
