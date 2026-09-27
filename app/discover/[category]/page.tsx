@@ -35,7 +35,7 @@ function dateLabel(value: string | null) {
   return value ? new Date(value).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }) : null;
 }
 function Metric({ label, value }: { label: string; value: string | number | null | undefined }) {
-  return <div className="min-w-0"><p className="text-[7px] font-bold uppercase tracking-[0.1em] text-slate-400">{label}</p><p className="mt-0.5 truncate text-[9px] font-bold text-slate-800">{value ?? "Not provided"}</p></div>;
+  return <div className="min-w-0"><p className="text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">{label}</p><p className="mt-0.5 truncate text-[10px] font-bold text-slate-800">{value ?? "Not provided"}</p></div>;
 }
 
 function OpportunityCard({ item, category }: { item: Opportunity; category: string }) {
@@ -43,21 +43,21 @@ function OpportunityCard({ item, category }: { item: Opportunity; category: stri
   const categoryName = item.opportunity_categories?.[0]?.name ?? category;
 
   return (
-    <Link href={"/discover/opportunities/" + item.slug} className="group mx-auto flex aspect-[4/5] w-full max-w-[280px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-xl">
-      <div className="relative h-[32%] shrink-0 overflow-hidden bg-slate-900">
+    <Link href={"/discover/opportunities/" + item.slug} className="group mx-auto flex aspect-[5/6] w-full max-w-[320px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-xl">
+      <div className="relative h-[35%] shrink-0 overflow-hidden bg-slate-900">
         {item.primary_image_url && <img src={item.primary_image_url} alt="" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-transparent to-transparent" />
         <span className="absolute bottom-2 left-2 rounded-full bg-white/95 px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.12em] text-slate-900">{categoryName}</span>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col p-3">
-        <h3 className="line-clamp-2 text-[12px] font-black leading-4 tracking-tight text-slate-950">{item.title}</h3>
-        <p className="mt-1 flex items-center gap-1 truncate text-[9px] font-bold text-slate-600">
+      <div className="flex min-h-0 flex-1 flex-col p-4">
+        <h3 className="line-clamp-2 text-[13px] font-black leading-5 tracking-tight text-slate-950">{item.title}</h3>
+        <p className="mt-1 flex items-center gap-1 truncate text-[10px] font-bold text-slate-600">
           <span className="truncate">{item.company_name}</span>
           {item.company_verified && <span className="inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[8px] font-black text-white">✓</span>}
         </p>
-        <p className="mt-0.5 truncate text-[8px] text-slate-400">{item.location ?? "Global"}{item.industry ? " · " + item.industry : ""}</p>
+        <p className="mt-0.5 truncate text-[9px] text-slate-400">{item.location ?? "Global"}{item.industry ? " · " + item.industry : ""}</p>
 
-        <div className="mt-2 min-h-0 space-y-1">
+        <div className="mt-3 min-h-0 space-y-2">
           {category === "investment" ? (
             <div className="space-y-1.5">
               <div className="grid grid-cols-2 gap-2"><Metric label="Funding Goal" value={money(item.funding_goal) ?? item.amount_text} /><Metric label="Participants" value={item.participant_count} /></div>
@@ -77,10 +77,10 @@ function OpportunityCard({ item, category }: { item: Opportunity; category: stri
           )}
         </div>
 
-        <p className="mt-2 line-clamp-3 text-[8px] leading-4 text-slate-500">{item.summary || item.description || "Review the opportunity details, requirements and terms before participating."}</p>
-        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-1.5">
-          <span className="text-[7px] font-bold uppercase tracking-[0.1em] text-slate-400">ACEPA Opportunity</span>
-          <span className="text-[8px] font-black text-purple-600">{configAction(category)} →</span>
+        <p className="mt-3 line-clamp-3 text-[9px] leading-4 text-slate-500">{item.summary || item.description || "Review the opportunity details, requirements and terms before participating."}</p>
+        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-2.5">
+          <span className="text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">ACEPA Opportunity</span>
+          <span className="text-[9px] font-black text-purple-600">{configAction(category)} →</span>
         </div>
       </div>
     </Link>
@@ -131,7 +131,7 @@ export default function CategoryDiscoveryPage() {
           <section className="relative overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white shadow-xl sm:p-8 lg:p-10"><div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-purple-500/25 blur-3xl" /><div className="relative max-w-4xl"><Link href="/dashboard/discover" className="text-xs font-bold text-purple-300 hover:text-white">← Back to Discover</Link><h1 className="mt-4 text-3xl font-black tracking-[-0.05em] sm:text-4xl lg:text-5xl">{config.title}</h1><p className="mt-4 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">{config.description}</p></div></section>
           <section className="mt-7 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"><div className="grid gap-3 lg:grid-cols-[1fr_auto]"><input value={query} onChange={(e) => setQuery(e.target.value)} type="search" placeholder={"Search " + (category === "careers-jobs" ? "jobs, companies, roles..." : category + " opportunities...")} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-purple-500 focus:bg-white" /><select value={sort} onChange={(e) => setSort(e.target.value)} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold outline-none"><option value="newest">Newest</option><option value="name">A–Z</option></select></div><div className="mt-4 flex flex-wrap gap-2">{["All", ...config.filters].map((value) => <button key={value} onClick={() => setFilter(value)} className={"rounded-full px-3.5 py-2 text-xs font-bold transition " + (filter === value ? "bg-slate-950 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-purple-200 hover:text-purple-700")}>{value}</button>)}</div></section>
           <div className="mt-7 flex items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-600">ONLY {category === "careers-jobs" ? "CAREERS & JOBS" : category.toUpperCase()}</p><h2 className="mt-2 text-2xl font-black tracking-[-0.04em]">{visible.length} available</h2></div>{items.some((item) => item.isDemo) && <span className="rounded-full bg-amber-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-amber-700">Demo listings for testing</span>}</div>
-          {loading ? <div className="mt-5 rounded-3xl border border-slate-200 bg-white p-10 text-center text-sm font-semibold text-slate-500">Loading {category}...</div> : <section className="mt-5 grid grid-cols-2 justify-center gap-5 md:grid-cols-3 xl:grid-cols-4">{visible.map((item) => <OpportunityCard key={item.id} item={item} category={category} />)}</section>}
+          {loading ? <div className="mt-5 rounded-3xl border border-slate-200 bg-white p-10 text-center text-sm font-semibold text-slate-500">Loading {category}...</div> : <section className="mt-5 grid grid-cols-2 justify-center gap-6 md:grid-cols-3 xl:grid-cols-4">{visible.map((item) => <OpportunityCard key={item.id} item={item} category={category} />)}</section>}
         </div>
       </main>
     </UserAccountShell>
