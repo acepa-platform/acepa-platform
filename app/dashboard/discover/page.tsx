@@ -144,14 +144,14 @@ export default function DiscoverPage() {
             </p>
           </div>
         ) : (
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 justify-center gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {filtered.map((item) => (
               <Link
                 key={item.id}
                 href={`/discover/opportunities/${item.slug}?from=dashboard-discover`}
-                className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-lg"
+                className="group mx-auto flex aspect-square w-full max-w-[250px] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-lg"
               >
-                <div className="relative h-28 overflow-hidden bg-slate-900">
+                <div className="relative h-[44%] shrink-0 overflow-hidden bg-slate-900">
                   {item.primary_image_url && (
                     <img
                       src={item.primary_image_url}
@@ -160,29 +160,29 @@ export default function DiscoverPage() {
                     />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
-                  <span className="absolute bottom-3 left-3 rounded-full bg-white/95 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-900">
+                  <span className="absolute bottom-2 left-2 rounded-full bg-white/95 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-slate-900">
                     {item.opportunity_categories?.[0]?.name ?? "Opportunity"}
                   </span>
                 </div>
 
-                <div className="p-3.5">
+                <div className="flex min-h-0 flex-1 flex-col p-3">
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-sm font-bold leading-5 tracking-tight">
+                    <h3 className="line-clamp-2 text-xs font-bold leading-4 tracking-tight">
                       {item.title}
                     </h3>
                     {item.amount_text && (
-                      <span className="shrink-0 text-sm font-black">
+                      <span className="shrink-0 text-[11px] font-black">
                         {item.amount_text}
                       </span>
                     )}
                   </div>
-                  <p className="mt-1 text-sm font-semibold text-slate-600">
+                  <p className="mt-1 line-clamp-1 text-[11px] font-semibold text-slate-600">
                     {item.company_name}
                   </p>
-                  <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-slate-500">
+                  <p className="mt-1 line-clamp-3 text-[10px] leading-4 text-slate-500">
                     {item.summary}
                   </p>
-                  <div className="mt-2.5 flex items-center justify-between text-[10px] font-semibold text-slate-400">
+                  <div className="mt-auto flex items-center justify-between pt-2 text-[9px] font-semibold text-slate-400">
                     <span>{item.location ?? "Global"}</span>
                     <span className="text-purple-600">Explore →</span>
                   </div>
