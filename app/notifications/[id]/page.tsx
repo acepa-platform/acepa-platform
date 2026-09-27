@@ -1,8 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { use } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import UserAccountShell from "@/components/user-account-shell";
 import { UserAccountActions } from "@/components/user-account-top-nav";
 
@@ -12,7 +11,6 @@ type Notice = {
   title: string;
   body: string;
   time: string;
-  read: boolean;
   href?: string;
   relatedLabel?: string;
   details: string[];
@@ -25,7 +23,6 @@ const notifications: Notice[] = [
     title: "Your application is under review",
     body: "Your Smart Retail Innovation Challenge submission has moved to Under Review.",
     time: "15 min ago",
-    read: false,
     href: "/activity/demo-activity-innovation",
     relatedLabel: "View activity record",
     details: [
@@ -42,7 +39,6 @@ const notifications: Notice[] = [
     title: "A new opportunity matches your interests",
     body: "Solar Energy Expansion is now open for participation.",
     time: "1 hour ago",
-    read: false,
     href: "/opportunities/demo-solar-energy-expansion",
     relatedLabel: "View opportunity",
     details: [
@@ -59,7 +55,6 @@ const notifications: Notice[] = [
     title: "Payment status updated",
     body: "Your demo investment payment status has been recorded successfully.",
     time: "3 hours ago",
-    read: true,
     href: "/investments/demo-investment-sungrid",
     relatedLabel: "View investment",
     details: [
@@ -76,7 +71,6 @@ const notifications: Notice[] = [
     title: "Opportunity deadline approaching",
     body: "Product Launch Campaign closes soon. Review the requirements before the deadline.",
     time: "Yesterday",
-    read: true,
     href: "/opportunities/demo-product-launch-campaign",
     relatedLabel: "View opportunity",
     details: [
@@ -93,7 +87,6 @@ const notifications: Notice[] = [
     title: "Participation accepted",
     body: "Your Regional Collaboration Lab participation has been accepted.",
     time: "Yesterday",
-    read: true,
     href: "/activity/demo-activity-collaboration",
     relatedLabel: "View activity record",
     details: [
@@ -109,7 +102,6 @@ const notifications: Notice[] = [
     title: "Welcome to ACEPA",
     body: "Your account is ready. Complete your profile to make future opportunity applications easier.",
     time: "2 days ago",
-    read: true,
     href: "/profile",
     relatedLabel: "View profile",
     details: [
@@ -130,17 +122,26 @@ const typeMeta: Record<Notice["type"], { label: string; symbol: string; classNam
 };
 
 export default function NotificationDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const id = useMemo(() => "", []);
-  void id;
-
-  return <NotificationDetail params={params} />;
-}
-
-async function NotificationDetail({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+  const { id } = use(params);
   const notice = notifications.find((item) => item.id === id);
 
-  if (!notice) notFound();
+  if (!notice) {
+    return (
+      <UserAccountShell>
+        <main className="min-h-screen bg-[#f7f8fc] p-6 text-slate-950 sm:p-10">
+          <div className="mx-auto max-w-[900px]">
+            <Link href="/notifications" className="text-sm font-bold text-slate-600 hover:text-purple-700">
+              ← Back to notifications
+            </Link>
+            <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-8">
+              <h1 className="text-2xl font-black">Notification not found</h1>
+              <p className="mt-2 text-sm text-slate-500">This notification is no longer available.</p>
+            </div>
+          </div>
+        </main>
+      </UserAccountShell>
+    );
+  }
 
   const meta = typeMeta[notice.type];
 
