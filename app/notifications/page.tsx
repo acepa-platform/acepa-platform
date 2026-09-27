@@ -116,8 +116,8 @@ export default function NotificationsPage() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1180px] px-4 py-8 sm:px-6 lg:py-10">
-          <section className="mx-auto max-w-[900px]">
+        <div className="w-full px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+          <section className="w-full">
             <div className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-purple-600">Notification center</p>
@@ -171,7 +171,7 @@ export default function NotificationsPage() {
               Mark all as read
             </button>
 
-            <div className="mt-7 space-y-8">
+            <div className="mt-7 w-full space-y-8">
               {groups.map(({ group, items: groupItems }) => (
                 <section key={group}>
                   <div className="mb-3 flex items-center gap-3">
@@ -179,7 +179,7 @@ export default function NotificationsPage() {
                     <div className="h-px flex-1 bg-slate-200" />
                   </div>
 
-                  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                  <div className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white">
                     {groupItems.length > 0 ? (
                       <div className="divide-y divide-slate-100">
                         {groupItems.map((item) => {
