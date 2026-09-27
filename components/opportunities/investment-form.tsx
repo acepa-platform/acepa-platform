@@ -49,22 +49,8 @@ export default function InvestmentForm(props: InvestmentFormProps) {
       return;
     }
 
-    const { data: existing } = await supabase
-      .from("opportunity_participations")
-      .select("id,status")
-      .eq("user_id", user.id)
-      .eq("opportunity_slug", props.opportunitySlug)
-      .eq("action", "invest")
-      .in("status", ["submitted", "under_review", "shortlisted", "accepted", "in_progress"])
-      .limit(1)
-      .maybeSingle();
-
-    if (existing) {
-      setError("You already have an active investment request for this opportunity.");
-      setLoading(false);
-      return;
-    }
-
+    // Investments are repeatable: each confirmed amount creates a separate investment entry.
+    // Unlike applications/requests, an investor may invest again in the same opportunity.
     const referenceId = `ACEPA-INV-${Date.now().toString(36).toUpperCase()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
 
     const { error: insertError } = await supabase.from("opportunity_participations").insert({
@@ -106,7 +92,10 @@ export default function InvestmentForm(props: InvestmentFormProps) {
         <p className="mt-3 text-sm leading-6 text-slate-600">
           Your request is now in ACEPA Activity. Payment and settlement are not processed yet; that will be connected to Wallet in the next investment phase.
         </p>
-        <button type="button" onClick={() => router.push("/activity")} className="mt-5 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white hover:bg-purple-600">
+        <button type="button" onClick={() => { setAmount(""); setError(""); setStep("amount"); }} className="mt-5 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 hover:border-purple-200 hover:text-purple-700">
+          Make Another Investment
+        </button>
+        <button type="button" onClick={() => router.push("/activity")} className="mt-3 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white hover:bg-purple-600">
           View Activity
         </button>
       </div>
