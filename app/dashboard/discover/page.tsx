@@ -17,6 +17,18 @@ type Opportunity = {
   primary_image_url: string | null;
   amount_text: string | null;
   category_id: string;
+  company_verified: boolean;
+  industry: string | null;
+  funding_goal: number | null;
+  funding_raised: number | null;
+  company_contribution_percent: number | null;
+  participant_count: number;
+  proposal_count: number;
+  reward_text: string | null;
+  payment_schedule: string | null;
+  deadline: string | null;
+  return_text: string | null;
+  employment_type: string | null;
   opportunity_categories?: { name: string; slug: string }[] | null;
 };
 
@@ -31,6 +43,152 @@ const categories = [
   ["Careers & Jobs", "careers-jobs"],
 ];
 
+function money(value: number | null) {
+  if (value === null || Number.isNaN(value)) return null;
+  return `$${value.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+}
+
+function dateLabel(value: string | null) {
+  if (!value) return null;
+  return new Date(value).toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function Metric({ label, value }: { label: string; value: string | number | null | undefined }) {
+  return (
+    <div className="min-w-0">
+      <p className="text-[8px] font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p>
+      <p className="mt-0.5 truncate text-[10px] font-bold text-slate-800">{value ?? "Not provided"}</p>
+    </div>
+  );
+}
+
+function OpportunityCard({ item }: { item: Opportunity }) {
+  const category = item.opportunity_categories?.[0]?.slug ?? "";
+  const categoryName = item.opportunity_categories?.[0]?.name ?? "Opportunity";
+  const progress =
+    item.funding_goal && item.funding_raised !== null
+      ? Math.min(100, Math.max(0, (item.funding_raised / item.funding_goal) * 100))
+      : null;
+
+  return (
+    <Link
+      href={`/discover/opportunities/${item.slug}?from=dashboard-discover`}
+      className="group mx-auto flex aspect-square w-full max-w-[285px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-xl"
+    >
+      <div className="relative h-[38%] shrink-0 overflow-hidden bg-slate-900">
+        {item.primary_image_url && (
+          <img
+            src={item.primary_image_url}
+            alt=""
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+        <span className="absolute bottom-2 left-2 rounded-full bg-white/95 px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.12em] text-slate-900">
+          {categoryName}
+        </span>
+      </div>
+
+      <div className="flex min-h-0 flex-1 flex-col p-3">
+        <div className="min-w-0">
+          <h3 className="line-clamp-2 text-[13px] font-black leading-4 tracking-tight text-slate-950">
+            {item.title}
+          </h3>
+          <p className="mt-1 flex items-center gap-1 truncate text-[10px] font-bold text-slate-600">
+            <span className="truncate">{item.company_name}</span>
+            {item.company_verified && (
+              <span className="inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[8px] font-black text-white">
+                ✓
+              </span>
+            )}
+          </p>
+          <p className="mt-0.5 truncate text-[9px] text-slate-400">
+            {item.location ?? "Global"}{item.industry ? ` · ${item.industry}` : ""}
+          </p>
+        </div>
+
+        {category === "investment" ? (
+          <div className="mt-2 space-y-1.5">
+            <div className="flex items-center justify-between gap-2">
+              <Metric label="Funding goal" value={money(item.funding_goal) ?? item.amount_text} />
+              <Metric label="Participants" value={item.participant_count} />
+            </div>
+            <div>
+              <div className="mb-1 flex items-center justify-between text-[8px] font-bold text-slate-500">
+                <span>Funding progress</span>
+                <span>{progress === null ? "Not provided" : `${progress.toFixed(0)}%`}</span>
+              </div>
+              <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
+                <div className="h-full rounded-full bg-purple-600" style={{ width: `${progress ?? 0}%` }} />
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              <Metric label="Company" value={item.company_contribution_percent === null ? null : `${item.company_contribution_percent}%`} />
+              <Metric label="Public" value={item.funding_goal && item.funding_raised !== null ? `${Math.max(0, 100 - (item.company_contribution_percent ?? 0))}% target` : null} />
+              <Metric label="Returns" value={item.return_text} />
+            </div>
+          </div>
+        ) : category === "collaboration" ? (
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <Metric label="Industry" value={item.industry} />
+            <Metric label="Reward" value={item.reward_text} />
+            <Metric label="Payment" value={item.payment_schedule} />
+            <Metric label="Deadline" value={dateLabel(item.deadline)} />
+            <Metric label="Proposals" value={item.proposal_count} />
+            <Metric label="Participants" value={item.participant_count} />
+          </div>
+        ) : category === "innovation" ? (
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <Metric label="Industry" value={item.industry} />
+            <Metric label="Reward" value={item.reward_text} />
+            <Metric label="Deadline" value={dateLabel(item.deadline)} />
+            <Metric label="Submissions" value={item.proposal_count} />
+          </div>
+        ) : category === "marketing" ? (
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <Metric label="Industry" value={item.industry} />
+            <Metric label="Budget" value={item.amount_text} />
+            <Metric label="Payment" value={item.payment_schedule} />
+            <Metric label="Deadline" value={dateLabel(item.deadline)} />
+          </div>
+        ) : category === "experts" ? (
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <Metric label="Industry" value={item.industry} />
+            <Metric label="Engagement" value={item.amount_text} />
+            <Metric label="Payment" value={item.payment_schedule} />
+            <Metric label="Applicants" value={item.proposal_count} />
+          </div>
+        ) : category === "careers-jobs" ? (
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <Metric label="Industry" value={item.industry} />
+            <Metric label="Salary" value={item.amount_text} />
+            <Metric label="Employment" value={item.employment_type} />
+            <Metric label="Applicants" value={item.proposal_count} />
+          </div>
+        ) : (
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <Metric label="Industry" value={item.industry} />
+            <Metric label="Reward" value={item.reward_text ?? item.amount_text} />
+            <Metric label="Deadline" value={dateLabel(item.deadline)} />
+            <Metric label="Participants" value={item.participant_count} />
+          </div>
+        )}
+
+        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-2">
+          <span className="text-[8px] font-bold uppercase tracking-[0.12em] text-slate-400">
+            ACEPA Opportunity
+          </span>
+          <span className="text-[9px] font-black text-purple-600">View details →</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export default function DiscoverPage() {
   const supabase = createClient();
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -44,7 +202,7 @@ export default function DiscoverPage() {
       const { data } = await supabase
         .from("opportunities")
         .select(
-          "id,title,slug,company_name,location,summary,primary_image_url,amount_text,category_id,opportunity_categories(name,slug)"
+          "id,title,slug,company_name,location,summary,primary_image_url,amount_text,category_id,company_verified,industry,funding_goal,funding_raised,company_contribution_percent,participant_count,proposal_count,reward_text,payment_schedule,deadline,return_text,employment_type,opportunity_categories(name,slug)"
         )
         .eq("status", "published")
         .order("published_at", { ascending: false });
@@ -77,121 +235,63 @@ export default function DiscoverPage() {
   return (
     <UserAccountShell>
       <main className="min-h-screen bg-slate-50 text-slate-950">
-      <UserAccountTopNav
-        searchValue={search}
-        onSearchChange={setSearch}
-      />
+        <UserAccountTopNav searchValue={search} onSearchChange={setSearch} />
 
-      <section className="relative overflow-hidden bg-slate-950 px-6 py-9 text-white lg:px-8 lg:py-11">
-        <div className="absolute -right-20 -top-24 h-56 w-56 rounded-full bg-purple-600/15 blur-3xl" />
-        <div className="relative mx-auto max-w-[1500px]">
-          <p className="text-[10px] font-bold tracking-[0.22em] text-purple-300">
-            DISCOVER ACEPA
-          </p>
-          <div className="mt-2">
-            <h1 className="text-2xl font-bold tracking-[-0.03em] sm:text-3xl">
-              Find where you can{" "}
-              <span className="text-purple-300">create value.</span>
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              Explore opportunities to invest, innovate, market, build,
-              collaborate, work, and contribute.
-            </p>
+        <section className="relative overflow-hidden bg-slate-950 px-6 py-9 text-white lg:px-8 lg:py-11">
+          <div className="absolute -right-20 -top-24 h-56 w-56 rounded-full bg-purple-600/15 blur-3xl" />
+          <div className="relative mx-auto max-w-[1500px]">
+            <p className="text-[10px] font-bold tracking-[0.22em] text-purple-300">DISCOVER ACEPA</p>
+            <div className="mt-2">
+              <h1 className="text-2xl font-bold tracking-[-0.03em] sm:text-3xl">
+                Find where you can <span className="text-purple-300">create value.</span>
+              </h1>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
+                Explore opportunities to invest, innovate, market, build, collaborate, work, and contribute.
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="mx-auto w-full px-5 py-8 lg:px-8">
-        <div className="flex flex-wrap gap-2">
-          {categories.map(([label, slug]) => (
-            <button
-              key={slug}
-              onClick={() => setCategory(slug)}
-              className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${
-                category === slug
-                  ? "bg-slate-950 text-white"
-                  : "border border-slate-200 bg-white text-slate-600 hover:border-purple-200 hover:text-purple-600"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        <div className="mt-8 flex items-end justify-between gap-4 border-b border-slate-200 pb-5">
-          <div>
-            <p className="text-xs font-bold tracking-[0.2em] text-purple-600">
-              OPPORTUNITIES
-            </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight">
-              Explore what is available.
-            </h2>
-          </div>
-          <p className="text-sm text-slate-500">
-            {loading ? "Loading..." : `${filtered.length} opportunities`}
-          </p>
-        </div>
-
-        {loading ? (
-          <div className="py-20 text-center text-sm text-slate-500">
-            Loading opportunities...
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-            <p className="text-lg font-bold">No opportunities found.</p>
-            <p className="mt-2 text-sm text-slate-500">
-              Try another search or category.
-            </p>
-          </div>
-        ) : (
-          <div className="mt-6 grid grid-cols-2 justify-center gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {filtered.map((item) => (
-              <Link
-                key={item.id}
-                href={`/discover/opportunities/${item.slug}?from=dashboard-discover`}
-                className="group mx-auto flex aspect-square w-full max-w-[250px] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-lg"
+        <section className="mx-auto w-full px-5 py-8 lg:px-8">
+          <div className="flex flex-wrap gap-2">
+            {categories.map(([label, slug]) => (
+              <button
+                key={slug}
+                onClick={() => setCategory(slug)}
+                className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${
+                  category === slug
+                    ? "bg-slate-950 text-white"
+                    : "border border-slate-200 bg-white text-slate-600 hover:border-purple-200 hover:text-purple-600"
+                }`}
               >
-                <div className="relative h-[44%] shrink-0 overflow-hidden bg-slate-900">
-                  {item.primary_image_url && (
-                    <img
-                      src={item.primary_image_url}
-                      alt=""
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
-                  <span className="absolute bottom-2 left-2 rounded-full bg-white/95 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-slate-900">
-                    {item.opportunity_categories?.[0]?.name ?? "Opportunity"}
-                  </span>
-                </div>
-
-                <div className="flex min-h-0 flex-1 flex-col p-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="line-clamp-2 text-xs font-bold leading-4 tracking-tight">
-                      {item.title}
-                    </h3>
-                    {item.amount_text && (
-                      <span className="shrink-0 text-[11px] font-black">
-                        {item.amount_text}
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1 line-clamp-1 text-[11px] font-semibold text-slate-600">
-                    {item.company_name}
-                  </p>
-                  <p className="mt-1 line-clamp-3 text-[10px] leading-4 text-slate-500">
-                    {item.summary}
-                  </p>
-                  <div className="mt-auto flex items-center justify-between pt-2 text-[9px] font-semibold text-slate-400">
-                    <span>{item.location ?? "Global"}</span>
-                    <span className="text-purple-600">Explore →</span>
-                  </div>
-                </div>
-              </Link>
+                {label}
+              </button>
             ))}
           </div>
-        )}
-      </section>
+
+          <div className="mt-8 flex items-end justify-between gap-4 border-b border-slate-200 pb-5">
+            <div>
+              <p className="text-xs font-bold tracking-[0.2em] text-purple-600">OPPORTUNITIES</p>
+              <h2 className="mt-2 text-3xl font-bold tracking-tight">Explore what is available.</h2>
+            </div>
+            <p className="text-sm text-slate-500">{loading ? "Loading..." : `${filtered.length} opportunities`}</p>
+          </div>
+
+          {loading ? (
+            <div className="py-20 text-center text-sm text-slate-500">Loading opportunities...</div>
+          ) : filtered.length === 0 ? (
+            <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
+              <p className="text-lg font-bold">No opportunities found.</p>
+              <p className="mt-2 text-sm text-slate-500">Try another search or category.</p>
+            </div>
+          ) : (
+            <div className="mt-6 grid grid-cols-2 justify-center gap-4 md:grid-cols-3 xl:grid-cols-4">
+              {filtered.map((item) => (
+                <OpportunityCard key={item.id} item={item} />
+              ))}
+            </div>
+          )}
+        </section>
       </main>
     </UserAccountShell>
   );
