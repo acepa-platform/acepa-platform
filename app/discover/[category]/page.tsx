@@ -28,8 +28,8 @@ type Opportunity = {
   isDemo?: boolean;
 };
 
-function money(value: number | null) {
-  return value === null || Number.isNaN(value) ? null : "$" + value.toLocaleString("en-US", { maximumFractionDigits: 0 });
+function money(value: number | null | undefined) {
+  return value == null || Number.isNaN(value) ? null : "$" + value.toLocaleString("en-US", { maximumFractionDigits: 0 });
 }
 function dateLabel(value: string | null) {
   return value ? new Date(value).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }) : null;
