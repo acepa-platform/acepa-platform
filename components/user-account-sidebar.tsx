@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const sections = [
   {
@@ -107,6 +107,17 @@ type UserAccountSidebarProps = {
 export default function UserAccountSidebar({ open, onToggle }: UserAccountSidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = scrollRef.current;
+    if (!element) return;
+    const saved = Number(window.sessionStorage.getItem("acepa-sidebar-scroll") || "0");
+    element.scrollTop = Number.isFinite(saved) ? saved : 0;
+    const onScroll = () => window.sessionStorage.setItem("acepa-sidebar-scroll", String(element.scrollTop));
+    element.addEventListener("scroll", onScroll, { passive: true });
+    return () => element.removeEventListener("scroll", onScroll);
+  }, []);
 
   const isActive = (href: string) => {
     const path = href.split("?")[0];
@@ -139,7 +150,7 @@ export default function UserAccountSidebar({ open, onToggle }: UserAccountSideba
         </button>
       </div>
 
-      <div className={`flex-1 overflow-y-auto py-6 ${open ? "px-4" : "px-2"}`}>
+      <div ref={scrollRef} className={`flex-1 overflow-y-auto py-6 ${open ? "px-4" : "px-2"}`}>
         <nav className="space-y-7">
           {sections.map((section) => (
             <div key={section.title}>
