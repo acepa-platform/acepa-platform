@@ -10,7 +10,7 @@ export default async function OpportunityPage({ params, searchParams }: { params
   const supabase = await createClient();
   const { data: live } = await supabase
     .from("opportunities")
-    .select("id,title,slug,company_name,location,summary,description,primary_image_url,amount_text,published_at,opportunity_categories(name,slug)")
+    .select("id,title,slug,company_name,location,summary,description,primary_image_url,amount_text,published_at,company_verified,industry,funding_goal,funding_raised,company_contribution_percent,public_contribution_percent,participant_count,proposal_count,reward_text,payment_schedule,deadline,return_text,employment_type,opportunity_categories(name,slug)")
     .eq("slug", slug)
     .eq("status", "published")
     .single();
@@ -30,7 +30,7 @@ export default async function OpportunityPage({ params, searchParams }: { params
         primary_image_url: live.primary_image_url,
         amount_text: live.amount_text,
         category: live.opportunity_categories?.[0]?.name ?? "Opportunity",
-        sections: [],
+        sections: [\n          { title: "Financials", body: "Financial information for this opportunity will be shown here, including funding, company contribution, public contribution and returns.", items: ["Funding goal: " + (live.funding_goal != null ? "$" + Number(live.funding_goal).toLocaleString("en-US") : "Not provided"), "Funding raised: " + (live.funding_raised != null ? "$" + Number(live.funding_raised).toLocaleString("en-US") : "Not provided"), "Company contribution: " + (live.company_contribution_percent != null ? live.company_contribution_percent + "%" : "Not provided"), "Public contribution: " + (live.public_contribution_percent != null ? live.public_contribution_percent + "%" : "Not provided"), "Returns: " + (live.return_text ?? "Not provided")] },\n          { title: "Past Performance", body: "Historical performance and results will be shown separately from projections and clearly identified by their source and verification status." },\n          { title: "Terms & Conditions", body: "Participation terms, eligibility requirements, payment conditions, risks and other applicable terms will be displayed here before you participate." },\n          { title: "Updates", body: "Company updates and material changes to this opportunity will appear here." },\n          { title: "Documents", body: "Company-provided and verified supporting documents will appear here when available." },\n          { title: "Q&A", body: "Questions from participants and official company responses will appear here." },\n          { title: "Reviews", body: "Verified participant reviews and experiences will appear here after completed participation." },\n        ],
         meta: [live.location ?? "Global", "Published on ACEPA"],
       }
     : demo!;
