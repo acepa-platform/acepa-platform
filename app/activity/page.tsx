@@ -6,7 +6,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import UserAccountShell from "@/components/user-account-shell";
 import { UserAccountActions } from "@/components/user-account-top-nav";
-import { demoOpportunityActivity } from "@/lib/demo-opportunity-activity";
 
 type Participation = {
   id: string;
@@ -56,7 +55,6 @@ export default function ActivityPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
   const [error, setError] = useState("");
-  const [demoMode, setDemoMode] = useState(false);
 
   useEffect(() => {
     loadActivity();
@@ -83,14 +81,11 @@ export default function ActivityPage() {
 
     if (queryError) {
       setError("We could not load your opportunity activity right now.");
-      setItems(demoOpportunityActivity);
-      setDemoMode(true);
+      setItems([]);
     } else if (!data || data.length === 0) {
-      setItems(demoOpportunityActivity);
-      setDemoMode(true);
+      setItems([]);
     } else {
       setItems((data || []) as Participation[]);
-      setDemoMode(false);
     }
 
     setLoading(false);
@@ -124,7 +119,7 @@ export default function ActivityPage() {
             </p>
           </section>
 
-          {demoMode && (
+          {false && (
             <div className="mt-5 rounded-2xl border border-purple-100 bg-purple-50 px-4 py-3 text-sm font-semibold text-purple-800">
               Demo activity history · These sample records are here so you can inspect the user Activity interface. Real submissions will replace this view automatically.
             </div>
