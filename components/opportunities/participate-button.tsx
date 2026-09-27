@@ -62,7 +62,6 @@ export default function ParticipateButton({
       .from("opportunity_participations")
       .select("id,status")
       .eq("user_id", user.id)
-      .eq("opportunity_id", isUuid(opportunityId) ? opportunityId : null)
       .eq("opportunity_slug", opportunitySlug)
       .in("status", ["submitted", "under_review", "shortlisted", "accepted", "in_progress"])
       .limit(1)
