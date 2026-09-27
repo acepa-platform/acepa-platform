@@ -23,8 +23,14 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  const { data: { claims } } = await supabase.auth.getClaims()
-  const user = claims?.sub
+  const { data, error } = await supabase.auth.getClaims()
+  const user = data?.claims?.sub
+
+  // If claim verification is temporarily unavailable, do not crash the request.
+  // Protected dashboard routes will simply continue without a user and redirect to sign-in.
+  if (error) {
+    console.error('Supabase getClaims error:', error.message)
+  }
 
   if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
     const redirectUrl = request.nextUrl.clone()
