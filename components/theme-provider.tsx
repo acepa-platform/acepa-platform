@@ -2,8 +2,11 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
   useEffect(() => {
     const applyTheme = (appearance: string, systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches) => {
       const dark = appearance === "dark" || (appearance === "system" && systemDark);
@@ -13,6 +16,12 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
     const load = async () => {
       const saved = localStorage.getItem("acepa-appearance");
+      const isPublicHomepage = pathname === "/";
+      if (isPublicHomepage) {
+        applyTheme("light");
+        return;
+      }
+
       if (saved) applyTheme(saved);
 
       const supabase = createClient();
@@ -54,7 +63,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
       window.removeEventListener("acepa-appearance-change", onAppearanceChange);
       void cleanup;
     };
-  }, []);
+  }, [pathname]);
 
   return <>{children}</>;
 }
