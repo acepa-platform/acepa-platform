@@ -138,7 +138,7 @@ export default function ParticipationsPage() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1180px] px-4 py-8 sm:px-6 lg:py-10">
+        <div className="mx-auto w-full px-4 py-8 sm:px-6 lg:py-10">
           <section className="rounded-[2rem] bg-slate-950 p-6 text-white sm:p-8">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-purple-300">All opportunity participation</p>
             <h2 className="mt-2 text-3xl font-black tracking-[-0.04em]">
