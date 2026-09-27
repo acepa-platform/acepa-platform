@@ -23,7 +23,7 @@ const demoNotifications: Notice[] = [
     body: "Your Smart Retail Innovation Challenge submission has moved to Under Review.",
     time: "15 min ago",
     read: false,
-    href: "/activity/demo-activity-innovation",
+    href: "/notifications/n1",
   },
   {
     id: "n2",
@@ -32,7 +32,7 @@ const demoNotifications: Notice[] = [
     body: "Solar Energy Expansion is now open for participation.",
     time: "1 hour ago",
     read: false,
-    href: "/opportunities/demo-solar-energy-expansion",
+    href: "/notifications/n2",
   },
   {
     id: "n3",
@@ -41,7 +41,7 @@ const demoNotifications: Notice[] = [
     body: "Your demo investment payment status has been recorded successfully.",
     time: "3 hours ago",
     read: true,
-    href: "/investments/demo-investment-sungrid",
+    href: "/notifications/n3",
   },
   {
     id: "n4",
@@ -50,7 +50,7 @@ const demoNotifications: Notice[] = [
     body: "Product Launch Campaign closes soon. Review the requirements before the deadline.",
     time: "Yesterday",
     read: true,
-    href: "/opportunities/demo-product-launch-campaign",
+    href: "/notifications/n4",
   },
   {
     id: "n5",
@@ -59,7 +59,7 @@ const demoNotifications: Notice[] = [
     body: "Your Regional Collaboration Lab participation has been accepted.",
     time: "Yesterday",
     read: true,
-    href: "/activity/demo-activity-collaboration",
+    href: "/notifications/n5",
   },
   {
     id: "n6",
@@ -68,7 +68,7 @@ const demoNotifications: Notice[] = [
     body: "Your account is ready. Complete your profile to make future opportunity applications easier.",
     time: "2 days ago",
     read: true,
-    href: "/profile",
+    href: "/notifications/n6",
   },
 ];
 
@@ -192,7 +192,7 @@ export default function NotificationsPage() {
                       </div>
                     </div>
                     <div className="mt-4 flex items-center justify-between gap-3">
-                      <span className="text-xs font-bold text-purple-700">{item.href ? "Open related item →" : ""}</span>
+                      <span className="text-xs font-bold text-purple-700">Open notification →</span>
                       {!item.read && (
                         <button
                           onClick={(event) => {
