@@ -144,14 +144,14 @@ export default function DiscoverPage() {
             </p>
           </div>
         ) : (
-          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {filtered.map((item) => (
               <Link
                 key={item.id}
-                href={`/discover/opportunities/${item.slug}`}
-                className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-xl"
+                href={`/discover/opportunities/${item.slug}?from=dashboard-discover`}
+                className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-purple-200 hover:shadow-lg"
               >
-                <div className="relative h-48 overflow-hidden bg-slate-900">
+                <div className="relative h-36 overflow-hidden bg-slate-900">
                   {item.primary_image_url && (
                     <img
                       src={item.primary_image_url}
@@ -165,9 +165,9 @@ export default function DiscoverPage() {
                   </span>
                 </div>
 
-                <div className="p-6">
+                <div className="p-4">
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-xl font-bold tracking-tight">
+                    <h3 className="text-base font-bold leading-5 tracking-tight">
                       {item.title}
                     </h3>
                     {item.amount_text && (
@@ -179,10 +179,10 @@ export default function DiscoverPage() {
                   <p className="mt-1 text-sm font-semibold text-slate-600">
                     {item.company_name}
                   </p>
-                  <p className="mt-3 text-sm leading-6 text-slate-500">
+                  <p className="mt-2 text-xs leading-5 text-slate-500">
                     {item.summary}
                   </p>
-                  <div className="mt-5 flex items-center justify-between text-xs font-semibold text-slate-400">
+                  <div className="mt-3 flex items-center justify-between text-[11px] font-semibold text-slate-400">
                     <span>{item.location ?? "Global"}</span>
                     <span className="text-purple-600">Explore →</span>
                   </div>
