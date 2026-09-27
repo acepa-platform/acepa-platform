@@ -5,97 +5,65 @@ import Link from "next/link";
 import UserAccountShell from "@/components/user-account-shell";
 import { UserAccountActions } from "@/components/user-account-top-nav";
 
+type NoticeType = "opportunity" | "status" | "payment" | "deadline" | "system" | "mention";
+
 type Notice = {
   id: string;
-  type: "opportunity" | "status" | "payment" | "deadline" | "system";
+  type: NoticeType;
   title: string;
   body: string;
   time: string;
+  group: "Today" | "Yesterday" | "Tomorrow";
   read: boolean;
   href?: string;
 };
 
 const demoNotifications: Notice[] = [
-  {
-    id: "n1",
-    type: "status",
-    title: "Your application is under review",
-    body: "Your Smart Retail Innovation Challenge submission has moved to Under Review.",
-    time: "15 min ago",
-    read: false,
-    href: "/notifications/n1",
-  },
-  {
-    id: "n2",
-    type: "opportunity",
-    title: "A new opportunity matches your interests",
-    body: "Solar Energy Expansion is now open for participation.",
-    time: "1 hour ago",
-    read: false,
-    href: "/notifications/n2",
-  },
-  {
-    id: "n3",
-    type: "payment",
-    title: "Payment status updated",
-    body: "Your demo investment payment status has been recorded successfully.",
-    time: "3 hours ago",
-    read: true,
-    href: "/notifications/n3",
-  },
-  {
-    id: "n4",
-    type: "deadline",
-    title: "Opportunity deadline approaching",
-    body: "Product Launch Campaign closes soon. Review the requirements before the deadline.",
-    time: "Yesterday",
-    read: true,
-    href: "/notifications/n4",
-  },
-  {
-    id: "n5",
-    type: "status",
-    title: "Participation accepted",
-    body: "Your Regional Collaboration Lab participation has been accepted.",
-    time: "Yesterday",
-    read: true,
-    href: "/notifications/n5",
-  },
-  {
-    id: "n6",
-    type: "system",
-    title: "Welcome to ACEPA",
-    body: "Your account is ready. Complete your profile to make future opportunity applications easier.",
-    time: "2 days ago",
-    read: true,
-    href: "/notifications/n6",
-  },
+  { id: "n1", type: "status", title: "Your application is under review", body: "Smart Retail Innovation Challenge moved to Under Review.", time: "9:42 AM", group: "Today", read: false, href: "/notifications/n1" },
+  { id: "n2", type: "opportunity", title: "A new opportunity matches your interests", body: "Solar Energy Expansion is now open for participation.", time: "8:15 AM", group: "Today", read: false, href: "/notifications/n2" },
+  { id: "n3", type: "mention", title: "You were mentioned in an activity", body: "An update connected to your Regional Collaboration Lab participation.", time: "7:30 AM", group: "Today", read: false, href: "/notifications/n3" },
+  { id: "n4", type: "payment", title: "Payment status updated", body: "Your demo investment payment status was recorded successfully.", time: "Yesterday", group: "Yesterday", read: true, href: "/notifications/n4" },
+  { id: "n5", type: "deadline", title: "Opportunity deadline approaching", body: "Product Launch Campaign closes soon. Review the requirements.", time: "Yesterday", group: "Yesterday", read: true, href: "/notifications/n5" },
+  { id: "n6", type: "status", title: "Participation accepted", body: "Your Regional Collaboration Lab participation has been accepted.", time: "Yesterday", group: "Yesterday", read: true, href: "/notifications/n6" },
+  { id: "n7", type: "system", title: "Scheduled account reminder", body: "Review your profile and notification preferences tomorrow.", time: "Tomorrow", group: "Tomorrow", read: true, href: "/notifications/n7" },
 ];
 
-const typeMeta: Record<Notice["type"], { label: string; symbol: string; className: string }> = {
+const typeMeta: Record<NoticeType, { label: string; symbol: string; className: string }> = {
   opportunity: { label: "Opportunity", symbol: "✦", className: "bg-purple-50 text-purple-700" },
   status: { label: "Status", symbol: "↗", className: "bg-amber-50 text-amber-700" },
   payment: { label: "Payment", symbol: "$", className: "bg-emerald-50 text-emerald-700" },
   deadline: { label: "Deadline", symbol: "!", className: "bg-rose-50 text-rose-700" },
   system: { label: "System", symbol: "•", className: "bg-slate-100 text-slate-600" },
+  mention: { label: "Mention", symbol: "@", className: "bg-blue-50 text-blue-700" },
 };
 
 export default function NotificationsPage() {
   const [items, setItems] = useState(demoNotifications);
-  const [filter, setFilter] = useState<"All" | "Unread">("All");
-  const [type, setType] = useState<"All" | Notice["type"]>("All");
+  const [filter, setFilter] = useState<"All" | "Unread" | "Important" | "System" | "Mention">("All");
+  const [search, setSearch] = useState("");
 
   const unreadCount = items.filter((item) => !item.read).length;
 
-  const filtered = useMemo(
-    () =>
-      items.filter((item) => {
-        const matchesRead = filter === "All" || !item.read;
-        const matchesType = type === "All" || item.type === type;
-        return matchesRead && matchesType;
-      }),
-    [items, filter, type]
-  );
+  const filtered = useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    return items.filter((item) => {
+      const matchesFilter =
+        filter === "All" ||
+        (filter === "Unread" && !item.read) ||
+        (filter === "Important" && ["deadline", "payment", "status"].includes(item.type)) ||
+        (filter === "System" && item.type === "system") ||
+        (filter === "Mention" && item.type === "mention");
+
+      const matchesSearch =
+        !query ||
+        item.title.toLowerCase().includes(query) ||
+        item.body.toLowerCase().includes(query) ||
+        typeMeta[item.type].label.toLowerCase().includes(query);
+
+      return matchesFilter && matchesSearch;
+    });
+  }, [items, filter, search]);
 
   function markRead(id: string) {
     setItems((current) => current.map((item) => item.id === id ? { ...item, read: true } : item));
@@ -105,132 +73,179 @@ export default function NotificationsPage() {
     setItems((current) => current.map((item) => ({ ...item, read: true })));
   }
 
+  const groups = (["Today", "Yesterday", "Tomorrow"] as const).map((group) => ({
+    group,
+    items: filtered.filter((item) => item.group === group),
+  }));
+
   return (
     <UserAccountShell>
       <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
-        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
-          <div className="flex h-20 items-center justify-between px-5 sm:px-8 lg:px-10">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-600">My ACEPA</p>
-              <h1 className="mt-1 text-lg font-black">Notifications</h1>
+        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 backdrop-blur-xl">
+          <div className="mx-auto flex h-20 max-w-[1180px] items-center gap-4 px-4 sm:px-6 lg:px-8">
+            <div className="min-w-0">
+              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-purple-600">My ACEPA</p>
+              <h1 className="mt-1 text-base font-black sm:text-lg">Notifications</h1>
             </div>
+
+            <div className="relative ml-auto hidden w-full max-w-md md:block">
+              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">⌕</span>
+              <input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search notifications..."
+                className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm font-medium outline-none transition focus:border-purple-300 focus:bg-white"
+              />
+            </div>
+
             <UserAccountActions />
+          </div>
+
+          <div className="border-t border-slate-100 bg-white md:hidden">
+            <div className="mx-auto max-w-[1180px] px-4 py-3 sm:px-6">
+              <div className="relative">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">⌕</span>
+                <input
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Search notifications..."
+                  className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm font-medium outline-none focus:border-purple-300 focus:bg-white"
+                />
+              </div>
+            </div>
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1000px] px-4 py-8 sm:px-6 lg:py-10">
-          <section className="rounded-[2rem] bg-slate-950 p-6 text-white sm:p-8">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mx-auto max-w-[1180px] px-4 py-8 sm:px-6 lg:py-10">
+          <section className="mx-auto max-w-[900px]">
+            <div className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-purple-300">Stay informed</p>
-                <h2 className="mt-2 text-3xl font-black tracking-[-0.04em]">Everything that needs your attention.</h2>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-white/60">
-                  Opportunity updates, submission status changes, payment updates, deadlines and important ACEPA account notices.
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-purple-600">Notification center</p>
+                <h2 className="mt-2 text-3xl font-black tracking-[-0.04em]">Stay informed.</h2>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+                  Everything happening on ACEPA that needs your attention, from opportunity updates to account activity.
                 </p>
               </div>
-              <div className="rounded-2xl bg-white/10 px-4 py-3">
-                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">Unread</p>
-                <p className="mt-1 text-2xl font-black">{unreadCount}</p>
+              <div className="flex shrink-0 items-center gap-2">
+                <span className="rounded-full bg-purple-50 px-3 py-2 text-xs font-black text-purple-700">{unreadCount} unread</span>
+                <Link
+                  href="/settings?section=notifications"
+                  className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 hover:border-purple-200 hover:text-purple-700"
+                >
+                  Notification settings
+                </Link>
               </div>
             </div>
-          </section>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {(["All", "Unread"] as const).map((item) => (
-                <button
-                  key={item}
-                  onClick={() => setFilter(item)}
-                  className={"shrink-0 rounded-full px-4 py-2 text-xs font-bold " + (filter === item ? "bg-slate-950 text-white" : "border border-slate-200 bg-white text-slate-600")}
-                >
-                  {item}{item === "Unread" ? " (" + unreadCount + ")" : ""}
-                </button>
-              ))}
-            </div>
+            <div className="mt-5 flex items-center justify-between gap-3">
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {(["All", "Unread", "Important", "System", "Mention"] as const).map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => setFilter(item)}
+                    className={"shrink-0 rounded-full px-4 py-2 text-xs font-bold transition " + (
+                      filter === item
+                        ? "bg-slate-950 text-white"
+                        : "border border-slate-200 bg-white text-slate-600 hover:border-purple-200 hover:text-purple-700"
+                    )}
+                  >
+                    {item}{item === "Unread" ? " (" + unreadCount + ")" : ""}
+                  </button>
+                ))}
+              </div>
 
-            <div className="flex gap-2">
-              <select
-                value={type}
-                onChange={(event) => setType(event.target.value as "All" | Notice["type"])}
-                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 outline-none focus:border-purple-500"
-              >
-                <option value="All">All types</option>
-                <option value="opportunity">Opportunities</option>
-                <option value="status">Status updates</option>
-                <option value="payment">Payments</option>
-                <option value="deadline">Deadlines</option>
-                <option value="system">System</option>
-              </select>
               <button
                 onClick={markAllRead}
                 disabled={unreadCount === 0}
-                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 transition hover:border-purple-200 hover:text-purple-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="hidden shrink-0 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 hover:border-purple-200 hover:text-purple-700 disabled:cursor-not-allowed disabled:opacity-50 sm:block"
               >
-                Mark all read
+                Mark all as read
               </button>
             </div>
-          </div>
 
-          <section className="mt-5 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-            <div className="divide-y divide-slate-100">
-              {filtered.map((item) => {
-                const meta = typeMeta[item.type];
-                const content = (
-                  <>
-                    <div className="flex gap-4">
-                      <div className={"flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-sm font-black " + meta.className}>{meta.symbol}</div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h3 className={"text-sm font-black " + (!item.read ? "text-slate-950" : "text-slate-700")}>{item.title}</h3>
-                            {!item.read && <span className="h-2 w-2 rounded-full bg-purple-600" aria-label="Unread" />}
-                          </div>
-                          <span className="shrink-0 text-xs font-semibold text-slate-400">{item.time}</span>
-                        </div>
-                        <span className={"mt-2 inline-flex rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] " + meta.className}>{meta.label}</span>
-                        <p className="mt-2 text-sm leading-6 text-slate-500">{item.body}</p>
+            <button
+              onClick={markAllRead}
+              disabled={unreadCount === 0}
+              className="mt-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 disabled:opacity-50 sm:hidden"
+            >
+              Mark all as read
+            </button>
+
+            <div className="mt-7 space-y-8">
+              {groups.map(({ group, items: groupItems }) => (
+                <section key={group}>
+                  <div className="mb-3 flex items-center gap-3">
+                    <h3 className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">{group}</h3>
+                    <div className="h-px flex-1 bg-slate-200" />
+                  </div>
+
+                  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                    {groupItems.length > 0 ? (
+                      <div className="divide-y divide-slate-100">
+                        {groupItems.map((item) => {
+                          const meta = typeMeta[item.type];
+                          return (
+                            <Link
+                              key={item.id}
+                              href={item.href || "#"}
+                              onClick={() => markRead(item.id)}
+                              className={"group flex min-h-[82px] items-center gap-3 px-4 py-3 transition hover:bg-slate-50 sm:px-5 " + (!item.read ? "bg-purple-50/30" : "")}
+                            >
+                              <div className={"flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-xs font-black " + meta.className}>
+                                {meta.symbol}
+                              </div>
+
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2">
+                                  {!item.read && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600" />}
+                                  <p className={"truncate text-sm font-bold " + (!item.read ? "text-slate-950" : "text-slate-700")}>{item.title}</p>
+                                </div>
+                                <p className="mt-0.5 truncate text-xs text-slate-500">{item.body}</p>
+                              </div>
+
+                              <div className="flex shrink-0 items-center gap-2">
+                                <span className="hidden rounded-full bg-slate-100 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-500 sm:inline">
+                                  {meta.label}
+                                </span>
+                                <span className="text-[11px] font-semibold text-slate-400">{item.time}</span>
+                              </div>
+
+                              {!item.read && (
+                                <button
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    markRead(item.id);
+                                  }}
+                                  className="hidden text-[11px] font-bold text-slate-400 hover:text-slate-950 sm:block"
+                                >
+                                  Read
+                                </button>
+                              )}
+                            </Link>
+                          );
+                        })}
                       </div>
-                    </div>
-                    <div className="mt-4 flex items-center justify-between gap-3">
-                      <span className="text-xs font-bold text-purple-700">Open notification →</span>
-                      {!item.read && (
-                        <button
-                          onClick={(event) => {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            markRead(item.id);
-                          }}
-                          className="text-xs font-bold text-slate-500 hover:text-slate-950"
-                        >
-                          Mark read
-                        </button>
-                      )}
-                    </div>
-                  </>
-                );
+                    ) : (
+                      <div className="px-5 py-8 text-center text-sm text-slate-400">No notifications here.</div>
+                    )}
+                  </div>
+                </section>
+              ))}
+            </div>
 
-                return item.href ? (
-                  <Link key={item.id} href={item.href} onClick={() => markRead(item.id)} className={"group block p-5 transition hover:bg-slate-50 sm:p-6 " + (!item.read ? "bg-purple-50/30" : "")}>
-                    {content}
-                  </Link>
-                ) : (
-                  <div key={item.id} className={"p-5 sm:p-6 " + (!item.read ? "bg-purple-50/30" : "")}>{content}</div>
-                );
-              })}
+            {filtered.length === 0 && (
+              <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-lg">✓</div>
+                <h3 className="mt-3 text-base font-black">You’re all caught up</h3>
+                <p className="mt-1 text-sm text-slate-500">No notifications match your search or filters.</p>
+              </div>
+            )}
 
-              {filtered.length === 0 && (
-                <div className="px-6 py-14 text-center">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-xl">✓</div>
-                  <h3 className="mt-4 text-lg font-black">You’re all caught up</h3>
-                  <p className="mt-2 text-sm text-slate-500">There are no notifications matching these filters.</p>
-                </div>
-              )}
+            <div className="mt-6 border-t border-slate-200 pt-5 text-xs text-slate-400">
+              Notification center preview · Live notifications will connect to ACEPA opportunity, participation, payment and account events.
             </div>
           </section>
-
-          <div className="mt-6 rounded-3xl border border-purple-100 bg-purple-50 p-5 text-sm leading-6 text-purple-900">
-            <span className="font-black">Demo notification center.</span> These sample notifications are here for the user interface. Live notifications will later connect to ACEPA opportunity, activity, payment and account events.
-          </div>
         </div>
       </main>
     </UserAccountShell>
