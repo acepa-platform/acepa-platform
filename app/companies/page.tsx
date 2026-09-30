@@ -74,7 +74,7 @@ export default function ForCompaniesPage() {
           </nav>
           <div className="flex items-center gap-3">
             <Link href="/discover" className="hidden rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 transition hover:text-purple-600 sm:block">Explore</Link>
-            <Link href="/get-started" className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-purple-700">Get started</Link>
+            <Link href="/company/register" className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-purple-700">Get started</Link>
           </div>
         </div>
       </header>
@@ -96,7 +96,7 @@ export default function ForCompaniesPage() {
               ACEPA connects companies with capital, innovators, marketers, experts, talent, partners, and customers — helping businesses create opportunities and build progress.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
-              <Link href="/get-started" className="rounded-xl bg-purple-600 px-6 py-3.5 text-sm font-semibold text-white shadow-xl shadow-purple-950/30 transition hover:bg-purple-500">Get started as a company →</Link>
+              <Link href="/company/register" className="rounded-xl bg-purple-600 px-6 py-3.5 text-sm font-semibold text-white shadow-xl shadow-purple-950/30 transition hover:bg-purple-500">Get started as a company →</Link>
               <Link href="#opportunities" className="rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20">Explore company opportunities</Link>
             </div>
             <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium text-slate-300">
@@ -214,7 +214,7 @@ export default function ForCompaniesPage() {
           <h2 className="mt-4 text-4xl font-bold tracking-[-0.04em] sm:text-6xl">Your next opportunity could start here.</h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600">Bring your business, challenge, product, project, or opportunity to a platform built around people, opportunities, and progress.</p>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
-            <Link href="/get-started" className="rounded-xl bg-purple-600 px-7 py-4 text-sm font-semibold text-white shadow-lg shadow-purple-200 transition hover:bg-purple-700">Get started as a company →</Link>
+            <Link href="/company/register" className="rounded-xl bg-purple-600 px-7 py-4 text-sm font-semibold text-white shadow-lg shadow-purple-200 transition hover:bg-purple-700">Get started as a company →</Link>
             <Link href="/discover" className="rounded-xl border border-slate-300 px-7 py-4 text-sm font-semibold text-slate-800 transition hover:border-purple-400 hover:text-purple-600">Explore ACEPA</Link>
           </div>
         </div>
