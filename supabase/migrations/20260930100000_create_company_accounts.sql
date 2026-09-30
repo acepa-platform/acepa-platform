@@ -40,17 +40,26 @@ create index if not exists company_members_user_id_idx on public.company_members
 alter table public.companies enable row level security;
 alter table public.company_members enable row level security;
 
+drop policy if exists "Published companies are public" on public.companies;
 create policy "Published companies are public" on public.companies for select to anon, authenticated using (profile_status = 'published');
+drop policy if exists "Company owners can read their company" on public.companies;
 create policy "Company owners can read their company" on public.companies for select to authenticated using ((select auth.uid()) = owner_user_id);
+drop policy if exists "Company members can read their company" on public.companies;
 create policy "Company members can read their company" on public.companies for select to authenticated using (exists (select 1 from public.company_members cm where cm.company_id = companies.id and cm.user_id = (select auth.uid()) and cm.status = 'active'));
+drop policy if exists "Authenticated users can create their company" on public.companies;
 create policy "Authenticated users can create their company" on public.companies for insert to authenticated with check ((select auth.uid()) = owner_user_id);
+drop policy if exists "Company owners and admins can update" on public.companies;
 create policy "Company owners and admins can update" on public.companies for update to authenticated
 using ((select auth.uid()) = owner_user_id or exists (select 1 from public.company_members cm where cm.company_id = companies.id and cm.user_id = (select auth.uid()) and cm.role in ('owner','admin') and cm.status = 'active'))
 with check ((select auth.uid()) = owner_user_id or exists (select 1 from public.company_members cm where cm.company_id = companies.id and cm.user_id = (select auth.uid()) and cm.role in ('owner','admin') and cm.status = 'active'));
 
+drop policy if exists "Members can read their membership" on public.company_members;
 create policy "Members can read their membership" on public.company_members for select to authenticated using ((select auth.uid()) = user_id);
+drop policy if exists "Owners and admins can read team" on public.company_members;
 create policy "Owners and admins can read team" on public.company_members for select to authenticated using (exists (select 1 from public.company_members cm where cm.company_id = company_members.company_id and cm.user_id = (select auth.uid()) and cm.role in ('owner','admin') and cm.status = 'active'));
+drop policy if exists "Owners and admins can add team members" on public.company_members;
 create policy "Owners and admins can add team members" on public.company_members for insert to authenticated with check (exists (select 1 from public.company_members cm where cm.company_id = company_members.company_id and cm.user_id = (select auth.uid()) and cm.role in ('owner','admin') and cm.status = 'active'));
+drop policy if exists "Owners and admins can update team" on public.company_members;
 create policy "Owners and admins can update team" on public.company_members for update to authenticated
 using (exists (select 1 from public.company_members cm where cm.company_id = company_members.company_id and cm.user_id = (select auth.uid()) and cm.role in ('owner','admin') and cm.status = 'active'))
 with check (exists (select 1 from public.company_members cm where cm.company_id = company_members.company_id and cm.user_id = (select auth.uid()) and cm.role in ('owner','admin') and cm.status = 'active'));
