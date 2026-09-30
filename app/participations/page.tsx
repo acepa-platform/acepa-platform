@@ -22,6 +22,13 @@ type Participation = {
   submitted_at: string;
 };
 
+const demoParticipations: Participation[] = [
+  {id:"demo-part-1",opportunity_slug:"smart-retail-challenge",opportunity_title:"Smart Retail Innovation Challenge",company_name:"Nexa Retail Group",category:"Innovation",action:"Idea submission",status:"under_review",payment_status:null,amount:null,currency:"USD",reference_id:"ACEPA-DEMO-PART-001",submitted_at:"2026-09-23T09:10:00Z"},
+  {id:"demo-part-2",opportunity_slug:"product-launch-campaign",opportunity_title:"Product Launch Campaign",company_name:"Velo Mobility",category:"Marketing",action:"Campaign participation",status:"completed",payment_status:"successful_demo",amount:1000,currency:"USD",reference_id:"ACEPA-DEMO-PART-002",submitted_at:"2026-09-18T13:40:00Z"},
+  {id:"demo-part-3",opportunity_slug:"regional-collaboration-lab",opportunity_title:"Regional Collaboration Lab",company_name:"Atlas Supply Network",category:"Collaboration",action:"Collaboration application",status:"accepted",payment_status:null,amount:null,currency:"USD",reference_id:"ACEPA-DEMO-PART-003",submitted_at:"2026-09-15T11:20:00Z"},
+  {id:"demo-part-4",opportunity_slug:"solar-energy-expansion",opportunity_title:"Solar Energy Expansion",company_name:"SunGrid Energy Ltd.",category:"Investment",action:"Investment participation",status:"in_progress",payment_status:"successful_demo",amount:2500,currency:"USD",reference_id:"ACEPA-DEMO-PART-004",submitted_at:"2026-09-12T10:15:00Z"},
+];
+
 const statusLabels: Record<string, string> = {
   submitted: "Submitted",
   under_review: "Under Review",
@@ -83,10 +90,10 @@ export default function ParticipationsPage() {
       .order("submitted_at", { ascending: false });
 
     if (queryError) {
-      setError("We could not load your live participations right now.");
-      setItems([]);
+      setError("Live participation data is not available, so demo records are being shown.");
+      setItems(demoParticipations);
     } else if (!data || data.length === 0) {
-      setItems([]);
+      setItems(demoParticipations);
     } else {
       setItems((data || []) as Participation[]);
     }
@@ -145,7 +152,7 @@ export default function ParticipationsPage() {
             </p>
           </section>
 
-          {false && (
+          {items.some((item) => item.id.startsWith("demo-")) && (
             <div className="mt-5 rounded-2xl border border-purple-100 bg-purple-50 px-4 py-3 text-sm font-semibold text-purple-800">
               Demo participation history · These sample records are shown until you have live participation records.
             </div>
