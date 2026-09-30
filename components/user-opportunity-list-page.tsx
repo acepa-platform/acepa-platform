@@ -109,8 +109,8 @@ export default function UserOpportunityListPage({ listType }: { listType: ListTy
             <p className="mt-3 max-w-2xl text-sm leading-7 text-white/60">{description}</p>
           </section>
 
-          {!error && items.some((item) => item.id.startsWith("demo-")) && (
-            <div className="mt-5 rounded-2xl border border-purple-100 bg-purple-50 px-4 py-3 text-sm font-semibold text-purple-800">Demo examples · These sample {title.toLowerCase(){"}"} are shown so you can review the interface before live data is available.</div>
+          {items.some((item) => item.id.startsWith("demo-")) && (
+            <div className="mt-5 rounded-2xl border border-purple-100 bg-purple-50 px-4 py-3 text-sm font-semibold text-purple-800">Demo examples · These sample {title.toLowerCase()} are shown so you can review the interface before live data is available.</div>
           )}
 
           {error && (
