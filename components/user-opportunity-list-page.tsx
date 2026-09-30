@@ -23,6 +23,15 @@ export default function UserOpportunityListPage({ listType }: { listType: ListTy
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const demoItems: Item[] = isWatchlist ? [
+    { id: "demo-watch-1", opportunity_slug: "solar-energy-expansion", opportunity_title: "Solar Energy Expansion", company_name: "SunGrid Energy Ltd.", category: "Investment", created_at: "2026-09-24T10:00:00Z" },
+    { id: "demo-watch-2", opportunity_slug: "smart-retail-challenge", opportunity_title: "Smart Retail Innovation Challenge", company_name: "Nexa Retail Group", category: "Innovation", created_at: "2026-09-22T10:00:00Z" },
+    { id: "demo-watch-3", opportunity_slug: "product-launch-campaign", opportunity_title: "Product Launch Campaign", company_name: "Velo Mobility", category: "Marketing", created_at: "2026-09-20T10:00:00Z" },
+  ] : [
+    { id: "demo-saved-1", opportunity_slug: "solar-energy-expansion", opportunity_title: "Solar Energy Expansion", company_name: "SunGrid Energy Ltd.", category: "Investment", created_at: "2026-09-24T10:00:00Z" },
+    { id: "demo-saved-2", opportunity_slug: "ai-customer-support-challenge", opportunity_title: "AI Customer Support Challenge", company_name: "Nova Commerce", category: "Innovation", created_at: "2026-09-21T10:00:00Z" },
+    { id: "demo-saved-3", opportunity_slug: "product-launch-campaign", opportunity_title: "New Product Launch Campaign", company_name: "Velo Mobility", category: "Marketing", created_at: "2026-09-19T10:00:00Z" },
+  ];
 
   const isWatchlist = listType === "watchlist";
   const title = isWatchlist ? "Watchlist" : "Saved";
@@ -57,9 +66,9 @@ export default function UserOpportunityListPage({ listType }: { listType: ListTy
 
     if (queryError) {
       setError("We could not load your " + title.toLowerCase() + " right now.");
-      setItems([]);
+      setItems(demoItems);
     } else {
-      setItems((data || []) as Item[]);
+      setItems(data && data.length > 0 ? (data as Item[]) : demoItems);
     }
 
     setLoading(false);
@@ -100,6 +109,10 @@ export default function UserOpportunityListPage({ listType }: { listType: ListTy
             <p className="mt-3 max-w-2xl text-sm leading-7 text-white/60">{description}</p>
           </section>
 
+          {!error && items.some((item) => item.id.startsWith("demo-")) && (
+            <div className="mt-5 rounded-2xl border border-purple-100 bg-purple-50 px-4 py-3 text-sm font-semibold text-purple-800">Demo examples · These sample {title.toLowerCase(){"}"} are shown so you can review the interface before live data is available.</div>
+          )}
+
           {error && (
             <div className="mt-6 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">{error}</div>
           )}
@@ -137,7 +150,7 @@ export default function UserOpportunityListPage({ listType }: { listType: ListTy
                     </p>
                     <div className="mt-4 flex gap-2">
                       <Link href={"/opportunities/" + item.opportunity_slug} className="flex-1 rounded-xl bg-slate-950 px-3 py-2.5 text-center text-xs font-bold text-white hover:bg-purple-700">Open</Link>
-                      <button onClick={() => removeItem(item.id)} className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-600 hover:border-rose-200 hover:text-rose-700">Remove</button>
+                      <button disabled={item.id.startsWith("demo-")} title={item.id.startsWith("demo-") ? "Demo example" : "Remove"} onClick={() => removeItem(item.id)} className="rounded-xl border border-slate-200 px-3 py-2.5 disabled:cursor-not-allowed disabled:opacity-40 text-xs font-bold text-slate-600 hover:border-rose-200 hover:text-rose-700">Remove</button>
                     </div>
                   </div>
                 </article>
