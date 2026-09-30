@@ -1,0 +1,8 @@
+"use client";
+import UserAccountShell from "@/components/user-account-shell";
+export default function ReputationPage() {
+  return <UserAccountShell><main className="min-h-screen bg-[#f7f8fc] p-5 sm:p-8"><div className="mx-auto max-w-5xl"><p className="text-xs font-bold uppercase tracking-[.18em] text-purple-600">Trust & Reputation</p><h1 className="mt-2 text-3xl font-black">Your ACEPA reputation</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">A future trust layer built from legitimate participation, completed activities, reviews and verification—not popularity alone.</p>
+  <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{[["Reviews received","0"],["Completed activities","0"],["Participation history","0"],["Verification","Not started"]].map(([t,v]) => <div key={t} className="rounded-2xl border border-slate-200 bg-white p-5"><p className="text-sm text-slate-500">{t}</p><p className="mt-2 text-xl font-black">{v}</p></div>)}</div>
+  <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-7"><p className="text-lg font-black">Trust signals</p><div className="mt-5 space-y-3">{["Verified identity","Completed ACEPA activities","Reviews from eligible interactions","Consistent participation history"].map(x => <div key={x} className="flex items-center justify-between rounded-xl border border-slate-200 p-4"><span className="text-sm font-bold">{x}</span><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500">Not yet available</span></div>)}</div></section>
+  </div></main></UserAccountShell>;
+}
