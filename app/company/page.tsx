@@ -11,7 +11,7 @@ export default function CompaniesPage() {
     <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
         <Link href="/" className="flex items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA" className="h-12 w-auto object-contain brightness-0 dark:brightness-100"/></Link>
-        <div className="flex items-center gap-3"><Link href="/sign-in" className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700">Sign in</Link><Link href="/sign-up" className="rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white hover:bg-purple-700">Get Started</Link></div>
+        <div className="flex items-center gap-3"><Link href="/sign-in" className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700">Sign in</Link><Link href="/company/register" className="rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white hover:bg-purple-700">Get Started as a Company</Link></div>
       </div>
     </header>
     <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-10">
@@ -25,7 +25,7 @@ export default function CompaniesPage() {
           <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4"><span className="text-xs font-bold text-slate-500">{c.opportunities} active/demo opportunities</span><span className="text-xs font-black text-purple-700">View company →</span></div>
         </Link>)}
       </div>
-      <section className="mt-10 rounded-3xl bg-slate-950 p-7 text-white sm:p-9"><p className="text-xs font-bold uppercase tracking-[.18em] text-purple-300">For businesses</p><div className="mt-2 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"><div><h2 className="text-2xl font-black">Build your company presence on ACEPA.</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-white/60">Create a public company profile, publish opportunities and participate across ACEPA's shared platform systems.</p></div><Link href="/company/workspace" className="rounded-xl bg-white px-5 py-3 text-center text-sm font-black text-slate-950">Company workspace demo →</Link></div></section>
+      <section className="mt-10 rounded-3xl bg-slate-950 p-7 text-white sm:p-9"><p className="text-xs font-bold uppercase tracking-[.18em] text-purple-300">For businesses</p><div className="mt-2 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"><div><h2 className="text-2xl font-black">Build your company presence on ACEPA.</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-white/60">Create a public company profile, publish opportunities and participate across ACEPA's shared platform systems.</p></div><Link href="/company/register" className="rounded-xl bg-white px-5 py-3 text-center text-sm font-black text-slate-950">Get Started as a Company →</Link></div></section>
     </div>
   </main>;
 }
