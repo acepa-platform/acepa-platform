@@ -23,6 +23,8 @@ const sections = [
       { label: "My Investments", href: "/investments", icon: "investment" },
       { label: "My Earnings", href: "/earnings", icon: "earnings" },
       { label: "Saved", href: "/saved", icon: "saved" },
+      { label: "Referrals", href: "/referrals", icon: "earnings" },
+      { label: "Reputation", href: "/reputation", icon: "profile" },
       { label: "Watchlist", href: "/watchlist", icon: "feed" },
       { label: "Upcoming Projects", href: "/projects", icon: "projects" },
     ],
@@ -57,7 +59,11 @@ const sections = [
     items: [
       { label: "Notifications", href: "/notifications", icon: "notifications" },
       { label: "Settings", href: "/settings", icon: "settings" },
+      { label: "ACEPA ID", href: "/acepa-id", icon: "profile" },
       { label: "Support", href: "/support", icon: "support" },
+      { label: "Language", href: "/language", icon: "settings" },
+      { label: "Account Management", href: "/account-management", icon: "settings" },
+      { label: "Legal & Information", href: "/legal", icon: "proposal" },
     ],
   },
 ];
