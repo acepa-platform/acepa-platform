@@ -23,6 +23,7 @@ export default function UserOpportunityListPage({ listType }: { listType: ListTy
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const isWatchlist = listType === "watchlist";
   const demoItems: Item[] = isWatchlist ? [
     { id: "demo-watch-1", opportunity_slug: "solar-energy-expansion", opportunity_title: "Solar Energy Expansion", company_name: "SunGrid Energy Ltd.", category: "Investment", created_at: "2026-09-24T10:00:00Z" },
     { id: "demo-watch-2", opportunity_slug: "smart-retail-challenge", opportunity_title: "Smart Retail Innovation Challenge", company_name: "Nexa Retail Group", category: "Innovation", created_at: "2026-09-22T10:00:00Z" },
@@ -33,7 +34,6 @@ export default function UserOpportunityListPage({ listType }: { listType: ListTy
     { id: "demo-saved-3", opportunity_slug: "product-launch-campaign", opportunity_title: "New Product Launch Campaign", company_name: "Velo Mobility", category: "Marketing", created_at: "2026-09-19T10:00:00Z" },
   ];
 
-  const isWatchlist = listType === "watchlist";
   const title = isWatchlist ? "Watchlist" : "Saved";
   const eyebrow = isWatchlist ? "Track opportunities" : "Your collection";
   const description = isWatchlist
