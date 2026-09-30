@@ -157,8 +157,8 @@ export default function UserAccountSidebar({ open, onToggle }: UserAccountSideba
 
       <div ref={scrollRef} className={`flex-1 overflow-y-auto py-6 ${open ? "px-4" : "px-2"}`}>
         <nav className="space-y-7">
-          {sections.map((section) => (
-            <div key={section.title}>
+          {sections.map((section, sectionIndex) => (
+            <div key={section.title} className={sectionIndex === 0 ? "" : "border-t border-slate-200 pt-6"}>
               <p className={`text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ${
                 open ? "px-3" : "sr-only"
               }`}>
