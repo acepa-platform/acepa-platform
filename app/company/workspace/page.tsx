@@ -12,15 +12,31 @@ const activity=[["Today","3 new applications received"],["Yesterday","Company po
 export default function CompanyWorkspacePage(){
  const router = useRouter();
  const [notice,setNotice]=useState("");
+ const [demoMode,setDemoMode]=useState(false);
  const [company,setCompany]=useState<{id:string;name:string;slug:string;verification_status:string;profile_status:string}|null>(null);
  const [loadingCompany,setLoadingCompany]=useState(true);
 
  useEffect(()=>{
    let active=true;
    async function loadCompany(){
+     if(sessionStorage.getItem("acepa-company-demo")==="true"){
+       if(active){
+         setDemoMode(true);
+         setCompany({
+           id:"demo-novagrid",
+           name:"NovaGrid Energy Solutions Ltd.",
+           slug:"novagrid-energy-solutions-demo",
+           verification_status:"verified",
+           profile_status:"published"
+         });
+         setLoadingCompany(false);
+       }
+       return;
+     }
+
      const supabase=createClient();
      const {data:{user}}=await supabase.auth.getUser();
-     if(!user){ router.replace("/sign-in"); return; }
+     if(!user){ router.replace("/company/sign-in"); return; }
      const {data}=await supabase.from("companies").select("id,name,slug,verification_status,profile_status").eq("owner_user_id",user.id).maybeSingle();
      if(active){
        setCompany(data);
@@ -31,9 +47,10 @@ export default function CompanyWorkspacePage(){
    return ()=>{active=false};
  },[router]);
  return <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
-  <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-xl"><div className="flex h-20 items-center justify-between px-5 sm:px-8 lg:px-10"><div className="flex items-center gap-4"><Link href="/" className="flex items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA" className="h-11 w-auto object-contain brightness-0 dark:brightness-100"/></Link><span className="hidden h-6 w-px bg-slate-200 sm:block"/><div className="hidden sm:block"><p className="text-[10px] font-bold uppercase tracking-[.18em] text-slate-400">Company workspace</p><p className="text-sm font-black">{loadingCompany ? "Loading company..." : company?.name ?? "Company workspace"}</p></div></div><div className="flex items-center gap-2"><Link href={company ? `/company/${company.slug}` : "/company"} className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-700">View public profile</Link><Link href="/company" className="rounded-xl bg-slate-950 px-4 py-2 text-xs font-bold text-white">Company directory</Link></div></div></header>
+  <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-xl"><div className="flex h-20 items-center justify-between px-5 sm:px-8 lg:px-10"><div className="flex items-center gap-4"><Link href="/" className="flex items-center"><img src="/acepa-logo-white-transparent-tagline-brighter.png" alt="ACEPA" className="h-11 w-auto object-contain brightness-0 dark:brightness-100"/></Link><span className="hidden h-6 w-px bg-slate-200 sm:block"/><div className="hidden sm:block"><p className="text-[10px] font-bold uppercase tracking-[.18em] text-slate-400">Company workspace</p><p className="text-sm font-black">{loadingCompany ? "Loading company..." : company?.name ?? "Company workspace"}</p></div></div><div className="flex items-center gap-2">{demoMode&&<button onClick={()=>{sessionStorage.removeItem("acepa-company-demo");router.push("/company/sign-in")}} className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-800">Exit demo</button>}<Link href={company ? `/company/${company.slug}` : "/company"} className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-700">View public profile</Link><Link href="/company" className="rounded-xl bg-slate-950 px-4 py-2 text-xs font-bold text-white">Company directory</Link></div></div></header>
   <div className="mx-auto max-w-[1500px] px-5 py-8 sm:px-8 lg:px-10">
    <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><p className="text-xs font-bold uppercase tracking-[.2em] text-purple-600">Business workspace</p><h1 className="mt-2 text-3xl font-black tracking-[-.04em] sm:text-4xl">{company ? `Welcome, ${company.name}.` : "Company workspace"}</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">Manage your company&apos;s ACEPA presence, opportunities and activity from one workspace.</p></div><button onClick={()=>setNotice("Create opportunity is a demo action for now. The production form will connect to ACEPA opportunity management.")} className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-purple-700">+ Create opportunity</button></div>
+   {demoMode&&<div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-semibold text-amber-900">Demo Preview — You are viewing NovaGrid Energy Solutions Ltd. with sample company data. No real company account or financial account is connected.</div>}
    {notice&&<div className="mt-5 rounded-2xl border border-purple-100 bg-purple-50 px-5 py-4 text-sm font-semibold text-purple-800">{notice}</div>}
    <section className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{stats.map(([l,v])=><Link href={l==="Marketplace offerings"?"/marketplace":"/company/workspace"} key={l} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:border-purple-200"><p className="text-xs font-bold uppercase tracking-[.16em] text-slate-400">{l}</p><p className="mt-3 text-3xl font-black">{v}</p><p className="mt-2 text-xs text-slate-500">Demo company data</p></Link>)}</section>
    <div className="mt-8 grid gap-7 lg:grid-cols-[250px_1fr]">
