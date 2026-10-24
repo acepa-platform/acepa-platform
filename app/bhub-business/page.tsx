@@ -311,8 +311,8 @@ export default function BhuBBusinessPage() {
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/70">Explore BhuB as an individual, or prepare your organization to manage its work with BhuB Business.</p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <a href="/get-started" className="inline-flex items-center justify-center gap-3 rounded-full bg-[#d7f66a] px-6 py-4 text-sm font-extrabold text-[#183e32] transition hover:bg-[#e4ff88]">Get started <Arrow /></a>
-              <a href="mailto:hello@bhub.com" className="inline-flex items-center justify-center gap-3 rounded-full border border-white/25 px-6 py-4 text-sm font-bold text-white transition hover:bg-white/10">Talk to the team <Arrow /></a>
+              <a href="#for-everyone" className="inline-flex items-center justify-center gap-3 rounded-full bg-[#d7f66a] px-6 py-4 text-sm font-extrabold text-[#183e32] transition hover:bg-[#e4ff88]">Explore BhuB <Arrow /></a>
+              <a href="#for-business" className="inline-flex items-center justify-center gap-3 rounded-full border border-white/25 px-6 py-4 text-sm font-bold text-white transition hover:bg-white/10">Explore business tools <Arrow /></a>
             </div>
           </div>
           <p className="relative mt-8 max-w-3xl text-xs leading-6 text-white/45">BhuB Business capabilities are described as product scope and intended workflows. Availability of specific integrations, payment methods, regulatory functions and communication channels depends on implementation, supported providers, business configuration and applicable requirements.</p>
